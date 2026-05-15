@@ -1,122 +1,86 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
-import './App.css'
+// frontend/src/App.tsx
+import React, { useEffect } from 'react';
+import Terminal from './components/Terminal';
+import HeroScene from './components/HeroScene';
+import { useUIStore } from './store/uiStore';
 
 function App() {
-  const [count, setCount] = useState(0)
+  const { toggleTerminal } = useUIStore();
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Toggle terminal on Cmd+K or Ctrl+K
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault();
+        toggleTerminal();
+      }
+      // Toggle terminal on Backtick (~)
+      if (e.key === '`') {
+        e.preventDefault();
+        toggleTerminal();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [toggleTerminal]);
 
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.tsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
+    <div className="relative min-h-screen text-white font-sans overflow-hidden bg-black">
+      <HeroScene />
+      
+      <div className="relative z-10 flex flex-col items-center justify-center h-screen pointer-events-none px-4 text-center">
+        <motion_h1 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          className="text-6xl md:text-8xl font-bold mb-4 tracking-tighter uppercase"
         >
-          Count is {count}
-        </button>
-      </section>
-
-      <div className="ticks"></div>
-
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
+          Siva Panyam
+        </motion_h1>
+        
+        <motion_p 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.2 }}
+          className="text-xl md:text-2xl text-gray-400 mb-12 font-mono tracking-widest uppercase"
+        >
+          AI Engineer & Full Stack Architect
+        </motion_p>
+        
+        <div className="flex flex-col md:flex-row gap-4 pointer-events-auto">
+          <button 
+            className="px-8 py-4 border border-white/20 bg-white/5 hover:bg-white/10 rounded-full transition-all duration-300 font-mono text-sm tracking-widest uppercase backdrop-blur-md"
+          >
+            Explore Projects
+          </button>
+          <button 
+            onClick={toggleTerminal}
+            className="px-8 py-4 border border-green-500/30 bg-green-500/5 hover:bg-green-500/10 text-green-400 rounded-full transition-all duration-300 font-mono text-sm tracking-widest uppercase backdrop-blur-md"
+          >
+            [ Cmd+K ] Initialize Terminal
+          </button>
         </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
+      </div>
 
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
-  )
+      <div className="absolute bottom-10 left-10 z-10 hidden md:block">
+        <div className="flex flex-col gap-2 font-mono text-[10px] text-gray-500 uppercase tracking-tighter">
+          <div>System: Neural OS v1.0.4</div>
+          <div>Status: Online</div>
+          <div>Location: 12.9716° N, 77.5946° E</div>
+        </div>
+      </div>
+
+      <Terminal />
+    </div>
+  );
 }
 
-export default App
+// Simple motion component wrappers since I didn't import motion above
+const motion_h1 = (props: any) => (
+  <div {...props} style={{ ...props.style, opacity: 1, transform: 'none' }}>{props.children}</div>
+);
+const motion_p = (props: any) => (
+  <div {...props} style={{ ...props.style, opacity: 1, transform: 'none' }}>{props.children}</div>
+);
+
+export default App;
