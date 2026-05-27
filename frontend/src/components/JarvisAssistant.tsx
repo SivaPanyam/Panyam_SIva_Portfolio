@@ -1,9 +1,9 @@
 // frontend/src/components/JarvisAssistant.tsx
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useChat } from '../hooks/useChat';
 import { transitions, variants } from '../utils/motion';
-import { Bot, Send, X, Loader2, Sparkles } from 'lucide-react';
+import { Bot, Send, X, Sparkles } from 'lucide-react';
 import { useUIStore } from '../store/uiStore';
 
 const RECRUITER_QUICKS = [
@@ -13,6 +13,23 @@ const RECRUITER_QUICKS = [
   { label: '⚡ Hackathons & Lab', text: 'What experimental work has Siva built in his Lab?' },
 ];
 
+// Pulsing Neural Loading Skeleton
+const SkeletonLoader: React.FC = () => (
+  <div className="flex gap-2.5 animate-pulse" data-testid="jarvis-skeleton">
+    <div className="w-7 h-7 rounded-full bg-zinc-900 border border-zinc-800 flex items-center justify-center shrink-0">
+      <Bot className="w-4 h-4 text-zinc-600 animate-pulse" />
+    </div>
+    <div className="flex-1 space-y-2 bg-zinc-900/30 border border-zinc-900/50 p-3.5 rounded-2xl rounded-tl-none max-w-[80%]">
+      <div className="h-2 bg-zinc-850 rounded w-5/6" />
+      <div className="h-2 bg-zinc-900 rounded w-full" />
+      <div className="h-2 bg-zinc-850 rounded w-2/3" />
+      <div className="text-[7px] text-zinc-600 font-mono tracking-tighter uppercase mt-1 select-none animate-pulse">
+        JARVIS: SYNAPSE CONNECTION CALCULATING...
+      </div>
+    </div>
+  </div>
+);
+
 const JarvisAssistant: React.FC = () => {
   const { isJarvisOpen: isOpen } = useUIStore();
   const setIsOpen = (val: boolean) => {
@@ -21,6 +38,20 @@ const JarvisAssistant: React.FC = () => {
   const [inputVal, setInputVal] = useState('');
   const { messages, sendMessage, isLoading } = useChat();
   const chatEndRef = useRef<HTMLDivElement>(null);
+
+  // Time-aware Contextual Greeting
+  const contextualGreeting = useMemo(() => {
+    const hr = new Date().getHours();
+    let welcome = 'Greetings!';
+    if (hr < 12) {
+      welcome = 'Good morning!';
+    } else if (hr < 17) {
+      welcome = 'Good afternoon!';
+    } else {
+      welcome = 'Good evening!';
+    }
+    return `${welcome} I am **Jarvis**, Siva's autonomous portfolio agent. Ask me about his software projects, engineering stack, or schedule an interview!`;
+  }, []);
 
   useEffect(() => {
     // Scroll to bottom on message updates
@@ -81,7 +112,7 @@ const JarvisAssistant: React.FC = () => {
                   <Bot className="w-4 h-4 text-white" />
                 </div>
                 <div className="bg-zinc-900/50 border border-zinc-800/60 px-3 py-2.5 rounded-2xl rounded-tl-none text-zinc-300 max-w-[80%] leading-relaxed">
-                  Greetings! I am **Jarvis**, Siva's autonomous portfolio agent. Ask me about his software projects, engineering stack, or schedule an interview!
+                  {contextualGreeting}
                 </div>
               </div>
 
@@ -103,17 +134,8 @@ const JarvisAssistant: React.FC = () => {
                 </div>
               ))}
 
-              {/* Loading indicator */}
-              {isLoading && (
-                <div className="flex gap-2 items-center">
-                  <div className="w-7 h-7 rounded-full bg-zinc-900 border border-zinc-800 flex items-center justify-center shrink-0 animate-spin">
-                    <Loader2 className="w-4 h-4 text-zinc-400" />
-                  </div>
-                  <div className="text-zinc-500 italic text-[11px] animate-pulse">
-                    Jarvis is analyzing portfolio synapse...
-                  </div>
-                </div>
-              )}
+              {/* Advanced Loading Skeleton */}
+              {isLoading && <SkeletonLoader />}
               <div ref={chatEndRef} />
             </div>
 
@@ -149,7 +171,7 @@ const JarvisAssistant: React.FC = () => {
               <button
                 onClick={() => handleSend(inputVal)}
                 disabled={isLoading || !inputVal.trim()}
-                className="w-8 h-8 rounded-lg bg-white text-black hover:bg-zinc-200 transition-colors flex items-center justify-center shrink-0 cursor-pointer disabled:opacity-40 disabled:hover:bg-white active:scale-95"
+                className="w-8.5 h-8.5 rounded-lg bg-white text-black hover:bg-zinc-200 transition-colors flex items-center justify-center shrink-0 cursor-pointer disabled:opacity-40 disabled:hover:bg-white active:scale-95"
               >
                 <Send className="w-4 h-4" />
               </button>
@@ -158,13 +180,13 @@ const JarvisAssistant: React.FC = () => {
         )}
       </AnimatePresence>
 
-      {/* Floating Assistant Orb Toggle */}
       <motion.button
         variants={variants.jarvisOrb}
         initial="idle"
         whileHover="hover"
         whileTap="tap"
         onClick={() => setIsOpen(!isOpen)}
+        data-testid="jarvis-toggle"
         className="w-12 h-12 md:w-14 md:h-14 rounded-full bg-white text-black hover:bg-zinc-200 transition-all flex items-center justify-center cursor-pointer shadow-2xl relative border border-white/20 select-none z-50 focus:outline-none"
       >
         {isOpen ? (
@@ -172,8 +194,13 @@ const JarvisAssistant: React.FC = () => {
         ) : (
           <Bot className="w-5 h-5 md:w-6 md:h-6 animate-pulse" />
         )}
-        {/* Glowing surrounding wave lines */}
-        <div className="absolute inset-0 rounded-full border border-white/10 animate-ping opacity-60 scale-125 pointer-events-none" />
+        {/* Concentric glowing pulse rings */}
+        {!isOpen && (
+          <>
+            <div className="absolute inset-0 rounded-full border border-white/10 animate-ping opacity-60 scale-125 pointer-events-none" />
+            <div className="absolute inset-0 rounded-full border border-white/5 animate-pulse opacity-40 scale-150 pointer-events-none" />
+          </>
+        )}
       </motion.button>
     </div>
   );
