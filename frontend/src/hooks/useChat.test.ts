@@ -3,11 +3,12 @@ import { renderHook, act } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import { useChat } from './useChat';
 
-global.fetch = vi.fn();
+const fetchMock = vi.fn();
+vi.stubGlobal('fetch', fetchMock);
 
 describe('useChat hook', () => {
   it('should send message and receive response', async () => {
-    (global.fetch as any).mockResolvedValueOnce({
+    fetchMock.mockResolvedValueOnce({
       ok: true,
       json: async () => ({ response: 'AI processing: hello' })
     });
@@ -22,7 +23,7 @@ describe('useChat hook', () => {
   });
 
   it('should handle errors gracefully', async () => {
-    (global.fetch as any).mockRejectedValueOnce(new Error('Network error'));
+    fetchMock.mockRejectedValueOnce(new Error('Network error'));
 
     const { result } = renderHook(() => useChat());
     

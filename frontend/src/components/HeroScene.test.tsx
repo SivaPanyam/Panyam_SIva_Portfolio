@@ -6,6 +6,11 @@ import HeroScene from './HeroScene';
 // Mock Canvas and Drei components as they're hard to test Three.js in JSDOM
 vi.mock('@react-three/fiber', () => ({
   Canvas: ({ children }: { children: React.ReactNode }) => <div data-testid="mock-canvas">{children}</div>,
+  useThree: () => ({
+    size: { width: 1024, height: 768 },
+    viewport: { width: 10, height: 10 },
+  }),
+  useFrame: () => {},
 }));
 
 vi.mock('@react-three/drei', () => ({

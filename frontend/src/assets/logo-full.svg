@@ -1,0 +1,142 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 300" width="100%" height="100%" fill="none" class="brand-full-lockup">
+  <defs>
+    <!-- Radial Core Glow -->
+    <radialGradient id="full-core-glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="1" />
+      <stop offset="50%" stop-color="#FFFFFF" stop-opacity="0.5" />
+      <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0" />
+    </radialGradient>
+  </defs>
+
+  <style>
+    /* Default Styles */
+    .brand-full-lockup {
+      --primary-color: #FFFFFF;
+      --secondary-color: #71717A;
+      --tertiary-color: #27272A;
+      --core-color: #FFFFFF;
+      --text-main: #FFFFFF;
+      --text-sub: #71717A;
+      --line-width: 1.5px;
+    }
+
+    /* Keyframes */
+    @keyframes full-spin-clockwise {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    @keyframes full-pulse-core {
+      0%, 100% { transform: scale(1); opacity: 0.85; }
+      50% { transform: scale(1.1); opacity: 1; }
+    }
+
+    .animated-full-orbit {
+      transform-origin: 150px 150px;
+      animation: full-spin-clockwise 40s linear infinite;
+    }
+    .animated-full-core {
+      transform-origin: 150px 150px;
+      animation: full-pulse-core 4s ease-in-out infinite;
+    }
+
+    /* System Font Family Override for precise vector mockup */
+    .text-title {
+      font-family: 'Outfit', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      font-weight: 900;
+      font-size: 76px;
+      fill: var(--text-main);
+      letter-spacing: -2px;
+      text-transform: uppercase;
+    }
+    .text-dot {
+      fill: var(--primary-color);
+      font-weight: 900;
+    }
+    .text-sub {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 16px;
+      font-weight: 600;
+      fill: var(--text-sub);
+      letter-spacing: 12px;
+      text-transform: uppercase;
+    }
+
+    /* Dev Matrix overrides */
+    :global(.dev-mode-active) .brand-full-lockup,
+    .brand-full-lockup.dev-mode {
+      --primary-color: #39FF14;
+      --secondary-color: #15803D;
+      --tertiary-color: #14532D;
+      --core-color: #39FF14;
+      --text-main: #FFFFFF;
+      --text-sub: #39FF14;
+    }
+  </style>
+
+  <!-- LEFT AREA: ICON SYMBOL (Centered at X=150, Y=150, Radius=120) -->
+  <g class="logo-symbol-group" transform="translate(0, 0)">
+    <!-- Blueprint Lines -->
+    <g opacity="0.15">
+      <line x1="150" y1="20" x2="150" y2="280" stroke="var(--secondary-color)" stroke-width="0.5" stroke-dasharray="2 4" />
+      <line x1="20" y1="150" x2="280" y2="150" stroke="var(--secondary-color)" stroke-width="0.5" stroke-dasharray="2 4" />
+      <circle cx="150" cy="150" r="120" stroke="var(--tertiary-color)" stroke-width="0.5" />
+    </g>
+
+    <!-- Outer Orbit -->
+    <circle class="animated-full-orbit" cx="150" cy="150" r="110" stroke="var(--primary-color)" stroke-width="var(--line-width)" stroke-dasharray="80 40 20 20 50 20" stroke-linecap="round" />
+    <circle cx="150" cy="150" r="95" stroke="var(--secondary-color)" stroke-width="1" stroke-dasharray="10 20" stroke-linecap="round" opacity="0.4" />
+
+    <!-- Lattice Grid -->
+    <g opacity="0.8">
+      <!-- Hex Bounds -->
+      <polygon points="150,55 232,102 232,198 150,245 68,198 68,102" stroke="var(--primary-color)" stroke-width="var(--line-width)" stroke-linejoin="round" />
+      
+      <!-- Intersecting Vectors -->
+      <polygon points="150,55 232,198 68,198" stroke="var(--primary-color)" stroke-width="0.5" opacity="0.3" />
+      <polygon points="150,245 232,102 68,102" stroke="var(--primary-color)" stroke-width="0.5" opacity="0.3" />
+
+      <!-- Synapses to center -->
+      <line x1="150" y1="55" x2="150" y2="150" stroke="var(--secondary-color)" stroke-width="1" opacity="0.4" />
+      <line x1="232" y1="102" x2="150" y2="150" stroke="var(--secondary-color)" stroke-width="1" opacity="0.4" />
+      <line x1="232" y1="198" x2="150" y2="150" stroke="var(--secondary-color)" stroke-width="1" opacity="0.4" />
+      <line x1="150" y1="245" x2="150" y2="150" stroke="var(--secondary-color)" stroke-width="1" opacity="0.4" />
+      <line x1="68" y1="198" x2="150" y2="150" stroke="var(--secondary-color)" stroke-width="1" opacity="0.4" />
+      <line x1="68" y1="102" x2="150" y2="150" stroke="var(--secondary-color)" stroke-width="1" opacity="0.4" />
+
+      <!-- Joint Nodes -->
+      <circle cx="150" cy="55" r="4.5" fill="var(--primary-color)" stroke="var(--tertiary-color)" stroke-width="1.5" />
+      <circle cx="232" cy="102" r="4.5" fill="var(--primary-color)" stroke="var(--tertiary-color)" stroke-width="1.5" />
+      <circle cx="232" cy="198" r="4.5" fill="var(--primary-color)" stroke="var(--tertiary-color)" stroke-width="1.5" />
+      <circle cx="150" cy="245" r="4.5" fill="var(--primary-color)" stroke="var(--tertiary-color)" stroke-width="1.5" />
+      <circle cx="68" cy="198" r="4.5" fill="var(--primary-color)" stroke="var(--tertiary-color)" stroke-width="1.5" />
+      <circle cx="68" cy="102" r="4.5" fill="var(--primary-color)" stroke="var(--tertiary-color)" stroke-width="1.5" />
+    </g>
+
+    <!-- Glowing Singularity Core -->
+    <g class="animated-full-core">
+      <circle cx="150" cy="150" r="22" fill="url(#full-core-glow)" opacity="0.5" />
+      <circle cx="150" cy="150" r="10" stroke="var(--primary-color)" stroke-width="1" fill="var(--tertiary-color)" />
+      <circle cx="150" cy="150" r="5" fill="var(--core-color)" />
+    </g>
+  </g>
+
+  <!-- RIGHT AREA: TYPOGRAPHIC BRANDING (Aligned vertically to center Y=150) -->
+  <g transform="translate(310, 0)">
+    <!-- Title: SIVA PANYAM -->
+    <text x="0" y="145" class="text-title">
+      Siva Panyam<tspan class="text-dot">.dev</tspan>
+    </text>
+
+    <!-- Subtitle: AI ENGINEER & FULL STACK ARCHITECT -->
+    <text x="5" y="195" class="text-sub">
+      Neural OS &amp; AI Infrastructure
+    </text>
+
+    <!-- Blueprint Guidelines for typography -->
+    <g opacity="0.08">
+      <line x1="0" y1="85" x2="720" y2="85" stroke="var(--secondary-color)" stroke-width="0.5" />
+      <line x1="0" y1="145" x2="720" y2="145" stroke="var(--secondary-color)" stroke-width="0.5" />
+      <line x1="0" y1="195" x2="720" y2="195" stroke="var(--secondary-color)" stroke-width="0.5" />
+    </g>
+  </g>
+</svg>
