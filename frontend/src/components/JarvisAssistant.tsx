@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useChat } from '../hooks/useChat';
 import { transitions, variants } from '../utils/motion';
 import { Bot, Send, X, Loader2, Sparkles } from 'lucide-react';
+import { useUIStore } from '../store/uiStore';
 
 const RECRUITER_QUICKS = [
   { label: '🚀 Core Tech Stack', text: 'What is Siva\'s main technology stack and expertise?' },
@@ -13,7 +14,10 @@ const RECRUITER_QUICKS = [
 ];
 
 const JarvisAssistant: React.FC = () => {
-  const [isOpen, setIsOpen] = useState(false);
+  const { isJarvisOpen: isOpen } = useUIStore();
+  const setIsOpen = (val: boolean) => {
+    useUIStore.getState().setJarvisOpen(val);
+  };
   const [inputVal, setInputVal] = useState('');
   const { messages, sendMessage, isLoading } = useChat();
   const chatEndRef = useRef<HTMLDivElement>(null);

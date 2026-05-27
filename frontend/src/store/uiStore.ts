@@ -8,6 +8,9 @@ interface UIState {
   toggleCommandPalette: () => void;
   isDevModeActive: boolean;
   toggleDevMode: () => void;
+  isJarvisOpen: boolean;
+  toggleJarvis: () => void;
+  setJarvisOpen: (open: boolean) => void;
 }
 
 export const useUIStore = create<UIState>((set) => ({
@@ -17,4 +20,7 @@ export const useUIStore = create<UIState>((set) => ({
   toggleCommandPalette: () => set((state) => ({ isCommandPaletteOpen: !state.isCommandPaletteOpen })),
   isDevModeActive: false,
   toggleDevMode: () => set((state) => ({ isDevModeActive: !state.isDevModeActive })),
+  isJarvisOpen: false,
+  toggleJarvis: () => set((state) => ({ isJarvisOpen: !state.isJarvisOpen })),
+  setJarvisOpen: (open) => set({ isJarvisOpen: open }),
 }));

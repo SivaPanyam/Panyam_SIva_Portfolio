@@ -7,7 +7,7 @@ import DockNavbar from './components/DockNavbar';
 import JarvisAssistant from './components/JarvisAssistant';
 import Logo from './components/Logo';
 import BrandShowcase from './components/BrandShowcase';
-import { Sparkles, ArrowDown, ChevronRight, Terminal as TermIcon, FileText, Mail } from 'lucide-react';
+import { Sparkles, ArrowDown, ChevronRight, Terminal as TermIcon, FileText, Mail, Bot } from 'lucide-react';
 import { portfolioProjects } from './utils/projectData';
 import type { ProjectData } from './utils/projectData';
 import ProjectCard from './components/ProjectCard';
@@ -26,7 +26,8 @@ function App() {
     toggleTerminal, 
     toggleCommandPalette, 
     isDevModeActive, 
-    toggleDevMode 
+    toggleDevMode,
+    toggleJarvis
   } = useUIStore();
   const [isBooting, setIsBooting] = useState(true);
   const [selectedProject, setSelectedProject] = useState<ProjectData | null>(null);
@@ -170,7 +171,7 @@ function App() {
                   initial={{ opacity: 0, y: 35 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ ...transitions.easeCinematic, delay: 0.6 }}
-                  className="flex flex-col sm:flex-row gap-4 pointer-events-auto z-10"
+                  className="flex flex-col sm:flex-row gap-4 pointer-events-auto z-10 animate-fade-in"
                 >
                   <button 
                     onClick={() => document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth' })}
@@ -179,10 +180,35 @@ function App() {
                     View Projects <ChevronRight className="w-3.5 h-3.5" />
                   </button>
                   <button 
-                    onClick={toggleTerminal}
-                    className="px-8 py-3.5 border border-green-500/30 bg-green-500/5 hover:bg-green-500/10 text-green-400 rounded-full font-semibold text-xs uppercase tracking-widest transition-all duration-300 active:scale-95 cursor-pointer flex items-center gap-1.5"
+                    onClick={toggleJarvis}
+                    className="px-8 py-3.5 border border-zinc-800 bg-zinc-950/60 hover:bg-zinc-900 text-zinc-300 rounded-full font-bold text-xs uppercase tracking-widest transition-all duration-300 active:scale-95 cursor-pointer flex items-center gap-1.5 hover:border-zinc-400 hover:text-white"
                   >
-                    <TermIcon className="w-3.5 h-3.5" /> Initialize Console
+                    <Bot className="w-3.5 h-3.5 animate-pulse" /> Talk to Jarvis
+                  </button>
+                </motion.div>
+
+                {/* Quick Actions Row */}
+                <motion.div
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ ...transitions.easeCinematic, delay: 0.7 }}
+                  className="mt-8 flex flex-wrap justify-center gap-4 text-[10px] md:text-xs text-zinc-500 pointer-events-auto z-10"
+                >
+                  <a 
+                    href="#resume-placeholder" 
+                    onClick={(e) => {
+                      e.preventDefault();
+                      document.getElementById('about')?.scrollIntoView({ behavior: 'smooth' });
+                    }}
+                    className="flex items-center gap-1.5 hover:text-white transition-colors border border-zinc-900 bg-zinc-950/40 px-3 py-1.5 rounded-md hover:border-zinc-800"
+                  >
+                    <FileText className="w-3.5 h-3.5" /> Download Resume
+                  </a>
+                  <button 
+                    onClick={toggleTerminal}
+                    className="flex items-center gap-1.5 hover:text-white transition-colors border border-zinc-900 bg-zinc-950/40 px-3 py-1.5 rounded-md hover:border-zinc-800 cursor-pointer"
+                  >
+                    <TermIcon className="w-3.5 h-3.5" /> Open Terminal
                   </button>
                 </motion.div>
 

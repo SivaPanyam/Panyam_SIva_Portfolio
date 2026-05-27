@@ -10,24 +10,53 @@ interface Node {
   originalPos: THREE.Vector3;
 }
 
+interface PulseSignal {
+  start: number;
+  end: number;
+  progress: number;
+  speed: number;
+}
+
+interface NeuralNetworkProps {
+  particleCount?: number;
+  proximityThreshold?: number;
+  pointColor?: string;
+  lineColor?: string;
+  pulseColor?: string;
+  pulseCount?: number;
+  interactive?: boolean;
+}
+
 const MOUSE_INFLUENCE_RADIUS = 4.0;
 const MOUSE_GRAVITY = 0.05; // attraction strength
 
-const NeuralNetwork: React.FC = () => {
+export const NeuralNetwork: React.FC<NeuralNetworkProps> = ({
+  particleCount,
+  proximityThreshold,
+  pointColor = '#ffffff',
+  lineColor = '#27272a', // delicate zinc-800
+  pulseColor = '#ffffff',
+  pulseCount,
+  interactive = true,
+}) => {
   const pointsRef = useRef<THREE.Points>(null);
   const linesRef = useRef<THREE.LineSegments>(null);
+  const pulsesRef = useRef<THREE.Points>(null);
   const { viewport } = useThree();
   const { isDevModeActive } = useUIStore();
 
   // Dynamic mobile viewport optimizations
   const isMobile = useMemo(() => typeof window !== 'undefined' && window.innerWidth < 768, []);
-  const PARTICLE_COUNT = isMobile ? 28 : 70;
-  const PROXIMITY_THRESHOLD = isMobile ? 3.8 : 3.0;
-  const maxLineConnections = isMobile ? 80 : 250;
+  
+  const PARTICLE_COUNT = useMemo(() => particleCount || (isMobile ? 28 : 70), [particleCount, isMobile]);
+  const PROXIMITY_THRESHOLD = useMemo(() => proximityThreshold || (isMobile ? 3.8 : 3.0), [proximityThreshold, isMobile]);
+  const maxLineConnections = useMemo(() => (isMobile ? 80 : 250), [isMobile]);
+  const PULSE_COUNT = useMemo(() => pulseCount || (isMobile ? 8 : 22), [pulseCount, isMobile]);
 
-  // Pre-allocated vector references to ensure zero per-frame allocations (eliminates GC stutters)
+  // Pre-allocated vector references to guarantee zero per-frame allocations (GC protection)
   const mouse3D = useRef(new THREE.Vector3());
   const forceDirection = useRef(new THREE.Vector3());
+  const tempPulseVector = useRef(new THREE.Vector3());
 
   // Create nodes with stable floating parameters
   const nodes = useMemo(() => {
@@ -67,8 +96,25 @@ const NeuralNetwork: React.FC = () => {
   }, [nodes, PARTICLE_COUNT]);
 
   // Buffer geometries references for lines
-  // Max possible lines is combination: N * (N - 1) / 2
   const linePositions = useMemo(() => new Float32Array(maxLineConnections * 2 * 3), [maxLineConnections]);
+
+  // Positions array for moving synapse signals (pulses)
+  const pulsePositions = useMemo(() => new Float32Array(PULSE_COUNT * 3), [PULSE_COUNT]);
+
+  // Instantiated pulse signals
+  const activePulses = useMemo(() => {
+    const temp: PulseSignal[] = [];
+    for (let i = 0; i < PULSE_COUNT; i++) {
+      const start = Math.floor(Math.random() * PARTICLE_COUNT);
+      temp.push({
+        start,
+        end: Math.floor(Math.random() * PARTICLE_COUNT),
+        progress: Math.random(), // Distribute starting offsets
+        speed: 0.006 + Math.random() * 0.012,
+      });
+    }
+    return temp;
+  }, [PULSE_COUNT, PARTICLE_COUNT]);
 
   useFrame((state) => {
     if (isDevModeActive) return;
@@ -76,11 +122,15 @@ const NeuralNetwork: React.FC = () => {
     
     // Map normalized device mouse coords (pointer.x, pointer.y) to 3D workspace
     const m3D = mouse3D.current;
-    m3D.set(
-      pointer.x * (viewport.width / 2),
-      pointer.y * (viewport.height / 2),
-      0
-    );
+    if (interactive) {
+      m3D.set(
+        pointer.x * (viewport.width / 2),
+        pointer.y * (viewport.height / 2),
+        0
+      );
+    } else {
+      m3D.set(9999, 9999, 9999); // Bypass interaction
+    }
 
     const boundaryX = viewport.width * 0.8;
     const boundaryY = viewport.height * 0.8;
@@ -96,12 +146,14 @@ const NeuralNetwork: React.FC = () => {
       node.pos.y += Math.cos(time + node.originalPos.x) * 0.002;
 
       // Mouse interactive pull
-      const distToMouse = node.pos.distanceTo(m3D);
-      if (distToMouse < MOUSE_INFLUENCE_RADIUS) {
-        const forceDir = forceDirection.current;
-        forceDir.subVectors(m3D, node.pos).normalize();
-        const factor = (1 - distToMouse / MOUSE_INFLUENCE_RADIUS) * MOUSE_GRAVITY;
-        node.pos.addScaledVector(forceDir, factor);
+      if (interactive) {
+        const distToMouse = node.pos.distanceTo(m3D);
+        if (distToMouse < MOUSE_INFLUENCE_RADIUS) {
+          const forceDir = forceDirection.current;
+          forceDir.subVectors(m3D, node.pos).normalize();
+          const factor = (1 - distToMouse / MOUSE_INFLUENCE_RADIUS) * MOUSE_GRAVITY;
+          node.pos.addScaledVector(forceDir, factor);
+        }
       }
 
       // Boundary bounds check
@@ -156,11 +208,51 @@ const NeuralNetwork: React.FC = () => {
       const linePosAttr = linesRef.current.geometry.attributes.position as THREE.BufferAttribute;
       linePosAttr.needsUpdate = true;
     }
+
+    // 4. Update dynamic synapse signal pulses
+    activePulses.forEach((pulse, idx) => {
+      pulse.progress += pulse.speed;
+      
+      if (pulse.progress >= 1) {
+        pulse.progress = 0;
+        pulse.start = Math.floor(Math.random() * PARTICLE_COUNT);
+        
+        // Find a connected candidate target index
+        let found = false;
+        const startNode = nodes[pulse.start];
+        for (let k = 0; k < 6; k++) {
+          const candidate = Math.floor(Math.random() * PARTICLE_COUNT);
+          if (candidate !== pulse.start && startNode.pos.distanceTo(nodes[candidate].pos) < PROXIMITY_THRESHOLD) {
+            pulse.end = candidate;
+            found = true;
+            break;
+          }
+        }
+        if (!found) {
+          pulse.end = Math.floor(Math.random() * PARTICLE_COUNT);
+        }
+      }
+
+      // Linear interpolation to find current signal position between start and end node
+      const startNode = nodes[pulse.start];
+      const endNode = nodes[pulse.end];
+      const vec = tempPulseVector.current;
+      vec.lerpVectors(startNode.pos, endNode.pos, pulse.progress);
+      
+      pulsePositions[idx * 3] = vec.x;
+      pulsePositions[idx * 3 + 1] = vec.y;
+      pulsePositions[idx * 3 + 2] = vec.z;
+    });
+
+    if (pulsesRef.current) {
+      const pulsePosAttr = pulsesRef.current.geometry.attributes.position as THREE.BufferAttribute;
+      pulsePosAttr.needsUpdate = true;
+    }
   });
 
   return (
     <group>
-      {/* 3D points rendering */}
+      {/* 3D static node points */}
       <points ref={pointsRef}>
         <bufferGeometry>
           <bufferAttribute
@@ -169,15 +261,15 @@ const NeuralNetwork: React.FC = () => {
           />
         </bufferGeometry>
         <pointsMaterial
-          color="#ffffff"
-          size={0.08}
+          color={pointColor}
+          size={isMobile ? 0.09 : 0.08}
           sizeAttenuation={true}
           transparent
-          opacity={0.6}
+          opacity={0.5}
         />
       </points>
 
-      {/* 3D dynamic connection lines rendering */}
+      {/* 3D dynamic connection lines */}
       <lineSegments ref={linesRef}>
         <bufferGeometry>
           <bufferAttribute
@@ -186,12 +278,29 @@ const NeuralNetwork: React.FC = () => {
           />
         </bufferGeometry>
         <lineBasicMaterial
-          color="#27272a" // delicate monochrome grey line (zinc-800)
+          color={lineColor}
           transparent
-          opacity={0.35}
+          opacity={0.3}
           linewidth={1}
         />
       </lineSegments>
+
+      {/* Brighter energetic synapse pulses moving along lines */}
+      <points ref={pulsesRef}>
+        <bufferGeometry>
+          <bufferAttribute
+            attach="attributes-position"
+            args={[pulsePositions, 3]}
+          />
+        </bufferGeometry>
+        <pointsMaterial
+          color={pulseColor}
+          size={isMobile ? 0.16 : 0.14}
+          sizeAttenuation={true}
+          transparent
+          opacity={0.9}
+        />
+      </points>
     </group>
   );
 };

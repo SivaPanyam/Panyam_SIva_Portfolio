@@ -338,7 +338,7 @@ export const Logo: React.FC<LogoProps> = ({
                 Siva Panyam<tspan className="text-lockup-dot">.dev</tspan>
               </text>
               <text x="5" y="195" className="text-lockup-sub">
-                Neural OS &amp; AI Infrastructure
+                AI Engineer &amp; Full Stack Developer
               </text>
               
               {/* Decorative grid indices under the logo */}
