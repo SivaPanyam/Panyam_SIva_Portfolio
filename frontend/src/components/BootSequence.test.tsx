@@ -11,6 +11,12 @@ describe('BootSequence Component', () => {
     expect(screen.getByText(/NEURAL OS v1.0.4/i)).toBeInTheDocument();
   });
 
+  it('initially displays the system wakeup phase widget', () => {
+    const onCompleteMock = vi.fn();
+    render(<BootSequence onComplete={onCompleteMock} />);
+    expect(screen.getByTestId('widget-wakeup')).toBeInTheDocument();
+  });
+
   it('triggers onComplete when skip button is clicked', () => {
     const onCompleteMock = vi.fn();
     render(<BootSequence onComplete={onCompleteMock} />);
