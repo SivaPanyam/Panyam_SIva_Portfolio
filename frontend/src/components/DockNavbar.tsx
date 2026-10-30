@@ -111,7 +111,7 @@ const DockNavbar: React.FC = () => {
         initial={{ y: 50, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1], delay: 0.8 }}
-        className="bg-zinc-950/75 backdrop-blur-xl border border-zinc-800 px-3 md:px-4 py-2.5 rounded-full flex items-center gap-2.5 md:gap-3.5 shadow-2xl relative"
+        className="bg-zinc-950/75 backdrop-blur-xl border border-zinc-800/80 px-3 md:px-4 py-2.5 rounded-full flex items-center gap-2.5 md:gap-3.5 shadow-[0_0_35px_rgba(0,0,0,0.85),0_0_1px_rgba(255,255,255,0.08)] hover:border-zinc-700/80 transition-colors duration-500 relative"
         onMouseLeave={() => !isTouch && setHoveredIdx(null)}
       >
         {navigationItems.map((item, idx) => {
@@ -132,12 +132,12 @@ const DockNavbar: React.FC = () => {
                   y: getYOffset(idx)
                 }}
                 transition={transitions.springDock}
-                className={`p-2.5 md:p-3 rounded-full flex items-center justify-center transition-colors relative ${
+                className={`p-2.5 md:p-3 rounded-full flex items-center justify-center transition-all relative ${
                   isActive 
-                    ? 'bg-white text-black' 
+                    ? 'bg-white text-black shadow-[0_0_22px_rgba(255,255,255,0.35)] border border-white' 
                     : item.isAction
-                      ? 'bg-zinc-900 border border-green-500/20 text-green-400 hover:bg-green-500/10'
-                      : 'bg-zinc-900/60 border border-zinc-800 text-zinc-400 hover:text-white hover:bg-zinc-800/80'
+                      ? 'bg-zinc-900 border border-green-500/20 text-green-400 hover:bg-green-500/10 hover:border-green-400 hover:shadow-[0_0_12px_rgba(74,222,128,0.25)]'
+                      : 'bg-zinc-900/60 border border-zinc-800 text-zinc-400 hover:text-white hover:bg-zinc-800/80 hover:border-zinc-500 hover:shadow-[0_0_15px_rgba(255,255,255,0.06)]'
                 }`}
               >
                 <Icon className="w-4 h-4 md:w-4.5 md:h-4.5 shrink-0" />

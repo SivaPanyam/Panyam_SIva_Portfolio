@@ -36,6 +36,7 @@ const themeStyles: Record<string, {
   pillText: string;
   text: string;
   accent: string;
+  brackets: string;
 }> = {
   amber: {
     border: 'hover:border-amber-500/50',
@@ -45,6 +46,7 @@ const themeStyles: Record<string, {
     pillText: 'text-amber-400/80 hover:text-white',
     text: 'text-amber-400',
     accent: '#f59e0b',
+    brackets: 'border-zinc-800 group-hover:border-amber-500/60',
   },
   emerald: {
     border: 'hover:border-emerald-500/50',
@@ -54,6 +56,7 @@ const themeStyles: Record<string, {
     pillText: 'text-emerald-400/80 hover:text-white',
     text: 'text-emerald-400',
     accent: '#10b981',
+    brackets: 'border-zinc-800 group-hover:border-emerald-500/60',
   },
   cyan: {
     border: 'hover:border-cyan-500/50',
@@ -63,6 +66,7 @@ const themeStyles: Record<string, {
     pillText: 'text-cyan-400/80 hover:text-white',
     text: 'text-cyan-400',
     accent: '#06b6d4',
+    brackets: 'border-zinc-800 group-hover:border-cyan-500/60',
   },
   violet: {
     border: 'hover:border-violet-500/50',
@@ -72,6 +76,7 @@ const themeStyles: Record<string, {
     pillText: 'text-violet-400/80 hover:text-white',
     text: 'text-violet-400',
     accent: '#8b5cf6',
+    brackets: 'border-zinc-800 group-hover:border-violet-500/60',
   },
   rose: {
     border: 'hover:border-rose-500/50',
@@ -81,11 +86,22 @@ const themeStyles: Record<string, {
     pillText: 'text-rose-400/80 hover:text-white',
     text: 'text-rose-400',
     accent: '#f43f5e',
+    brackets: 'border-zinc-800 group-hover:border-rose-500/60',
   },
 };
 
 export default function ProjectCard({ project, onClick }: CardProps) {
   const cardRef = useRef<HTMLDivElement>(null);
+  
+  const getLabBadgeText = (id: string) => {
+    switch (id) {
+      case 'ecotrack': return '⚡ PROTOTYPE BUILD // 48H HACKATHON';
+      case 'fanversi': return '🧪 R&D RESEARCH // CANON SOLVER';
+      case 'election': return '🎲 GAME SIMULATION // MATRIX MATH';
+      case 'bank': return '💼 CONCURRENCY LEDGER // REPLICA CORE';
+      default: return '🧪 EXPERIMENTAL BUILD';
+    }
+  };
   
   // Motion values to track absolute mouse coordinate displacements
   const x = useMotionValue(0);
@@ -142,6 +158,16 @@ export default function ProjectCard({ project, onClick }: CardProps) {
         className={`w-full group h-full cursor-pointer relative rounded-2xl glass-panel border border-zinc-800/80 p-6 flex flex-col justify-between preserve-3d transition-all duration-500 overflow-hidden ${style.border} ${style.glow}`}
       >
         
+        {/* High-Tech blueprint corner brackets */}
+        {project.category === 'lab' && (
+          <>
+            <div className={`absolute top-0 left-0 w-3.5 h-3.5 border-t-2 border-l-2 ${style.brackets} transition-all duration-300 pointer-events-none rounded-tl`} />
+            <div className={`absolute top-0 right-0 w-3.5 h-3.5 border-t-2 border-r-2 ${style.brackets} transition-all duration-300 pointer-events-none rounded-tr`} />
+            <div className={`absolute bottom-0 left-0 w-3.5 h-3.5 border-b-2 border-l-2 ${style.brackets} transition-all duration-300 pointer-events-none rounded-bl`} />
+            <div className={`absolute bottom-0 right-0 w-3.5 h-3.5 border-b-2 border-r-2 ${style.brackets} transition-all duration-300 pointer-events-none rounded-br`} />
+          </>
+        )}
+        
         {/* Spotlight dynamic hover background glow */}
         <motion.div
           className="absolute inset-0 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10"
@@ -182,7 +208,9 @@ export default function ProjectCard({ project, onClick }: CardProps) {
           {/* Card Body Area */}
           <div className="mb-6 preserve-3d translate-z-40">
             <span className="text-[9px] uppercase tracking-widest text-zinc-500 font-mono mb-1 block">
-              {project.category === 'featured' ? '01 // FEATURED PRODUCT' : '02 // EXPERIMENTAL LAB'}
+              {project.category === 'featured' 
+                ? '01 // FEATURED PRODUCT' 
+                : `02 // ${getLabBadgeText(project.id)}`}
             </span>
             <h3 className="text-xl font-black text-white uppercase group-hover:text-zinc-200 tracking-tight transition-colors mb-2">
               {project.title}

@@ -1,7 +1,7 @@
 import { useEffect, useState, lazy, Suspense } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useUIStore } from './store/uiStore';
-import { transitions } from './utils/motion';
+import { transitions, variants } from './utils/motion';
 import BootSequence from './components/BootSequence';
 import DockNavbar from './components/DockNavbar';
 import JarvisAssistant from './components/JarvisAssistant';
@@ -13,12 +13,51 @@ import type { ProjectData } from './utils/projectData';
 import ProjectCard from './components/ProjectCard';
 import MatrixRain from './components/MatrixRain';
 import DevOverlayWidgets from './components/DevOverlayWidgets';
+import ScrollReveal from './components/ScrollReveal';
+import SkillsSection from './components/SkillsSection';
+import ExperienceTimeline from './components/ExperienceTimeline';
+import CertificationsShowcase from './components/CertificationsShowcase';
 
 // Dynamically split chunks to reduce FCP payload
 const HeroScene = lazy(() => import('./components/HeroScene'));
 const Terminal = lazy(() => import('./components/Terminal'));
 const CommandPalette = lazy(() => import('./components/CommandPalette'));
 const ProjectModal = lazy(() => import('./components/ProjectModal'));
+
+const innovationTimeline = [
+  {
+    date: 'Q3 2024',
+    title: 'EcoTrack-AI // Telemetry Ingestion',
+    category: '⚡ 48H Hackathon Prototype',
+    desc: 'Deployed quantized INT8 TensorFlow Lite models directly onto edge IoT nodes. Achieved 85% CPU power reductions for time-series carbon audits.',
+    tech: ['TFLite', 'Rust', 'MQTT', 'InfluxDB'],
+    color: 'emerald'
+  },
+  {
+    date: 'Q4 2024',
+    title: 'FanVersi AI // Semantic Lore Engine',
+    category: '🧪 Creative NLP Research',
+    desc: 'Engineered a lore-anchored CrewAI co-authoring sandbox. Combined semantic Milvus vector lookups with strict character relationship checking rules.',
+    tech: ['CrewAI', 'SlateJS', 'Milvus', 'FastAPI'],
+    color: 'violet'
+  },
+  {
+    date: 'Q1 2025',
+    title: 'Election Journey // Demographic Grid',
+    category: '🎲 Game-Theoretic Simulation',
+    desc: 'Simulated swing-state voters by mapping demographic matrices to probability shifts. Optimized massive arrays by offloading loops to NumPy vectors.',
+    tech: ['NumPy', 'D3.js', 'React', 'SQLite'],
+    color: 'cyan'
+  },
+  {
+    date: 'Q2 2025',
+    title: 'Bank Management System // Raft Consensus',
+    category: '💼 Distributed Ledger Sandbox',
+    desc: 'Built a double-entry transaction auditor in Rust. Modeled split-replica withdrawals securely using Raft Leader WAL replication.',
+    tech: ['Rust-WASM', 'Raft WAL', 'SQLite', 'Redis'],
+    color: 'rose'
+  }
+];
 
 
 function App() {
@@ -173,18 +212,24 @@ function App() {
                   transition={{ ...transitions.easeCinematic, delay: 0.6 }}
                   className="flex flex-col sm:flex-row gap-4 pointer-events-auto z-10 animate-fade-in"
                 >
-                  <button 
+                  <motion.button 
+                    whileHover={{ scale: 1.04, y: -2.5, boxShadow: '0 0 25px rgba(255, 255, 255, 0.18)' }}
+                    whileTap={{ scale: 0.98 }}
+                    transition={transitions.springHover}
                     onClick={() => document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth' })}
-                    className="px-8 py-3.5 bg-white text-black hover:bg-zinc-200 rounded-full font-bold text-xs uppercase tracking-widest transition-all duration-300 active:scale-95 shadow-[0_0_20px_rgba(255,255,255,0.15)] cursor-pointer flex items-center gap-1"
+                    className="px-8 py-3.5 bg-white text-black rounded-full font-bold text-xs uppercase tracking-widest cursor-pointer flex items-center gap-1"
                   >
                     View Projects <ChevronRight className="w-3.5 h-3.5" />
-                  </button>
-                  <button 
+                  </motion.button>
+                  <motion.button 
+                    whileHover={{ scale: 1.04, y: -2.5, borderColor: '#ffffff', color: '#ffffff', boxShadow: '0 0 15px rgba(255, 255, 255, 0.05)' }}
+                    whileTap={{ scale: 0.98 }}
+                    transition={transitions.springHover}
                     onClick={toggleJarvis}
-                    className="px-8 py-3.5 border border-zinc-800 bg-zinc-950/60 hover:bg-zinc-900 text-zinc-300 rounded-full font-bold text-xs uppercase tracking-widest transition-all duration-300 active:scale-95 cursor-pointer flex items-center gap-1.5 hover:border-zinc-400 hover:text-white"
+                    className="px-8 py-3.5 border border-zinc-800 bg-zinc-950/60 text-zinc-300 rounded-full font-bold text-xs uppercase tracking-widest cursor-pointer flex items-center gap-1.5"
                   >
-                    <Bot className="w-3.5 h-3.5 animate-pulse" /> Talk to Jarvis
-                  </button>
+                    <Bot className="w-3.5 h-3.5 animate-pulse text-zinc-400" /> Talk to Jarvis
+                  </motion.button>
                 </motion.div>
 
                 {/* Quick Actions Row */}
@@ -194,22 +239,28 @@ function App() {
                   transition={{ ...transitions.easeCinematic, delay: 0.7 }}
                   className="mt-8 flex flex-wrap justify-center gap-4 text-[10px] md:text-xs text-zinc-500 pointer-events-auto z-10"
                 >
-                  <a 
+                  <motion.a 
+                    whileHover={{ scale: 1.04, borderColor: '#ffffff', color: '#ffffff', backgroundColor: 'rgba(255,255,255,0.02)' }}
+                    whileTap={{ scale: 0.98 }}
+                    transition={transitions.springHover}
                     href="#resume-placeholder" 
                     onClick={(e) => {
                       e.preventDefault();
                       document.getElementById('about')?.scrollIntoView({ behavior: 'smooth' });
                     }}
-                    className="flex items-center gap-1.5 hover:text-white transition-colors border border-zinc-900 bg-zinc-950/40 px-3 py-1.5 rounded-md hover:border-zinc-800"
+                    className="flex items-center gap-1.5 border border-zinc-900 bg-zinc-950/40 px-3 py-1.5 rounded-md transition-colors"
                   >
                     <FileText className="w-3.5 h-3.5" /> Download Resume
-                  </a>
-                  <button 
+                  </motion.a>
+                  <motion.button 
+                    whileHover={{ scale: 1.04, borderColor: '#ffffff', color: '#ffffff', backgroundColor: 'rgba(255,255,255,0.02)' }}
+                    whileTap={{ scale: 0.98 }}
+                    transition={transitions.springHover}
                     onClick={toggleTerminal}
-                    className="flex items-center gap-1.5 hover:text-white transition-colors border border-zinc-900 bg-zinc-950/40 px-3 py-1.5 rounded-md hover:border-zinc-800 cursor-pointer"
+                    className="flex items-center gap-1.5 border border-zinc-900 bg-zinc-950/40 px-3 py-1.5 rounded-md cursor-pointer transition-colors"
                   >
                     <TermIcon className="w-3.5 h-3.5" /> Open Terminal
-                  </button>
+                  </motion.button>
                 </motion.div>
 
                 {/* Scroll Indicator */}
@@ -226,172 +277,205 @@ function App() {
 
               {/* 2. ABOUT SECTION */}
               <section id="about" className="py-24 border-t border-zinc-900 flex flex-col justify-center select-text">
-                <div className="grid md:grid-cols-3 gap-12 items-start">
-                  <div>
-                    <h2 className="text-2xl font-bold tracking-widest uppercase text-white mb-4">01 // ABOUT SIVA</h2>
-                    <span className="text-[10px] text-zinc-600 uppercase tracking-widest">Profile Diagnostics</span>
-                  </div>
-                  <div className="md:col-span-2 space-y-6 font-sans text-sm md:text-base text-zinc-400 leading-relaxed">
-                    <p>
-                      Based in Bangalore, India, I specialize in crafting full-stack architectures integrated with modern AI models. I bridge the gap between complex artificial intelligence algorithms and delightful, highly interactive frontends.
-                    </p>
-                    <p>
-                      My core expertise centers on engineering highly-optimized developer workflows, constructing reliable systems, and bringing complex datasets to life using robust visualization models.
-                    </p>
-                    <div className="pt-4 flex flex-wrap gap-4 font-mono text-xs">
-                      <a 
-                        href="#resume-placeholder"
-                        className="px-4 py-2 bg-zinc-950 border border-zinc-800 hover:border-zinc-500 rounded text-zinc-400 hover:text-white transition-all flex items-center gap-2 cursor-pointer"
-                      >
-                        <FileText className="w-3.5 h-3.5" /> Download Resume
-                      </a>
+                <ScrollReveal delay={0.1}>
+                  <div className="grid md:grid-cols-3 gap-12 items-start">
+                    <div>
+                      <h2 className="text-2xl font-bold tracking-widest uppercase text-white mb-4">01 // ABOUT SIVA</h2>
+                      <span className="text-[10px] text-zinc-600 uppercase tracking-widest">Profile Diagnostics</span>
+                    </div>
+                    <div className="md:col-span-2 space-y-6 font-sans text-sm md:text-base text-zinc-400 leading-relaxed">
+                      <p>
+                        Based in Bangalore, India, I specialize in crafting full-stack architectures integrated with modern AI models. I bridge the gap between complex artificial intelligence algorithms and delightful, highly interactive frontends.
+                      </p>
+                      <p>
+                        My core expertise centers on engineering highly-optimized developer workflows, constructing reliable systems, and bringing complex datasets to life using robust visualization models.
+                      </p>
+                      <div className="pt-4 flex flex-wrap gap-4 font-mono text-xs">
+                        <a 
+                          href="#resume-placeholder"
+                          className="px-4 py-2 bg-zinc-950 border border-zinc-800 hover:border-zinc-500 rounded text-zinc-400 hover:text-white transition-all flex items-center gap-2 cursor-pointer"
+                        >
+                          <FileText className="w-3.5 h-3.5" /> Download Resume
+                        </a>
+                      </div>
                     </div>
                   </div>
-                </div>
+                </ScrollReveal>
               </section>
 
               {/* 3. PROJECTS SECTION */}
               <section id="projects" className="py-24 border-t border-zinc-900 select-text">
-                <div className="mb-12">
-                  <h2 className="text-2xl font-bold tracking-widest uppercase text-white mb-2">02 // CHRONICLED PROJECTS</h2>
-                  <span className="text-[10px] text-zinc-600 uppercase tracking-widest">Featured Architectures</span>
-                </div>
-                
-                {/* Cinematic grid of featured project cards */}
-                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {portfolioProjects
-                    .filter((p) => p.category === 'featured')
-                    .map((project) => (
-                      <ProjectCard
-                        key={project.id}
-                        project={project}
-                        onClick={() => setSelectedProject(project)}
-                      />
-                    ))}
-                </div>
+                <ScrollReveal delay={0.15}>
+                  <div className="mb-12">
+                    <h2 className="text-2xl font-bold tracking-widest uppercase text-white mb-2">02 // CHRONICLED PROJECTS</h2>
+                    <span className="text-[10px] text-zinc-600 uppercase tracking-widest">Featured Architectures</span>
+                  </div>
+                  
+                  {/* Cinematic grid of featured project cards */}
+                  <motion.div 
+                    variants={variants.staggerContainer}
+                    initial="hidden"
+                    whileInView="visible"
+                    viewport={{ once: true, margin: "-10% 0px -15% 0px" }}
+                    className="grid md:grid-cols-2 lg:grid-cols-3 gap-6"
+                  >
+                    {portfolioProjects
+                      .filter((p) => p.category === 'featured')
+                      .map((project) => (
+                        <motion.div key={project.id} variants={variants.slideUpFade}>
+                          <ProjectCard
+                            project={project}
+                            onClick={() => setSelectedProject(project)}
+                          />
+                        </motion.div>
+                      ))}
+                  </motion.div>
+                </ScrollReveal>
               </section>
 
               {/* 4. SKILLS SECTION */}
               <section id="skills" className="py-24 border-t border-zinc-900 select-text">
-                <div className="mb-12">
-                  <h2 className="text-2xl font-bold tracking-widest uppercase text-white mb-2">03 // CORE SKILL INVENTORY</h2>
-                  <span className="text-[10px] text-zinc-600 uppercase tracking-widest">Technical Capabilities</span>
-                </div>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 font-mono text-xs text-zinc-400">
-                  {[
-                    { category: 'AI / MODELING', list: ['Gemini / OpenAI API', 'LangChain', 'Vector Search', 'Prompt Engineering'] },
-                    { category: 'FRONTEND STACK', list: ['React / Next.js', 'Tailwind CSS', 'TypeScript', 'Three.js / R3F'] },
-                    { category: 'BACKEND SERVICES', list: ['Node.js / Express', 'PostgreSQL', 'GraphQL', 'REST APIs'] },
-                    { category: 'ENGINEERING WORK', list: ['Docker / Git', 'Vitest / Jest', 'CI/CD Pipelines', 'Linux Console'] },
-                  ].map((cat, idx) => (
-                    <div key={idx} className="bg-zinc-950/40 border border-zinc-900 rounded-lg p-5">
-                      <div className="text-white font-bold mb-3 border-b border-zinc-900 pb-2 text-[10px] tracking-wider">{cat.category}</div>
-                      <ul className="space-y-1.5 text-[11px] text-zinc-500">
-                        {cat.list.map((item, itemIdx) => (
-                          <li key={itemIdx} className="flex items-center gap-1.5">
-                            <span className="w-1 h-1 bg-zinc-700 rounded-full" /> {item}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  ))}
-                </div>
+                <ScrollReveal delay={0.1}>
+                  <div className="mb-12">
+                    <h2 className="text-2xl font-bold tracking-widest uppercase text-white mb-2">03 // CORE SKILL INVENTORY</h2>
+                    <span className="text-[10px] text-zinc-600 uppercase tracking-widest">Technical Capabilities</span>
+                  </div>
+                  <SkillsSection />
+                </ScrollReveal>
               </section>
 
               {/* 5. EXPERIENCE SECTION */}
               <section id="experience" className="py-24 border-t border-zinc-900 select-text">
-                <div className="mb-12">
-                  <h2 className="text-2xl font-bold tracking-widest uppercase text-white mb-2">04 // EXPERIENCE TIMELINE</h2>
-                  <span className="text-[10px] text-zinc-600 uppercase tracking-widest">Career Telemetry</span>
-                </div>
-                <div className="space-y-8 relative before:absolute before:left-3 before:top-2 before:bottom-2 before:w-[1px] before:bg-zinc-900">
-                  {[
-                    { role: 'Lead Architect', company: 'AI Synthesis Labs', time: '2024 - Present', desc: 'Orchestrating production systems incorporating dynamic LLM logic and interactive developer consoles.' },
-                    { role: 'Full Stack Engineer', company: 'DataSync Corp', time: '2022 - 2024', desc: 'Built high-throughput real-time APIs using Express, GraphQL, and complex visualization frontends.' },
-                  ].map((exp, idx) => (
-                    <div key={idx} className="relative pl-8">
-                      <div className="absolute left-[9px] top-[7px] w-2.5 h-2.5 bg-zinc-950 border border-zinc-500 rounded-full" />
-                      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-1 mb-2">
-                        <h3 className="font-bold text-white text-sm md:text-base">{exp.role} @ <span className="text-zinc-400">{exp.company}</span></h3>
-                        <span className="text-[10px] text-zinc-500 uppercase">{exp.time}</span>
-                      </div>
-                      <p className="text-zinc-500 text-xs md:text-sm font-sans leading-relaxed">{exp.desc}</p>
-                    </div>
-                  ))}
-                </div>
+                <ScrollReveal delay={0.15}>
+                  <div className="mb-12 text-center sm:text-left">
+                    <h2 className="text-2xl font-bold tracking-widest uppercase text-white mb-2">04 // EXPERIENCE TIMELINE</h2>
+                    <span className="text-[10px] text-zinc-600 uppercase tracking-widest">Career Telemetry</span>
+                  </div>
+                  <ExperienceTimeline />
+                </ScrollReveal>
               </section>
 
               {/* 6. CERTIFICATIONS SECTION */}
               <section id="certifications" className="py-24 border-t border-zinc-900 select-text">
-                <div className="mb-12">
-                  <h2 className="text-2xl font-bold tracking-widest uppercase text-white mb-2">05 // VERIFIED CREDENTIALS</h2>
-                  <span className="text-[10px] text-zinc-600 uppercase tracking-widest">Certifications</span>
-                </div>
-                <div className="grid md:grid-cols-2 gap-4">
-                  {[
-                    { name: 'Google Cloud Certified Professional Cloud Architect', issuer: 'Google Cloud' },
-                    { name: 'TensorFlow Developer Certificate', issuer: 'DeepLearning.AI' },
-                  ].map((c, idx) => (
-                    <div key={idx} className="p-4 bg-zinc-950/40 border border-zinc-900 rounded-lg flex items-center justify-between text-xs text-zinc-400 hover:border-zinc-800 transition-colors">
-                      <span className="font-bold text-zinc-300">{c.name}</span>
-                      <span className="text-[9px] text-zinc-600 uppercase shrink-0">{c.issuer}</span>
-                    </div>
-                  ))}
-                </div>
+                <ScrollReveal delay={0.1}>
+                  <div className="mb-12">
+                    <h2 className="text-2xl font-bold tracking-widest uppercase text-white mb-2">05 // VERIFIED CREDENTIALS</h2>
+                    <span className="text-[10px] text-zinc-600 uppercase tracking-widest">Certifications</span>
+                  </div>
+                  <CertificationsShowcase />
+                </ScrollReveal>
               </section>
 
               {/* 7. EXPERIMENTAL LAB */}
               <section id="lab" className="py-24 border-t border-zinc-900 select-text">
-                <div className="mb-12 flex flex-col md:flex-row md:items-end justify-between gap-4">
-                  <div>
-                    <h2 className="text-2xl font-bold tracking-widest uppercase text-white mb-2">06 // EXPERIMENTAL LAB</h2>
-                    <span className="text-[10px] text-zinc-600 uppercase tracking-widest">Hackathons &amp; R&D Sandbox</span>
+                <ScrollReveal delay={0.15}>
+                  <div className="mb-12 flex flex-col md:flex-row md:items-end justify-between gap-4">
+                    <div>
+                      <h2 className="text-2xl font-bold tracking-widest uppercase text-white mb-2">06 // EXPERIMENTAL LAB</h2>
+                      <span className="text-[10px] text-zinc-600 uppercase tracking-widest">Hackathons &amp; R&D Sandbox</span>
+                    </div>
+                    <span className="text-[9px] border border-zinc-800 bg-zinc-950 px-3 py-1 rounded text-zinc-500 uppercase tracking-widest font-mono select-none pointer-events-none">Interactive Design System Active</span>
                   </div>
-                  <span className="text-[9px] border border-zinc-800 bg-zinc-950 px-3 py-1 rounded text-zinc-500 uppercase tracking-widest font-mono select-none pointer-events-none">Interactive Design System Active</span>
-                </div>
-                
-                {/* Visual Brand Identity Showcase */}
-                <div className="mb-14 pointer-events-auto">
-                  <BrandShowcase />
-                </div>
+                  
+                  {/* Visual Brand Identity Showcase */}
+                  <div className="mb-14 pointer-events-auto">
+                    <BrandShowcase />
+                  </div>
 
-                <div className="mb-6">
-                  <span className="text-[10px] text-zinc-500 uppercase tracking-widest font-mono">Sandbox Operations &amp; Codebases</span>
-                </div>
-                
-                {/* Dynamic grid for R&D items */}
-                <div className="grid md:grid-cols-2 gap-6">
-                  {portfolioProjects
-                    .filter((p) => p.category === 'lab')
-                    .map((project) => (
-                      <ProjectCard
-                        key={project.id}
-                        project={project}
-                        onClick={() => setSelectedProject(project)}
-                      />
-                    ))}
-                </div>
+                  {/* Innovation Timeline */}
+                  <div className="mb-16 border-t border-zinc-900/60 pt-10">
+                    <div className="mb-8">
+                      <span className="text-[10px] text-zinc-500 uppercase tracking-widest font-mono">06 // INNOVATION R&amp;D TIMELINE</span>
+                    </div>
+                    
+                    <div className="grid md:grid-cols-4 gap-6 font-mono text-left">
+                      {innovationTimeline.map((item, idx) => {
+                        const style = item.color === 'emerald' ? 'border-emerald-500/25 text-emerald-400 bg-emerald-950/15' : 
+                                      item.color === 'violet' ? 'border-violet-500/25 text-violet-400 bg-violet-950/15' : 
+                                      item.color === 'cyan' ? 'border-cyan-500/25 text-cyan-400 bg-cyan-950/15' : 
+                                      'border-rose-500/25 text-rose-400 bg-rose-950/15';
+                        const dotColor = item.color === 'emerald' ? 'bg-emerald-500 shadow-[0_0_8px_#10b981]' : 
+                                         item.color === 'violet' ? 'bg-violet-500 shadow-[0_0_8px_#8b5cf6]' : 
+                                         item.color === 'cyan' ? 'bg-cyan-500 shadow-[0_0_8px_#06b6d4]' : 
+                                         'bg-rose-500 shadow-[0_0_8px_#f43f5e]';
+                        return (
+                          <motion.div 
+                            key={idx}
+                            initial={{ opacity: 0, y: 25 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true }}
+                            transition={{ ...transitions.easeCinematic, delay: idx * 0.12 }}
+                            className="p-5 border border-zinc-900 bg-zinc-950/40 rounded-xl relative group flex flex-col justify-between h-full hover:border-zinc-700/50 transition-colors"
+                          >
+                            <div>
+                              <div className="flex justify-between items-center mb-3">
+                                <span className="text-white font-bold text-xs uppercase tracking-widest">{item.date}</span>
+                                <span className={`w-1.5 h-1.5 rounded-full ${dotColor} animate-pulse`} />
+                              </div>
+                              <span className={`text-[8px] px-2 py-0.5 border rounded-full uppercase tracking-wider block w-fit font-bold mb-3 ${style}`}>
+                                {item.category}
+                              </span>
+                              <h4 className="text-white text-[11px] font-bold uppercase mb-2 group-hover:text-zinc-200 transition-colors">{item.title}</h4>
+                              <p className="text-[10px] text-zinc-500 font-sans leading-relaxed mb-4">{item.desc}</p>
+                            </div>
+                            <div className="flex flex-wrap gap-1 border-t border-zinc-900 pt-3 mt-auto">
+                              {item.tech.map((t) => (
+                                <span key={t} className="text-[8px] bg-zinc-900 px-1.5 py-0.5 rounded text-zinc-400 uppercase tracking-tighter">{t}</span>
+                              ))}
+                            </div>
+                          </motion.div>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  <div className="mb-6">
+                    <span className="text-[10px] text-zinc-500 uppercase tracking-widest font-mono">Sandbox Operations &amp; Codebases</span>
+                  </div>
+                  
+                  {/* Dynamic grid for R&D items */}
+                  <motion.div 
+                    variants={variants.staggerContainer}
+                    initial="hidden"
+                    whileInView="visible"
+                    viewport={{ once: true, margin: "-10% 0px -15% 0px" }}
+                    className="grid md:grid-cols-2 gap-6"
+                  >
+                    {portfolioProjects
+                      .filter((p) => p.category === 'lab')
+                      .map((project) => (
+                        <motion.div key={project.id} variants={variants.slideUpFade}>
+                          <ProjectCard
+                            project={project}
+                            onClick={() => setSelectedProject(project)}
+                          />
+                        </motion.div>
+                      ))}
+                  </motion.div>
+                </ScrollReveal>
               </section>
 
               {/* 8. CONTACT SECTION */}
               <section id="contact" className="py-24 border-t border-zinc-900 pb-36 select-text text-center">
-                <div className="mb-12">
-                  <h2 className="text-2xl font-bold tracking-widest uppercase text-white mb-2">07 // SECURE COMMUNICATION</h2>
-                  <span className="text-[10px] text-zinc-600 uppercase tracking-widest">Establish Synapse Connection</span>
-                </div>
-                <div className="max-w-md mx-auto text-xs space-y-4">
-                  <p className="text-zinc-500 font-sans mb-8">
-                    Feel free to reach out to collaborate on high-fidelity web projects, generative AI applications, or server architectures.
-                  </p>
-                  <div className="flex flex-col gap-4 font-mono">
-                    <a 
-                      href="mailto:contact@sivapanyam.dev"
-                      className="w-full py-3.5 bg-white text-black hover:bg-zinc-200 rounded-full font-bold uppercase tracking-widest transition-all active:scale-95 flex items-center justify-center gap-2 cursor-pointer"
-                    >
-                      <Mail className="w-4 h-4" /> Send Synapse Message
-                    </a>
+                <ScrollReveal delay={0.2}>
+                  <div className="mb-12">
+                    <h2 className="text-2xl font-bold tracking-widest uppercase text-white mb-2">07 // SECURE COMMUNICATION</h2>
+                    <span className="text-[10px] text-zinc-600 uppercase tracking-widest">Establish Synapse Connection</span>
                   </div>
-                </div>
+                  <div className="max-w-md mx-auto text-xs space-y-4">
+                    <p className="text-zinc-500 font-sans mb-8">
+                      Feel free to reach out to collaborate on high-fidelity web projects, generative AI applications, or server architectures.
+                    </p>
+                    <div className="flex flex-col gap-4 font-mono">
+                      <a 
+                        href="mailto:contact@sivapanyam.dev"
+                        className="w-full py-3.5 bg-white text-black hover:bg-zinc-200 rounded-full font-bold uppercase tracking-widest transition-all active:scale-95 flex items-center justify-center gap-2 cursor-pointer"
+                      >
+                        <Mail className="w-4 h-4" /> Send Synapse Message
+                      </a>
+                    </div>
+                  </div>
+                </ScrollReveal>
               </section>
 
             </main>

@@ -42,6 +42,7 @@ export const NeuralNetwork: React.FC<NeuralNetworkProps> = ({
   const pointsRef = useRef<THREE.Points>(null);
   const linesRef = useRef<THREE.LineSegments>(null);
   const pulsesRef = useRef<THREE.Points>(null);
+  const groupRef = useRef<THREE.Group>(null);
   const { viewport } = useThree();
   const { isDevModeActive } = useUIStore();
 
@@ -119,6 +120,13 @@ export const NeuralNetwork: React.FC<NeuralNetworkProps> = ({
   useFrame((state) => {
     if (isDevModeActive) return;
     const { pointer } = state;
+    
+    // Ambient multi-axis slow drift rotation for depth immersion
+    if (groupRef.current) {
+      const time = state.clock.getElapsedTime();
+      groupRef.current.rotation.y = time * 0.012;
+      groupRef.current.rotation.x = Math.sin(time * 0.06) * 0.015;
+    }
     
     // Map normalized device mouse coords (pointer.x, pointer.y) to 3D workspace
     const m3D = mouse3D.current;
@@ -251,7 +259,7 @@ export const NeuralNetwork: React.FC<NeuralNetworkProps> = ({
   });
 
   return (
-    <group>
+    <group ref={groupRef}>
       {/* 3D static node points */}
       <points ref={pointsRef}>
         <bufferGeometry>

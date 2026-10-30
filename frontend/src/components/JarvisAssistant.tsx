@@ -146,14 +146,17 @@ const JarvisAssistant: React.FC = () => {
               </div>
               <div className="flex gap-1.5 overflow-x-auto pb-1 scrollbar-none whitespace-nowrap">
                 {RECRUITER_QUICKS.map((btn, idx) => (
-                  <button
+                  <motion.button
                     key={idx}
+                    whileHover={{ scale: 1.04, borderColor: '#ffffff', color: '#ffffff', boxShadow: '0 0 10px rgba(255,255,255,0.06)' }}
+                    whileTap={{ scale: 0.97 }}
+                    transition={transitions.springHover}
                     onClick={() => handleSend(btn.text)}
                     disabled={isLoading}
-                    className="px-2.5 py-1.5 text-[10px] bg-zinc-900/90 border border-zinc-800 hover:border-zinc-500 text-zinc-400 hover:text-white rounded-full transition-all cursor-pointer whitespace-nowrap active:scale-95 disabled:opacity-50"
+                    className="px-2.5 py-1.5 text-[10px] bg-zinc-900/40 backdrop-blur-md border border-zinc-800 text-zinc-400 rounded-full transition-colors cursor-pointer whitespace-nowrap disabled:opacity-50"
                   >
                     {btn.label}
-                  </button>
+                  </motion.button>
                 ))}
               </div>
             </div>
@@ -197,8 +200,11 @@ const JarvisAssistant: React.FC = () => {
         {/* Concentric glowing pulse rings */}
         {!isOpen && (
           <>
-            <div className="absolute inset-0 rounded-full border border-white/10 animate-ping opacity-60 scale-125 pointer-events-none" />
-            <div className="absolute inset-0 rounded-full border border-white/5 animate-pulse opacity-40 scale-150 pointer-events-none" />
+            <div className={`absolute inset-0 rounded-full border border-white/10 animate-ping opacity-60 pointer-events-none ${isLoading ? 'scale-[1.4] duration-750' : 'scale-125'}`} />
+            <div className={`absolute inset-0 rounded-full border border-white/5 animate-pulse opacity-40 pointer-events-none ${isLoading ? 'scale-[1.7] duration-500' : 'scale-150'}`} />
+            {isLoading && (
+              <div className="absolute inset-0 rounded-full border border-dashed border-zinc-400 animate-spin opacity-45 scale-110 pointer-events-none" style={{ animationDuration: '4s' }} />
+            )}
           </>
         )}
       </motion.button>

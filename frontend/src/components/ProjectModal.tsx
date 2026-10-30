@@ -346,6 +346,166 @@ export default function ProjectModal({ project, onClose }: ModalProps) {
                     })}
                   </div>
                 </div>
+
+                {/* System Visuals & Mockups */}
+                <div className="border-t border-zinc-900 pt-6">
+                  <h4 className="flex items-center gap-2 text-white font-mono text-xs font-bold uppercase mb-4">
+                    <Terminal className="w-4 h-4 text-zinc-400" /> 05 // System Visuals & Interface Mockups
+                  </h4>
+                  
+                  {/* CSS-based high-tech browser/terminal window mockup */}
+                  <div className="w-full bg-zinc-950 border border-zinc-900 rounded-xl overflow-hidden shadow-2xl relative">
+                    <div className="bg-black/80 px-4 py-2.5 border-b border-zinc-900 flex justify-between items-center font-mono text-[10px]">
+                      <div className="flex items-center gap-2">
+                        <span className="w-2.5 h-2.5 rounded-full bg-red-500/30 border border-red-500/20" />
+                        <span className="w-2.5 h-2.5 rounded-full bg-yellow-500/30 border border-yellow-500/20" />
+                        <span className="w-2.5 h-2.5 rounded-full bg-green-500/30 border border-green-500/20" />
+                        <span className="text-zinc-500 ml-2 font-mono">interface_blueprint_wireframe.sh</span>
+                      </div>
+                      <span className="text-zinc-600">SYS_VIEW: ONLINE</span>
+                    </div>
+                    
+                    <div className="p-6 aspect-[16/9] sm:aspect-[21/9] bg-zinc-950 flex flex-col justify-center items-center relative overflow-hidden font-mono text-center select-none pointer-events-none">
+                      {/* Technical mesh pattern background */}
+                      <div className="absolute inset-0 neural-grid-lines opacity-10" />
+                      
+                      {/* Spotlight glow effect */}
+                      <div 
+                        className="absolute w-56 h-56 rounded-full opacity-[0.06] blur-2xl top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" 
+                        style={{ backgroundColor: style.accentHex }}
+                      />
+                      
+                      {/* Content resolver depending on project ID */}
+                      {project.id === 'tuneaura' && (
+                        <div className="space-y-4 w-full max-w-md relative z-10 animate-fade-in">
+                          <div className="text-[10px] text-amber-400 font-bold uppercase tracking-widest">[BIOMETRIC ACOUSTICS OSCILLOSCOPE]</div>
+                          <div className="flex justify-center items-end gap-1.5 h-16">
+                            {[0.3, 0.7, 0.45, 0.9, 0.6, 0.85, 0.4, 0.75, 0.5, 0.95, 0.35, 0.65].map((val, i) => (
+                              <motion.div 
+                                key={i}
+                                animate={{ height: [`${val * 100}%`, `${(val > 0.5 ? val - 0.2 : val + 0.2) * 100}%`, `${val * 100}%`] }}
+                                transition={{ repeat: Infinity, duration: 1.5 + i * 0.15, ease: 'easeInOut' }}
+                                className="w-1.5 bg-amber-500/35 rounded-t"
+                              />
+                            ))}
+                          </div>
+                          <div className="text-[9px] text-zinc-500">DYNAMIC SYNAPSE PATTERN: ALPHA WAVES (10.5Hz) ACTIVE</div>
+                        </div>
+                      )}
+                      
+                      {project.id === 'studybuddy' && (
+                        <div className="space-y-3 w-full max-w-md relative z-10 animate-fade-in">
+                          <div className="text-[10px] text-emerald-400 font-bold uppercase tracking-widest">[MULTI-MODAL VECTOR MEMORY SEGMENTS]</div>
+                          <div className="border border-emerald-950/60 bg-emerald-950/10 p-3 rounded-lg text-left text-[9px] text-zinc-400 space-y-1.5">
+                            <div className="flex justify-between text-zinc-600 font-mono text-[8px]">
+                              <span>CHUNK_ID: #8F9E_CS101</span>
+                              <span>COSINE_SIMILARITY: 0.942</span>
+                            </div>
+                            <p className="line-clamp-2 text-zinc-300 font-sans leading-relaxed">
+                              "The SuperMemo SM-2 spaced repetition algorithm calculates the interval between reviews based on a user's target response quality factor..."
+                            </p>
+                            <div className="h-1 bg-zinc-900 rounded-full overflow-hidden">
+                              <motion.div 
+                                animate={{ width: ['0%', '94%', '94%'] }}
+                                transition={{ duration: 2, ease: 'easeOut' }}
+                                className="h-full bg-emerald-500" 
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                      
+                      {project.id === 'kubeassist' && (
+                        <div className="space-y-4 w-full max-w-sm relative z-10 animate-fade-in text-[10px]">
+                          <div className="text-[10px] text-cyan-400 font-bold uppercase tracking-widest mb-1">[LOCAL-LLM TELEMETRY POD ORBIT]</div>
+                          <div className="grid grid-cols-4 gap-2">
+                            {['api', 'auth', 'db', 'cache', 'proxy', 'worker', 'cron', 'queue'].map((pod, i) => (
+                              <div key={pod} className="p-2 border border-zinc-900 bg-zinc-950/80 rounded flex flex-col items-center gap-1.5">
+                                <motion.span 
+                                  animate={{ opacity: [0.4, 1, 0.4] }}
+                                  transition={{ repeat: Infinity, duration: 1.5 + i * 0.25, ease: 'easeInOut' }}
+                                  className={`w-1.5 h-1.5 rounded-full ${i === 3 ? 'bg-red-500 shadow-[0_0_8px_#ef4444]' : 'bg-cyan-400 shadow-[0_0_8px_#22d3ee]'}`}
+                                />
+                                <span className="text-[8px] text-zinc-500 font-bold uppercase font-mono">{pod}</span>
+                              </div>
+                            ))}
+                          </div>
+                          <div className="text-[8px] text-red-400 uppercase font-mono tracking-tighter">Event Detected: auth-service-23a (Exit 137 OOMKilled)</div>
+                        </div>
+                      )}
+                      
+                      {project.id === 'rivalrise' && (
+                        <div className="space-y-4 w-full max-w-sm relative z-10 animate-fade-in text-[9px]">
+                          <div className="text-[10px] text-violet-400 font-bold uppercase tracking-widest mb-1">[GAME-THEORETIC NASH STRATEGY MATRIX]</div>
+                          <div className="grid grid-cols-3 gap-1.5 border border-zinc-900/60 p-2 bg-zinc-950/40 rounded-lg font-mono">
+                            <div className="text-zinc-600">Equilibrium</div>
+                            <div className="text-zinc-500 font-bold">Move A</div>
+                            <div className="text-zinc-500 font-bold">Move B</div>
+                            <div className="text-zinc-500 font-bold">User Strategy</div>
+                            <div className="bg-violet-950/20 border border-violet-900/50 text-violet-400 p-1.5 rounded font-bold">Nash: (12, -4)</div>
+                            <div className="bg-zinc-900/30 border border-zinc-900/20 text-zinc-500 p-1.5 rounded">Option: (4, 8)</div>
+                            <div className="text-zinc-500 font-bold">Competitor</div>
+                            <div className="bg-zinc-900/30 border border-zinc-900/20 text-zinc-500 p-1.5 rounded">Option: (-2, 10)</div>
+                            <div className="bg-zinc-900/30 border border-zinc-900/20 text-zinc-500 p-1.5 rounded">Option: (0, 0)</div>
+                          </div>
+                          <div className="text-[8px] text-zinc-500">SIMULATION STEP: COMPETING FORCE COEFFICIENTS COMPUTED</div>
+                        </div>
+                      )}
+                      
+                      {project.id === 'airestaurant' && (
+                        <div className="space-y-3 w-full max-w-xs relative z-10 animate-fade-in">
+                          <div className="text-[10px] text-rose-400 font-bold uppercase tracking-widest mb-1">[GEOSPATIAL ROUTING SYNAPSE]</div>
+                          <div className="relative border border-zinc-900 bg-zinc-950/60 p-3 rounded-lg flex flex-col gap-2 font-mono text-[9px] text-left">
+                            <div className="flex items-center gap-2">
+                              <span className="w-1.5 h-1.5 bg-rose-500 rounded-full shadow-[0_0_8px_#f43f5e]" />
+                              <span className="text-zinc-300">Stop 1: Bella Cucina (Italian) // 20:00</span>
+                            </div>
+                            <div className="h-4 border-l border-dashed border-zinc-800 ml-[2.5px]" />
+                            <div className="flex items-center gap-2">
+                              <span className="w-1.5 h-1.5 bg-zinc-700 rounded-full" />
+                              <span className="text-zinc-500">Stop 2: Caffe Nero (Dessert) // 8 min walk</span>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                      
+                      {/* Fallback mock blueprint wireframe */}
+                      {project.id !== 'tuneaura' && project.id !== 'studybuddy' && project.id !== 'kubeassist' && project.id !== 'rivalrise' && project.id !== 'airestaurant' && (
+                        <div className="space-y-2 relative z-10 animate-fade-in text-[10px]">
+                          <Cpu className={`w-8 h-8 ${style.text} mx-auto mb-1 animate-spin`} style={{ animationDuration: '6s' }} />
+                          <div className="text-white font-bold uppercase tracking-widest">{project.title} Interface Blueprint</div>
+                          <div className="text-zinc-500">Visual mockup coordinates resolved. Telemetry streaming active.</div>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+
+                {/* R&D Development Notes & Storytelling */}
+                {project.developmentNotes && (
+                  <div className="border-t border-zinc-900 pt-6 animate-fade-in">
+                    <h4 className="flex items-center gap-2 text-white font-mono text-xs font-bold uppercase mb-4">
+                      <Terminal className="w-4 h-4 text-zinc-400" /> 06 // R&D Development Notes & Storytelling
+                    </h4>
+                    <div className="relative p-6 border border-zinc-900 bg-zinc-950/40 rounded-xl overflow-hidden glass-panel-heavy">
+                      {/* Monospaced large quotation mark backing */}
+                      <span className="absolute -top-4 -left-2 text-8xl font-mono text-zinc-800/10 pointer-events-none select-none">“</span>
+                      
+                      <div className="relative z-10 flex gap-4">
+                        <div className={`text-4xl font-mono leading-none ${style.text} select-none`}>“</div>
+                        <p className="font-sans text-xs md:text-sm text-zinc-300 italic leading-relaxed select-text self-center">
+                          {project.developmentNotes}
+                        </p>
+                      </div>
+                      
+                      {/* Sub-label showing engineer authorization metadata */}
+                      <div className="mt-4 flex justify-between items-center text-[9px] font-mono text-zinc-500 border-t border-zinc-900/80 pt-3">
+                        <span>ORCHESTRATOR PATHWAY: authorization_siva.key</span>
+                        <span className="uppercase text-zinc-600 font-bold">Verified Narrative</span>
+                      </div>
+                    </div>
+                  </div>
+                )}
               </motion.div>
             )}
 

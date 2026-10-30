@@ -107,7 +107,7 @@ const DiagnosticsWidget = () => {
             fill="none" 
             animate={{ rotate: 360 }}
             transition={{ repeat: Infinity, duration: 3, ease: 'linear' }}
-            style={{ transformOrigin: '50px 50px' }}
+            style={{ transformOrigin: '50px 50px', filter: 'drop-shadow(0 0 3px rgba(255,255,255,0.6))' }}
           />
         </svg>
         <div className="flex flex-col items-center justify-center z-10 font-mono">
@@ -186,14 +186,14 @@ const JarvisWidget = () => (
       />
       
       {/* Interactive voice core */}
-      <div className="relative w-24 h-24 rounded-full bg-zinc-950 border border-zinc-900 flex items-center justify-center shadow-[0_0_30px_rgba(255,255,255,0.04)]">
+      <div className="relative w-24 h-24 rounded-full bg-zinc-950 border border-zinc-900 flex items-center justify-center shadow-[0_0_35px_rgba(255,255,255,0.08)]">
         <motion.div 
           animate={{ 
             scale: [1, 1.25, 0.9, 1.15, 1],
-            opacity: [0.5, 0.9, 0.45, 0.8, 0.5]
+            opacity: [0.6, 0.95, 0.5, 0.85, 0.6]
           }}
           transition={{ repeat: Infinity, duration: 3, ease: 'easeInOut' }}
-          className="w-10 h-10 rounded-full bg-white blur-[1.5px]"
+          className="w-12 h-12 rounded-full bg-white blur-[2.5px] shadow-[0_0_20px_rgba(255,255,255,0.85)]"
         />
         <span className="absolute text-[8px] text-zinc-500 font-bold tracking-widest uppercase">JARVIS</span>
       </div>
@@ -335,8 +335,9 @@ const BootSequence: React.FC<BootSequenceProps> = ({ onComplete }) => {
         </div>
         <button 
           onClick={skipBoot}
-          className="px-4 py-2 border border-zinc-800 hover:border-zinc-500 bg-zinc-950/60 hover:bg-white hover:text-black transition-all duration-300 rounded text-[9px] md:text-xs uppercase tracking-widest cursor-pointer active:scale-95 z-40"
+          className="px-4 py-2 border border-zinc-800 hover:border-white bg-zinc-950/60 hover:bg-white hover:text-black hover:shadow-[0_0_15px_rgba(255,255,255,0.3)] transition-all duration-300 rounded text-[9px] md:text-xs uppercase tracking-widest cursor-pointer active:scale-95 z-40 flex items-center gap-2 font-bold font-mono"
         >
+          <span className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse shadow-[0_0_8px_#22c55e]" />
           Skip Diagnostics [ESC]
         </button>
       </div>
@@ -397,9 +398,9 @@ const BootSequence: React.FC<BootSequenceProps> = ({ onComplete }) => {
           <span>COGNITIVE ARRAY SYNC: {percent}%</span>
           <span>STATION: 12.9716° N / 77.5946° E</span>
         </div>
-        <div className="w-full h-[2px] bg-zinc-900 rounded-full overflow-hidden">
+        <div className="w-full h-[3px] bg-zinc-900 rounded-full relative overflow-visible">
           <motion.div 
-            className="h-full bg-white rounded-full" 
+            className="h-full bg-white rounded-full shadow-[0_0_12px_#ffffff,0_0_4px_#ffffff]" 
             style={{ width: `${percent}%` }}
             transition={{ ease: 'easeOut' }}
           />

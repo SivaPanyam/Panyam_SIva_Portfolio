@@ -1,6 +1,7 @@
 // frontend/src/utils/commandRegistry.ts
 import React from 'react';
 import { portfolioProjects } from './projectData';
+import { skillCategories, experienceTimeline, certificationsList } from './profileData';
 
 export interface Command {
   name: string;
@@ -69,20 +70,57 @@ Core philosophy: "Build simple code structures to solve extremely complex data-f
     description: 'Fetches the structured CV profile including education and milestones.',
     execute: async () => {
       return `
-CURRICULUM VITAE // SIVA PANYAM
+CURRICULUM VITAE // SIVA PANYAM // AI Engineer & Full Stack Architect
 ===================================================
-[01] SKILLS INDEX           - Run "skills" for active language grids.
-[02] CAREER TELEMETRY       - Run "experience" for job timelines.
-[03] VERIFIED CREDENTIALS   - Run "certifications" for professional certifications.
-[04] CONTACT ROUTING        - Run "contact" to establish communication channels.
+Based in Bangalore, India | contact@sivapanyam.dev
 
 EDUCATION SUMMARY:
 ---------------------------------------------------
-Degree: Bachelor of Technology (B.Tech) in Computer Science
-Focus: Algorithms, Distributed Architectures, Intelligent Systems
+* Bachelor of Technology (B.Tech) in Computer Science (2020 - 2024)
+  - Focus: Algorithms, Distributed Architectures, Intelligent Systems
+  - Cumulative Grade / CGPA: 9.24 / 10.0
+  - Coursework: Distributed Systems, Machine Learning, Database WAL Tuning
 
-Download official encrypted resume file:
-URL: https://sivapanyam.dev/assets/cv_payload.pdf
+INTERACTIVE TERMINAL DIRECTORY:
+---------------------------------------------------
+Run the following commands to inspect detailed segments:
+  - "education"      : Academic transcripts, GPA, and relevant course paths.
+  - "experience"     : Career timeline, highlights, and telemetry metrics.
+  - "skills"         : Dynamic technology capability progress matrices.
+  - "certifications" : Verified professional cloud & AI credentials.
+  - "projects"       : Index of featured products and lab sandboxes.
+  - "contact"        : Establish direct secure email/LinkedIn gateway.
+
+Download official encrypted resume payload:
+  URL: https://sivapanyam.dev/assets/cv_payload.pdf
+`;
+    }
+  },
+
+  education: {
+    name: 'education',
+    description: 'Queries detailed academic records, cumulative CGPA, and coursework.',
+    execute: async () => {
+      return `
+ACADEMIC TELEMETRY // SIVA PANYAM
+===================================================
+DEGREE: Bachelor of Technology (B.Tech) in Computer Science
+TIMELINE: 2020 - 2024
+CUMULATIVE CGPA: 9.24 / 10.0
+SPECIALIZATION: Generative AI, Distributed Systems & Database Architecture
+
+CORE STUDY PATHWAYS:
+---------------------------------------------------
+* Algorithms & Advanced Data Structures
+* Distributed Consensus (Raft/Paxos WAL architectures)
+* Artificial Intelligence & Deep Learning Core
+* Relational & Vector Databases (PostgreSQL, Milvus, Qdrant)
+* Operating Systems & Shell Programming
+
+ACADEMIC RESEARCH PROFILE:
+---------------------------------------------------
+Participated in distributed systems sandboxes evaluating replication latency
+race conditions under heavy peak concurrent balance ledgers withdrawal loads.
 `;
     }
   },
@@ -93,12 +131,12 @@ URL: https://sivapanyam.dev/assets/cv_payload.pdf
     execute: async () => {
       const featured = portfolioProjects
         .filter(p => p.category === 'featured')
-        .map(p => `  * ${p.title.padEnd(15)} - ${p.tagline}`)
+        .map(p => `  * ${p.title.padEnd(16)} [${p.status.toUpperCase()}] - ${p.tagline}`)
         .join('\n');
 
       const lab = portfolioProjects
         .filter(p => p.category === 'lab')
-        .map(p => `  * ${p.title.padEnd(15)} - ${p.tagline}`)
+        .map(p => `  * ${p.title.padEnd(16)} [${p.status.toUpperCase()}] - ${p.tagline}`)
         .join('\n');
 
       return `
@@ -112,7 +150,56 @@ EXPERIMENTAL LAB (R&D Sandbox):
 ---------------------------------------------------
 ${lab}
 
-[RUN] Enter "featured" to inspect structural specs, or select cards behind this terminal.
+[TIP] Type "inspect [project_id]" to query deep technical specs of a chronicled build.
+`;
+    }
+  },
+
+  inspect: {
+    name: 'inspect',
+    description: 'Queries deep architectural and telemetry specs of any chronicled build.',
+    usage: 'inspect [project_id] (e.g. inspect tuneaura, inspect ecotrack)',
+    execute: async (args) => {
+      if (args.length === 0) {
+        return '[ERROR] Please specify a project_id. Usage: inspect [project_id]';
+      }
+      const id = args[0].toLowerCase();
+      const project = portfolioProjects.find(p => p.id === id);
+      if (!project) {
+        return `[ERROR] Project "${args[0]}" not found in portfolio index.`;
+      }
+      const features = project.keyFeatures.map(f => `  * ${f}`).join('\n');
+      const stack = project.techStack.map(t => `${t.name} (${t.category})`).join(', ');
+      const optimizations = project.optimizations.map(o => `  - ${o.metric}: ${o.value} (${o.description})`).join('\n');
+      const roadmap = project.roadmap.map(r => `  - ${r}`).join('\n');
+      const devNotes = project.developmentNotes ? `\nDEVELOPMENT NOTES:\n  "${project.developmentNotes}"` : '';
+
+      return `
+CHRONICLED BUILD INSPECTION // ${project.title.toUpperCase()} [${project.status.toUpperCase()}]
+===================================================
+TAGLINE: ${project.tagline}
+CATEGORY: ${project.category === 'featured' ? 'Featured Architecture' : 'Experimental R&D Sandbox'}
+
+PROBLEM STATEMENT:
+  ${project.problemStatement}
+
+SOLUTION ARCHITECTURE:
+  ${project.solutionArchitecture}
+
+KEY SYSTEM FEATURES:
+${features}
+
+TECHNICAL STACK INVENTORY:
+  ${stack}
+${devNotes}
+
+PERFORMANCE & AUDITABLE OPTIMIZATIONS:
+${optimizations}
+
+ROADMAP MILESTONES:
+${roadmap}
+
+DEPLOYMENT PLATFORM: ${project.deployment.platform}
 `;
     }
   },
@@ -144,31 +231,25 @@ ${items}
     name: 'skills',
     description: 'Outputs active technical capability matrices and stack parameters.',
     execute: async () => {
+      const sections = skillCategories.map(cat => {
+        const skillsList = cat.skills.map(s => {
+          const barSize = 15;
+          const filled = Math.round((s.depth / 100) * barSize);
+          const empty = barSize - filled;
+          const bar = '█'.repeat(filled) + '░'.repeat(empty);
+          return `  * ${s.name.padEnd(45)} [${bar}] ${s.depth}% // ${s.metrics || ''}`;
+        }).join('\n');
+
+        return `
+${cat.title.toUpperCase()} // ${cat.subtitle}
+---------------------------------------------------
+${skillsList}`;
+      }).join('\n');
+
       return `
 TECHNICAL CAPABILITY INVENTORY
 ===================================================
-AI & LARGE LANGUAGE MODELS
----------------------------------------------------
-* LangChain & CrewAI Agentic Orchestrations   [███████████████] 96%
-* Vector Database Pipelines (Pinecone/Qdrant)  [██████████████░] 92%
-* Fine-tuning, RAG, Embeddings, Prompt Eng.   [███████████████] 98%
-
-FRONTEND ARCHITECTURE
----------------------------------------------------
-* React, Next.js, SolidJS, TypeScript         [███████████████] 98%
-* Tailwind CSS, Vanilla CSS, Styled-Libs      [██████████████░] 94%
-* Framer Motion, D3.js, High-Speed Canvas     [█████████████░░] 88%
-
-BACKEND & DISTRIBUTED CONCURRENCY
----------------------------------------------------
-* Node.js, Express, Fastify, Go-Client        [██████████████░] 92%
-* SQL & NoSQL (PostgreSQL, WAL Sqlite, Redis) [██████████████░] 90%
-* WebRTC Protocol & P2P Stream sockets        [████████████░░░] 82%
-
-DEVOPS & WORKFLOW SYSTEM
----------------------------------------------------
-* Docker containers, Kubernetes sidecars       [█████████████░░] 86%
-* CI/CD automation pipelines (GitHub Actions) [██████████████░] 90%
+${sections}
 `;
     }
   },
@@ -177,23 +258,27 @@ DEVOPS & WORKFLOW SYSTEM
     name: 'experience',
     description: 'Traces employment timeline and engineering roles chronological stats.',
     execute: async () => {
+      const timeline = experienceTimeline.map(exp => {
+        const highlights = exp.highlights.map(h => `  * ${h}`).join('\n');
+        const metrics = exp.metrics ? exp.metrics.map(m => `    - ${m.label}: ${m.value}`).join('\n') : '';
+        const stack = `    - Stack Exposure: ${exp.technicalExposure.join(', ')}`;
+        
+        return `
+ROLE: ${exp.role.toUpperCase()}
+COMPANY: ${exp.company} (${exp.location})
+PERIOD: ${exp.period}
+HIGHLIGHTS:
+${highlights}
+TELEMETRY METRICS:
+${metrics}
+${stack}
+---------------------------------------------------`;
+      }).join('\n');
+
       return `
-CAREER TIMELINE & TELEMETRY
+CAREER EXPERIENCE TIMELINE
 ===================================================
-ROLE: Lead Architect
-COMPANY: AI Synthesis Labs
-TIMELINE: 2024 - Present
-METRICS: Orchestrated large-scale multi-agent deployments; engineered low-latency telemetry processors utilizing background Web Workers. Redesigned client web pipelines.
----------------------------------------------------
-ROLE: Full Stack Engineer
-COMPANY: DataSync Corp
-TIMELINE: 2022 - 2024
-METRICS: Spearheaded core GraphQL data synchronization frameworks, dropping data latency from 340ms to 18ms. Engineered high-traffic Node interfaces and responsive dashboard canvases.
----------------------------------------------------
-ROLE: Distributed Systems Research Associate
-COMPANY: Bangalore Engineering Sandbox
-TIMELINE: 2020 - 2022
-METRICS: Built append-only concurrency balance ledgers and benchmarked Raft Consensus replica sync rates under peak network congestion thresholds.
+${timeline}
 `;
     }
   },
@@ -202,23 +287,20 @@ METRICS: Built append-only concurrency balance ledgers and benchmarked Raft Cons
     name: 'certifications',
     description: 'Lists verified professional cloud, network, and developer credentials.',
     execute: async () => {
+      const certs = certificationsList.map(cert => {
+        return `
+* ${cert.name.toUpperCase()}
+  - Issued by: ${cert.issuer}
+  - Credential ID: ${cert.credentialId}
+  - Technical Focus: ${cert.skillsExposure.join(', ')}
+  - Direct Verification: ${cert.verificationUrl}
+  - Status: VERIFIED ACTIVE`;
+      }).join('\n');
+
       return `
-VERIFIED CREDENTIALS
+VERIFIED PROFESSIONAL CREDENTIALS
 ===================================================
-* Google Cloud Professional Cloud Architect
-  - Issued by: Google Cloud
-  - Verification ID: GCP-ARCH-908B1
-  - Status: ACTIVE
- 
-* TensorFlow Developer Certificate
-  - Issued by: DeepLearning.AI
-  - Verification ID: TF-DEV-33A89
-  - Status: ACTIVE
- 
-* Advanced Generative AI Swarms Architect
-  - Issued by: Neural OS Council
-  - Verification ID: AGENT-SWARM-550
-  - Status: ACTIVE
+${certs}
 `;
     }
   },
