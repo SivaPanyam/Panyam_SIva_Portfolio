@@ -1,14 +1,23 @@
 // frontend/src/utils/commandRegistry.ts
 import React from 'react';
 import { portfolioProjects } from './projectData';
-import { skillCategories, experienceTimeline, certificationsList } from './profileData';
+import { skillCategories, experienceTimeline } from './profileData';
+import { resolvePath, type VFSNode } from './virtualFileSystem';
+
+export interface CommandContext {
+  currentPath: string[];
+  setCurrentPath: (path: string[]) => void;
+  openProjectModal?: (projectId: string) => void;
+  toggleDevMode?: () => void;
+  toggleMatrix?: () => void;
+}
 
 export interface Command {
   name: string;
   description: string;
   usage?: string;
   hidden?: boolean;
-  execute: (args: string[]) => Promise<string | React.ReactNode>;
+  execute: (args: string[], ctx?: CommandContext) => Promise<string | React.ReactNode>;
 }
 
 export const commandRegistry: Record<string, Command> = {
@@ -30,23 +39,201 @@ Usage: ${cmd.usage || cmd.name}
         return `[ERROR] Command "${args[0]}" not found in secure prompt index.`;
       }
 
-      // Generate a structured monochrome command table
       const list = Object.values(commandRegistry)
         .filter(c => !c.hidden)
         .map(c => `  ${c.name.padEnd(16)} - ${c.description}`)
         .join('\n');
 
       return `
-NEURAL_OS v1.0.4 - PERMITTED PROMPT DIRECTORY
+NEURAL_OS v1.2.0 - VIRTUAL UNIX SHELL (bash/zsh compatible)
 ===================================================
 ${list}
 
-[TIP] Run "help [command]" for syntax details.
-[R&D] Enter special access keys to initiate systems checks.
+[FILESYSTEM DIRECTORY]
+  ls, cd, pwd, cat, tree   - Navigate virtual portfolio filesystem
+[SYSTEM TOOLS]
+  neofetch, ping, clear    - Telemetry and system diagnostics
+[EASTER EGGS]
+  sudo hire siva, rm -rf / - Root access overrides
+
+[TIP] Try: "neofetch" or "ls -la" or "cat bio.md"
 `;
     }
   },
 
+  // 1. FILESYSTEM: PWD
+  pwd: {
+    name: 'pwd',
+    description: 'Prints current working directory path.',
+    execute: async (_args, ctx) => {
+      const path = ctx?.currentPath || ['~'];
+      return path.join('/');
+    }
+  },
+
+  // 2. FILESYSTEM: LS / DIR
+  ls: {
+    name: 'ls',
+    description: 'Lists files and directories in current or target path.',
+    usage: 'ls [-l | -la] [path]',
+    execute: async (args, ctx) => {
+      const currentPath = ctx?.currentPath || ['~'];
+      const isDetailed = args.includes('-l') || args.includes('-la') || args.includes('-al');
+      const targetArg = args.find(a => !a.startsWith('-')) || '.';
+
+      const target = resolvePath(currentPath, targetArg);
+      if (!target.node) {
+        return `ls: cannot access '${targetArg}': No such file or directory`;
+      }
+
+      if (target.node.type === 'file') {
+        return isDetailed
+          ? `${target.node.permissions || '-rw-r--r--'}  1  siva  staff  ${target.node.size || '1KB'}  Oct 30 14:00  ${target.node.name}`
+          : target.node.name;
+      }
+
+      const children = target.node.children || {};
+      const entries = Object.values(children);
+
+      if (entries.length === 0) {
+        return `(empty directory)`;
+      }
+
+      if (isDetailed) {
+        const lines = entries.map(e => {
+          const perm = e.permissions || (e.type === 'dir' ? 'drwxr-xr-x' : '-rw-r--r--');
+          const size = (e.size || (e.type === 'dir' ? '4.0KB' : '1.0KB')).padStart(7);
+          const icon = e.type === 'dir' ? '📁' : '📄';
+          return `${perm}  1 siva staff ${size} Oct 30 14:00 ${icon} ${e.name}${e.type === 'dir' ? '/' : ''}`;
+        });
+        return `total ${entries.length * 4}\n` + lines.join('\n');
+      }
+
+      const formatted = entries.map(e => {
+        return e.type === 'dir' ? `${e.name}/` : e.name;
+      }).join('    ');
+
+      return formatted;
+    }
+  },
+
+  // 3. FILESYSTEM: CD
+  cd: {
+    name: 'cd',
+    description: 'Change directory in the virtual filesystem.',
+    usage: 'cd [directory | .. | ~]',
+    execute: async (args, ctx) => {
+      if (!ctx) return 'VFS context unavailable.';
+      const targetDir = args[0] || '~';
+      const target = resolvePath(ctx.currentPath, targetDir);
+
+      if (!target.node) {
+        return `cd: ${targetDir}: No such file or directory`;
+      }
+      if (target.node.type !== 'dir') {
+        return `cd: not a directory: ${targetDir}`;
+      }
+
+      ctx.setCurrentPath(target.path);
+      return '';
+    }
+  },
+
+  // 4. FILESYSTEM: CAT
+  cat: {
+    name: 'cat',
+    description: 'Concatenate and display content of files.',
+    usage: 'cat <filename>',
+    execute: async (args, ctx) => {
+      if (args.length === 0) {
+        return 'usage: cat <filename>';
+      }
+      const currentPath = ctx?.currentPath || ['~'];
+      const target = resolvePath(currentPath, args[0]);
+
+      if (!target.node) {
+        return `cat: ${args[0]}: No such file or directory`;
+      }
+      if (target.node.type === 'dir') {
+        return `cat: ${args[0]}: Is a directory`;
+      }
+
+      return target.node.content || `(file is empty)`;
+    }
+  },
+
+  // 5. FILESYSTEM: TREE
+  tree: {
+    name: 'tree',
+    description: 'Generates a recursive directory tree visualization.',
+    execute: async (_args, ctx) => {
+      const currentPath = ctx?.currentPath || ['~'];
+      const root = resolvePath(currentPath, '.').node;
+      if (!root || root.type !== 'dir') return '.';
+
+      const lines: string[] = [root.name];
+      function traverse(node: VFSNode, prefix: string) {
+        const children = Object.values(node.children || {});
+        children.forEach((child, idx) => {
+          const isLast = idx === children.length - 1;
+          const branch = isLast ? '└── ' : '├── ';
+          lines.push(`${prefix}${branch}${child.name}${child.type === 'dir' ? '/' : ''}`);
+          if (child.type === 'dir') {
+            traverse(child, prefix + (isLast ? '    ' : '│   '));
+          }
+        });
+      }
+      traverse(root, '');
+      return lines.join('\n');
+    }
+  },
+
+  // 6. NEOFETCH
+  neofetch: {
+    name: 'neofetch',
+    description: 'Displays system information with stylized ASCII monogram.',
+    execute: async () => {
+      return `
+  ███████╗██╗██╗   ██╗ █████╗     siva@neural-os
+  ██╔════╝██║██║   ██║██╔══██╗    ---------------
+  ███████╗██║██║   ██║███████║    OS: NeuralOS 1.2 x86_64 (Edge Bengaluru)
+  ╚════██║██║╚██╗ ██╔╝██╔══██║    Host: Siva Panyam Portfolio Node
+  ███████║██║ ╚████╔╝ ██║  ██║    Kernel: 6.8.0-neural-rt-edge
+  ╚══════╝╚═╝  ╚═══╝  ╚═╝  ╚═╝    Uptime: 99.98% SLA (Active)
+                                  Shell: neural-sh (vfs v1.2)
+  ██████╗  █████╗ ███╗   ██╗      Resolution: 1920x1080 @ 60fps WebGL
+  ██╔══██╗██╔══██╗████╗  ██║      DE: Cyberpunk Glass HUD
+  ██████╔╝███████║██╔██╗ ██║      Theme: Dark Terminal Neon (#39ff14)
+  ██╔═══╝ ██╔══██║██║╚██╗██║      CPU: WebAssembly Raft Virtual Core @ 3.4GHz
+  ██║     ██║  ██║██║ ╚████║      Memory: 412MB / 1024MB (Low footprint)
+  ╚═╝     ╚═╝  ╚═╝╚═╝  ╚═══╝      Stack: React 19, TypeScript 6, Three.js, Vite
+                                  AI Core: Heuristic Intent Router (0-API latency)
+`;
+    }
+  },
+
+  // 7. PING
+  ping: {
+    name: 'ping',
+    description: 'Simulates network latency round-trip to edge endpoints.',
+    usage: 'ping [host]',
+    execute: async (args) => {
+      const host = args[0] || 'bengaluru.edge.sivapanyam.dev';
+      return `
+PING ${host} (127.0.0.1): 56 data bytes
+64 bytes from 127.0.0.1: icmp_seq=0 ttl=64 time=18.421 ms
+64 bytes from 127.0.0.1: icmp_seq=1 ttl=64 time=19.104 ms
+64 bytes from 127.0.0.1: icmp_seq=2 ttl=64 time=17.892 ms
+
+--- ${host} ping statistics ---
+3 packets transmitted, 3 packets received, 0.0% packet loss
+round-trip min/avg/max = 17.892/18.472/19.104 ms
+Status: Edge pipeline nominal [Latency < 20ms].
+`;
+    }
+  },
+
+  // 8. ABOUT
   about: {
     name: 'about',
     description: 'Queries background credentials and diagnostic profile of Siva Panyam.',
@@ -55,7 +242,7 @@ ${list}
 PROFILE TELEMETRY: SIVA PANYAM
 ===================================================
 ROLE: AI Engineer & Full Stack Architect
-LOCATION: Bangalore, India // Edge Edge Node
+LOCATION: Bangalore, India // Edge Node
 FOCUS: generative_ai // system_concurrency // robust_frontends
 
 "I bridge the gap between heavy deep learning backends and highly interactive, performant web applications. My work focuses on offloading expensive telemetry processes to distributed nodes, standardizing robust vector-RAG infrastructures, and crafting sleek developer-focused user workspaces."
@@ -65,6 +252,7 @@ Core philosophy: "Build simple code structures to solve extremely complex data-f
     }
   },
 
+  // 9. RESUME
   resume: {
     name: 'resume',
     description: 'Fetches the structured CV profile including education and milestones.',
@@ -74,57 +262,18 @@ CURRICULUM VITAE // SIVA PANYAM // AI Engineer & Full Stack Architect
 ===================================================
 Based in Bangalore, India | contact@sivapanyam.dev
 
-EDUCATION SUMMARY:
----------------------------------------------------
+EDUCATION:
 * Bachelor of Technology (B.Tech) in Computer Science (2020 - 2024)
-  - Focus: Algorithms, Distributed Architectures, Intelligent Systems
   - Cumulative Grade / CGPA: 9.24 / 10.0
   - Coursework: Distributed Systems, Machine Learning, Database WAL Tuning
 
-INTERACTIVE TERMINAL DIRECTORY:
----------------------------------------------------
-Run the following commands to inspect detailed segments:
-  - "education"      : Academic transcripts, GPA, and relevant course paths.
-  - "experience"     : Career timeline, highlights, and telemetry metrics.
-  - "skills"         : Dynamic technology capability progress matrices.
-  - "certifications" : Verified professional cloud & AI credentials.
-  - "projects"       : Index of featured products and lab sandboxes.
-  - "contact"        : Establish direct secure email/LinkedIn gateway.
-
-Download official encrypted resume payload:
+Download official verified resume payload:
   URL: https://sivapanyam.dev/assets/cv_payload.pdf
 `;
     }
   },
 
-  education: {
-    name: 'education',
-    description: 'Queries detailed academic records, cumulative CGPA, and coursework.',
-    execute: async () => {
-      return `
-ACADEMIC TELEMETRY // SIVA PANYAM
-===================================================
-DEGREE: Bachelor of Technology (B.Tech) in Computer Science
-TIMELINE: 2020 - 2024
-CUMULATIVE CGPA: 9.24 / 10.0
-SPECIALIZATION: Generative AI, Distributed Systems & Database Architecture
-
-CORE STUDY PATHWAYS:
----------------------------------------------------
-* Algorithms & Advanced Data Structures
-* Distributed Consensus (Raft/Paxos WAL architectures)
-* Artificial Intelligence & Deep Learning Core
-* Relational & Vector Databases (PostgreSQL, Milvus, Qdrant)
-* Operating Systems & Shell Programming
-
-ACADEMIC RESEARCH PROFILE:
----------------------------------------------------
-Participated in distributed systems sandboxes evaluating replication latency
-race conditions under heavy peak concurrent balance ledgers withdrawal loads.
-`;
-    }
-  },
-
+  // 10. PROJECTS
   projects: {
     name: 'projects',
     description: 'Lists all chronicled featured architectures and active lab sandboxes.',
@@ -143,350 +292,201 @@ race conditions under heavy peak concurrent balance ledgers withdrawal loads.
 CHRONICLED PRODUCTS & SYSTEMS
 ===================================================
 FEATURED ARCHITECTURES:
----------------------------------------------------
 ${featured}
 
-EXPERIMENTAL LAB (R&D Sandbox):
----------------------------------------------------
+EXPERIMENTAL LAB:
 ${lab}
 
-[TIP] Type "inspect [project_id]" to query deep technical specs of a chronicled build.
+[TIP] Type "cat projects/neuralos.md" or "inspect tuneaura" to query deep telemetry!
 `;
     }
   },
 
+  // 11. INSPECT
   inspect: {
     name: 'inspect',
     description: 'Queries deep architectural and telemetry specs of any chronicled build.',
-    usage: 'inspect [project_id] (e.g. inspect tuneaura, inspect ecotrack)',
+    usage: 'inspect <project_id>',
     execute: async (args) => {
       if (args.length === 0) {
-        return '[ERROR] Please specify a project_id. Usage: inspect [project_id]';
+        return `usage: inspect <project_id> (e.g. "inspect tuneaura" or "inspect fanversi")`;
       }
       const id = args[0].toLowerCase();
-      const project = portfolioProjects.find(p => p.id === id);
+      const project = portfolioProjects.find(p => p.id.toLowerCase() === id || p.title.toLowerCase().includes(id));
       if (!project) {
-        return `[ERROR] Project "${args[0]}" not found in portfolio index.`;
+        return `[ERROR] Project '${args[0]}' not identified in portfolio database. Run "projects" to view valid identifiers.`;
       }
-      const features = project.keyFeatures.map(f => `  * ${f}`).join('\n');
-      const stack = project.techStack.map(t => `${t.name} (${t.category})`).join(', ');
-      const optimizations = project.optimizations.map(o => `  - ${o.metric}: ${o.value} (${o.description})`).join('\n');
-      const roadmap = project.roadmap.map(r => `  - ${r}`).join('\n');
-      const devNotes = project.developmentNotes ? `\nDEVELOPMENT NOTES:\n  "${project.developmentNotes}"` : '';
+
+      const stackNames = project.techStack.map(t => t.name).join(', ');
+      const optimizationLines = project.optimizations.map(o => `  • ${o.metric}: ${o.value} (${o.description})`).join('\n');
 
       return `
-CHRONICLED BUILD INSPECTION // ${project.title.toUpperCase()} [${project.status.toUpperCase()}]
+PROJECT TELEMETRY: ${project.title.toUpperCase()}
 ===================================================
-TAGLINE: ${project.tagline}
-CATEGORY: ${project.category === 'featured' ? 'Featured Architecture' : 'Experimental R&D Sandbox'}
+Tagline: ${project.tagline}
+Category: ${project.category.toUpperCase()} | Status: ${project.status.toUpperCase()}
+Stack: ${stackNames}
 
 PROBLEM STATEMENT:
-  ${project.problemStatement}
+${project.problemStatement}
 
 SOLUTION ARCHITECTURE:
-  ${project.solutionArchitecture}
+${project.solutionArchitecture}
 
-KEY SYSTEM FEATURES:
-${features}
-
-TECHNICAL STACK INVENTORY:
-  ${stack}
-${devNotes}
-
-PERFORMANCE & AUDITABLE OPTIMIZATIONS:
-${optimizations}
-
-ROADMAP MILESTONES:
-${roadmap}
-
-DEPLOYMENT PLATFORM: ${project.deployment.platform}
+OPTIMIZATIONS & BENCHMARKS:
+${optimizationLines}
 `;
     }
   },
 
-  featured: {
-    name: 'featured',
-    description: 'Inspects key architectural metrics and features of production systems.',
-    execute: async () => {
-      const items = portfolioProjects
-        .filter(p => p.category === 'featured')
-        .map(p => `
----------------------------------------------------
-TITLE: ${p.title.toUpperCase()} [${p.status}]
-TAGLINE: ${p.tagline}
-TECH: ${p.techStack.slice(0, 4).map(t => t.name).join(', ')}
-PROBLEM: ${p.problemStatement.slice(0, 100)}...
----------------------------------------------------`)
-        .join('\n');
-
-      return `
-PRODUCTION PORTFOLIO ARCHITECTURES
-===================================================
-${items}
-`;
-    }
-  },
-
+  // 12. SKILLS
   skills: {
     name: 'skills',
-    description: 'Outputs active technical capability matrices and stack parameters.',
+    description: 'Prints technical skills hierarchy and proficiency ratings.',
     execute: async () => {
       const sections = skillCategories.map(cat => {
         const skillsList = cat.skills.map(s => {
-          const barSize = 15;
-          const filled = Math.round((s.depth / 100) * barSize);
-          const empty = barSize - filled;
-          const bar = '█'.repeat(filled) + '░'.repeat(empty);
-          return `  * ${s.name.padEnd(45)} [${bar}] ${s.depth}% // ${s.metrics || ''}`;
+          const filled = Math.round(s.depth / 10);
+          const bar = '■'.repeat(filled) + ' '.repeat(10 - filled);
+          return `  * ${s.name.padEnd(30)} [${bar}] ${s.depth}%`;
         }).join('\n');
 
-        return `
-${cat.title.toUpperCase()} // ${cat.subtitle}
----------------------------------------------------
-${skillsList}`;
+        return `\n${cat.title.toUpperCase()}\n---------------------------------------------------\n${skillsList}`;
       }).join('\n');
 
-      return `
-TECHNICAL CAPABILITY INVENTORY
-===================================================
-${sections}
-`;
+      return `TECHNICAL CAPABILITY INVENTORY\n===================================================${sections}\n`;
     }
   },
 
+  // 13. EXPERIENCE
   experience: {
     name: 'experience',
-    description: 'Traces employment timeline and engineering roles chronological stats.',
+    description: 'Traces employment timeline and engineering milestones.',
     execute: async () => {
       const timeline = experienceTimeline.map(exp => {
         const highlights = exp.highlights.map(h => `  * ${h}`).join('\n');
-        const metrics = exp.metrics ? exp.metrics.map(m => `    - ${m.label}: ${m.value}`).join('\n') : '';
-        const stack = `    - Stack Exposure: ${exp.technicalExposure.join(', ')}`;
-        
         return `
 ROLE: ${exp.role.toUpperCase()}
-COMPANY: ${exp.company} (${exp.location})
-PERIOD: ${exp.period}
+COMPANY: ${exp.company} (${exp.location}) | ${exp.period}
 HIGHLIGHTS:
 ${highlights}
-TELEMETRY METRICS:
-${metrics}
-${stack}
+STACK: ${exp.technicalExposure.join(', ')}
 ---------------------------------------------------`;
       }).join('\n');
 
-      return `
-CAREER EXPERIENCE TIMELINE
-===================================================
-${timeline}
-`;
+      return `CAREER EXPERIENCE TIMELINE\n===================================================${timeline}\n`;
     }
   },
 
-  certifications: {
-    name: 'certifications',
-    description: 'Lists verified professional cloud, network, and developer credentials.',
-    execute: async () => {
-      const certs = certificationsList.map(cert => {
-        return `
-* ${cert.name.toUpperCase()}
-  - Issued by: ${cert.issuer}
-  - Credential ID: ${cert.credentialId}
-  - Technical Focus: ${cert.skillsExposure.join(', ')}
-  - Direct Verification: ${cert.verificationUrl}
-  - Status: VERIFIED ACTIVE`;
-      }).join('\n');
-
-      return `
-VERIFIED PROFESSIONAL CREDENTIALS
-===================================================
-${certs}
-`;
-    }
-  },
- 
-  brand: {
-    name: 'brand',
-    description: 'Queries brand guidelines, typography variables, and loads the interactive playground.',
-    execute: async () => {
-      setTimeout(() => {
-        document.getElementById('lab')?.scrollIntoView({ behavior: 'smooth' });
-      }, 100);
-      return `
-SYNCHRONIZING SECURE BRAND MANUAL PIPELINE...
-===================================================
-* THEME:       futuristic // abstract AI-inspired // premium
-* CODE NAME:   The "Neural Lattice" (or "Synapse Core")
-* TYPOGRAPHY:  Outfit Sans-serif // JetBrains Mono Code
-* ELEVATION:   3-Tier glassmorphic layout system
-* ACCENTS:     Monochrome (White/Zinc) / Developer Matrix Neon
- 
-[AUTONOMIC ACTION] Directing viewpoint to interactive Brand Playground inside Experimental Lab section...
-`;
-    }
-  },
-
+  // 14. CONTACT
   contact: {
     name: 'contact',
-    description: 'Establishes secure communication channels and routing.',
-    execute: async () => {
-      // Returns an interactive react component!
-      return React.createElement('div', { className: 'p-4 border border-zinc-800 bg-zinc-950 rounded-xl space-y-3 font-mono text-xs max-w-md' },
-        React.createElement('div', { className: 'text-zinc-500 uppercase tracking-widest font-bold' }, 'Secure Synapse Routing'),
-        React.createElement('p', { className: 'text-zinc-400 font-sans leading-relaxed' }, 
-          'Choose a gateway to establish connection with Siva. Click directly below to route messages:'
-        ),
-        React.createElement('div', { className: 'flex flex-col gap-2 pt-2' },
-          React.createElement('a', { 
-            href: 'mailto:contact@sivapanyam.dev', 
-            className: 'px-3 py-2 bg-zinc-900 border border-zinc-800 hover:border-zinc-500 rounded text-zinc-300 hover:text-white flex items-center justify-between transition-colors' 
-          }, 
-            React.createElement('span', null, '📧 Email Gateway:'), 
-            React.createElement('span', { className: 'text-[10px] text-zinc-500 font-bold' }, 'contact@sivapanyam.dev ↗')
-          ),
-          React.createElement('a', { 
-            href: 'https://linkedin.com/in/sivapanyam', 
-            target: '_blank', 
-            rel: 'noopener noreferrer', 
-            className: 'px-3 py-2 bg-zinc-900 border border-zinc-800 hover:border-zinc-500 rounded text-zinc-300 hover:text-white flex items-center justify-between transition-colors' 
-          }, 
-            React.createElement('span', null, '🔗 LinkedIn Interface:'), 
-            React.createElement('span', { className: 'text-[10px] text-zinc-500 font-bold' }, 'linkedin.com/in/sivapanyam ↗')
-          )
-        )
-      );
-    }
-  },
-
-  github: {
-    name: 'github',
-    description: 'Redirects to the secure code repository hosting current projects.',
+    description: 'Reveals direct email and social transmission relays.',
     execute: async () => {
       return `
-ESTABLISHING CODEBASE COUPLING...
+SECURE TRANSMISSION RELAYS // SIVA PANYAM
 ===================================================
-BRANCH: main // origin
-REPOSITORY: github.com/sivapanyam
-LATENCY: 12ms // secure handshake
+Email: contact@sivapanyam.dev
+GitHub: https://github.com/SivaPanyam
+LinkedIn: https://linkedin.com/in/sivapanyam
+Location: Bangalore, Karnataka, India (UTC+5:30)
 
-GitHub connection resolved. Press the link below to access repository index:
-URL: https://github.com/sivapanyam
+Available for Full-Stack, Frontend Architect, and AI Systems roles.
+Direct inquiries receive responses within 24 hours.
 `;
     }
   },
 
+  // 15. CLEAR
   clear: {
     name: 'clear',
-    description: 'Flushes the current console logs and resets history buffer.',
-    execute: async () => {
-      return 'CLEAR_CONSOLE_TRIGGER';
-    }
+    description: 'Clears the terminal output screen.',
+    execute: async () => ''
   },
 
-  // ==========================================
-  // HIDDEN / EASTER EGG COMMANDS
-  // ==========================================
-  
-  whoami: {
-    name: 'whoami',
-    description: 'Queries details of your active console connection.',
-    hidden: true,
-    execute: async () => {
-      return `
-CONNECTION CREDENTIALS
-===================================================
-USER: Guest Operator // Portfolio Explorer
-WORKSPACE: guest@sivapanyam.dev
-NETWORK: Bangalore edge node (IPv6 auto-hashed)
-SESSION STATUS: stable
-PERMISSION LEVEL: read-only (Type "sudo reveal-secrets" to test security parameters)
+  // 16. EASTER EGG: SUDO HIRE SIVA
+  sudo: {
+    name: 'sudo',
+    description: 'Execute command with elevated administrative privilege.',
+    usage: 'sudo <command>',
+    execute: async (args) => {
+      const sub = args.join(' ').toLowerCase().trim();
+      if (sub === 'hire siva' || sub === 'hire' || sub === 'hire-siva') {
+        return `
+[AUTHENTICATING ROOT CREDENTIALS...]
+Password: ****************
+ACCESS GRANTED: ROOT OVERRIDE GRANTED TO RECRUITER / TECH LEAD.
+
+  ======================================================
+  🎉 CONGRATULATIONS! YOU HAVE INITIATED SIVA'S RECRUITMENT PIPELINE!
+  ======================================================
+  Candidate: Siva Panyam (B.Tech CS, CGPA: 9.24)
+  Target Roles: Full Stack Engineer / AI Systems Engineer
+  Notice Period: Immediate / Flexible
+  Location: Bangalore or Remote Worldwide
+
+  ACTION ITEMS:
+  1. Dispatch offer / invitation to: contact@sivapanyam.dev
+  2. Connect on LinkedIn: https://linkedin.com/in/sivapanyam
+  3. Review verified GitHub commits: https://github.com/SivaPanyam
+
+  Clearance code: #SIVA-ROOT-2026-HIRED
+  ======================================================
 `;
+      }
+      return `[sudo] password for guest: \nSorry, user guest is not allowed to execute '${args.join(' ')}' on neural-os. Try: "sudo hire siva"`;
     }
   },
 
-  'system-status': {
-    name: 'system-status',
-    description: 'Calculates active console processor loads and network thresholds.',
-    hidden: true,
-    execute: async () => {
-      const ram = (Math.random() * 20 + 34).toFixed(1);
-      const latency = (Math.random() * 8 + 4).toFixed(0);
-      const threads = (Math.random() * 4 + 8).toFixed(0);
-      return `
-OS TELEMETRY STATUS
-===================================================
-SYSTEM NAME: NeuralOS v1.0.4
-PROCESSOR FREQ: 3.42 GHz
-COGNITIVE ALLOC: ${ram}% RAM utilized
-ACTIVE WORKERS: ${threads} threads allocated
-NETWORK LATENCY: ${latency}ms (Indiranagar edge gateway)
-SYNAPSE INTEGRITY: 100% stable
+  // 17. EASTER EGG: RM -RF /
+  rm: {
+    name: 'rm',
+    description: 'Remove files or directories.',
+    usage: 'rm [-rf] <target>',
+    execute: async (args) => {
+      const full = args.join(' ');
+      if (full.includes('-rf /') || full.includes('-rf ~') || full.includes('-r /')) {
+        return `
+[KERNEL PANIC PREVENTION]
+rm: it is dangerous to operate recursively on '/'
+rm: cannot remove root directory: Nice try! 😉
+Siva's portfolio is protected by Raft WAL quorum replication and immutable distributed state.
+All assets survived unharmed.
 `;
-    }
-  },
-
-  'sudo reveal-secrets': {
-    name: 'sudo reveal-secrets',
-    description: 'Reveals funny secret developer assets and encrypted logs.',
-    hidden: true,
-    execute: async () => {
-      return React.createElement('div', { className: 'p-5 border border-amber-500/20 bg-amber-500/5 rounded-xl space-y-3 font-mono text-xs max-w-xl text-amber-400 glow-amber' },
-        React.createElement('div', { className: 'text-amber-500 uppercase tracking-widest font-black flex items-center gap-2 text-glow-amber animate-pulse' }, 
-          '⚠️ CLASSIFIED: SIVA\'S SECRETS REVEALED'
-        ),
-        React.createElement('pre', { className: 'text-[9px] leading-relaxed overflow-x-auto whitespace-pre font-mono bg-black/80 p-3 rounded border border-amber-500/10 text-amber-500/80 custom-scrollbar' }, 
-`[SECURE ENTRY] Encryption bypassed.
-[CLASSIFIED LOG #240]
-  "Siva runs entirely on filter-coffee and high-concurrency systems coding.
-   If you ask the Jarvis assistant orb nice things, he might reveal
-   the terminal code keys to compile the canvas stars!"
-
-[AI COMPILER METRICS]
-  * Model Core: Gemini 3.5 Flash (Medium)
-  * System Temperament: Friendly, pair programmer
-  * Agent status: stable // antigravity offline: false`
-        ),
-        React.createElement('div', { className: 'text-[9px] text-amber-600 font-sans' }, 
-          'Security clearance: guest_sudo // do not leak parameters.'
-        )
-      );
-    }
-  },
-
-  'launch-dev-mode': {
-    name: 'launch-dev-mode',
-    description: 'Compiles dynamic visual sandboxes in high speed developer logs.',
-    hidden: true,
-    execute: async () => {
-      // Returns a beautiful animated loading console!
-      return React.createElement('div', { className: 'p-4 border border-green-500/20 bg-green-500/5 rounded-xl space-y-3 font-mono text-xs max-w-md' },
-        React.createElement('div', { className: 'text-green-400 font-bold uppercase tracking-widest animate-pulse' }, '⚙️ INITIALIZING RUNTIME DEV_MODE'),
-        React.createElement('div', { className: 'space-y-1 text-[9px] text-green-500/80 leading-tight bg-black/80 p-3 rounded border border-green-500/10 font-mono' },
-          React.createElement('div', null, '[NPM] Installing npm dependencies... complete'),
-          React.createElement('div', null, '[LINT] Auditing static component imports... 0 issues'),
-          React.createElement('div', null, '[COMPILER] Bundling assets via Vite...'),
-          React.createElement('div', { className: 'text-green-300 font-bold' }, '[SUCCESS] Local Server listening on PORT: 3000'),
-          React.createElement('div', { className: 'text-green-300 font-bold' }, '[SUCCESS] Telemetry Core synced on PORT: 8080')
-        ),
-        React.createElement('div', { className: 'text-[9px] text-zinc-500 font-sans' }, 
-          'Live workspace loaded. Telemetry interfaces verified.'
-        )
-      );
+      }
+      return `rm: missing operand or permission denied in read-only sandbox.`;
     }
   }
 };
 
-// Autocomplete finder: given a prompt prefix, returns matching standard or hidden commands
-export const getAutocompleteSuggestion = (input: string): string => {
+/**
+ * Autocomplete suggestion engine supporting commands, directories, and files!
+ */
+export const getAutocompleteSuggestion = (input: string, currentPath: string[] = ['~']): string => {
   if (!input.trim()) return '';
-  const prefix = input.toLowerCase();
-  
-  const cmdNames = Object.keys(commandRegistry);
-  const match = cmdNames.find(name => name.startsWith(prefix));
-  
-  if (match) {
-    // Return only the suffix part to be appended in UI
-    return match.slice(prefix.length);
+  const parts = input.split(/\s+/);
+
+  // If typing the command name
+  if (parts.length === 1) {
+    const prefix = parts[0].toLowerCase();
+    const cmdNames = Object.keys(commandRegistry);
+    const match = cmdNames.find(name => name.startsWith(prefix) && name !== prefix);
+    return match ? match.slice(prefix.length) : '';
   }
+
+  // If typing arguments for cd / cat / ls
+  const cmd = parts[0].toLowerCase();
+  if (['cd', 'cat', 'ls'].includes(cmd)) {
+    const lastArg = parts[parts.length - 1];
+    const resolved = resolvePath(currentPath, '.');
+    if (resolved.node && resolved.node.type === 'dir' && resolved.node.children) {
+      const names = Object.keys(resolved.node.children);
+      const match = names.find(n => n.toLowerCase().startsWith(lastArg.toLowerCase()) && n.toLowerCase() !== lastArg.toLowerCase());
+      if (match) {
+        return match.slice(lastArg.length);
+      }
+    }
+  }
+
   return '';
 };
