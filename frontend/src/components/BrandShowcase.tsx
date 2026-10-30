@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Logo } from './Logo';
+import { useUIStore, type GlobalAccentTheme } from '../store/uiStore';
 import { Copy, Check, Play, Sliders, Layers, Type, Compass } from 'lucide-react';
 
 const BRAND_COLORS = [
@@ -60,6 +61,7 @@ const SVGS = {
 };
 
 export const BrandShowcase: React.FC = () => {
+  const { activeTheme, setActiveTheme } = useUIStore();
   // Brand States
   const [activeTab, setActiveTab] = useState<'logo' | 'assets' | 'typography' | 'elevation' | 'motion'>('logo');
   const [copiedColor, setCopiedColor] = useState<string | null>(null);
@@ -160,25 +162,35 @@ export const BrandShowcase: React.FC = () => {
                       </div>
                     </div>
 
-                    {/* Color Theme Selector */}
+                    {/* Global System Theme Selector (Affects Entire Site) */}
                     <div className="flex flex-col gap-1.5">
-                      <span className="text-[9px] text-zinc-500 uppercase">Theme Styling</span>
-                      <div className="grid grid-cols-3 gap-1">
+                      <div className="flex justify-between items-center">
+                        <span className="text-[9px] text-zinc-400 font-bold uppercase">⚡ System Accent Theme</span>
+                        <span className="text-[8px] text-zinc-500 uppercase">Affects Entire Page</span>
+                      </div>
+                      <div className="grid grid-cols-3 gap-1.5">
                         {[
-                          { id: 'default', label: 'Dark Mono' },
-                          { id: 'light', label: 'Light Mono' },
-                          { id: 'dev', label: 'Dev Neon' }
+                          { id: 'default', label: 'Mono White', hex: '#ffffff' },
+                          { id: 'cyan', label: 'Cyber Cyan', hex: '#06b6d4' },
+                          { id: 'matrix', label: 'Dev Matrix', hex: '#39ff14' },
+                          { id: 'amber', label: 'Quantum Amber', hex: '#f59e0b' },
+                          { id: 'violet', label: 'Neural Violet', hex: '#8b5cf6' },
+                          { id: 'rose', label: 'Raft Rose', hex: '#f43f5e' }
                         ].map((t) => (
                           <button
                             key={t.id}
-                            onClick={() => setLogoTheme(t.id as any)}
-                            className={`py-1 border text-[9px] uppercase tracking-wider rounded transition-colors cursor-pointer ${
-                              logoTheme === t.id 
-                                ? 'bg-zinc-800 border-zinc-600 text-white font-bold' 
-                                : 'bg-zinc-950 border-zinc-900 hover:border-zinc-800'
+                            onClick={() => {
+                              setLogoTheme(t.id === 'default' ? 'default' : t.id === 'matrix' ? 'dev' : 'default');
+                              setActiveTheme(t.id as GlobalAccentTheme);
+                            }}
+                            className={`py-1.5 px-1 border text-[8px] uppercase tracking-wider rounded transition-all cursor-pointer flex items-center justify-center gap-1 ${
+                              activeTheme === t.id 
+                                ? 'bg-zinc-800 border-white text-white font-bold shadow-[0_0_10px_rgba(255,255,255,0.15)]' 
+                                : 'bg-zinc-950 border-zinc-900 hover:border-zinc-700 text-zinc-400'
                             }`}
                           >
-                            {t.label}
+                            <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ backgroundColor: t.hex }} />
+                            <span>{t.label}</span>
                           </button>
                         ))}
                       </div>
