@@ -370,42 +370,137 @@ spec:
     }, 1000);
   };
 
+// ==========================================
+  // 9. BANK SYSTEM LEDGER SANDBOX STATE (CHAOS CONTROLS)
   // ==========================================
-  // 9. BANK SYSTEM LEDGER SANDBOX STATE
-  // ==========================================
+  interface RaftClusterNode {
+    id: string;
+    role: 'Leader' | 'Follower' | 'Crashed';
+    term: number;
+    latency: number;
+  }
+
+  const [raftNodes, setRaftNodes] = useState<RaftClusterNode[]>([
+    { id: 'Node-1', role: 'Leader', term: 4, latency: 12 },
+    { id: 'Node-2', role: 'Follower', term: 4, latency: 18 },
+    { id: 'Node-3', role: 'Follower', term: 4, latency: 15 }
+  ]);
+  const [balanceA, setBalanceA] = useState(1500);
+  const [balanceB, setBalanceB] = useState(300);
   const [ledgerLogs, setLedgerLogs] = useState<string[]>([
-    '[SYSTEM] Raft Ledger Node Cluster initialized.',
-    '[NODES] Replication Leader: node_1 (active). Followers: node_2, node_3.',
-    '[LEDGER] Current Balances: Account_A = $1500, Account_B = $300'
+    '[INIT] Raft cluster initialized with 3 nodes. Quorum requirement = 2.',
+    '[NODES] Node-1 elected Leader (Term 4). Followers: Node-2, Node-3.',
+    '[LEDGER] Initial Balances: Account_A = $1500, Account_B = $300'
   ]);
   const [transAmt, setTransAmt] = useState(150);
   const [isTransacting, setIsTransacting] = useState(false);
+  const [isElectionRunning, setIsElectionRunning] = useState(false);
+
+  const toggleNodeCrash = (nodeId: string) => {
+    setRaftNodes(prev => {
+      const target = prev.find(n => n.id === nodeId);
+      if (!target) return prev;
+
+      if (target.role === 'Crashed') {
+        setLedgerLogs(l => [...l, `[CHAOS] 🔄 Heartbeat recovered on ${nodeId}! Rejoining cluster as Follower.`]);
+        return prev.map(n => n.id === nodeId ? { ...n, role: 'Follower' } : n);
+      } else {
+        const wasLeader = target.role === 'Leader';
+        setLedgerLogs(l => [
+          ...l, 
+          `[CHAOS-KILL] 💥 Injected network partition / kill on ${nodeId}! Node is UNRESPONSIVE.`
+        ]);
+
+        const updated = prev.map(n => n.id === nodeId ? { ...n, role: 'Crashed' as const } : n);
+
+        if (wasLeader) {
+          triggerLeaderElection(updated);
+        }
+        return updated;
+      }
+    });
+  };
+
+  const triggerLeaderElection = (nodesState: RaftClusterNode[]) => {
+    const liveFollowers = nodesState.filter(n => n.role === 'Follower');
+    if (liveFollowers.length === 0) {
+      setLedgerLogs(l => [...l, `[CRITICAL] All nodes offline. Quorum lost! Transactions halted.`]);
+      return;
+    }
+
+    setIsElectionRunning(true);
+    setLedgerLogs(l => [
+      ...l, 
+      `[HEARTBEAT TIMEOUT] Leader missing! Follower election timer triggered.`,
+      `[ELECTION] ${liveFollowers[0].id} transitioning to Candidate (Term 5)... Requesting votes.`
+    ]);
+
+    setTimeout(() => {
+      const liveCount = liveFollowers.length;
+      if (liveCount >= 2) {
+        setRaftNodes(current => current.map(n => {
+          if (n.id === liveFollowers[0].id) {
+            return { ...n, role: 'Leader', term: 5 };
+          }
+          return n;
+        }));
+        setLedgerLogs(l => [
+          ...l, 
+          `[QUORUM GRANTED] ${liveFollowers[0].id} received ${liveCount}/3 votes.`,
+          `[SUCCESS] 👑 ${liveFollowers[0].id} elected new LEADER (Term 5)! WAL replication active.`
+        ]);
+      } else {
+        setLedgerLogs(l => [
+          ...l, 
+          `[SPLIT BRAIN PREVENTED] Only ${liveCount} live node. Quorum requires >= 2. Read-only mode active.`
+        ]);
+      }
+      setIsElectionRunning(false);
+    }, 1100);
+  };
 
   const triggerTransaction = () => {
+    const leader = raftNodes.find(n => n.role === 'Leader');
+    const aliveCount = raftNodes.filter(n => n.role !== 'Crashed').length;
+
+    if (!leader) {
+      setLedgerLogs(p => [...p, '[ABORTED] No Leader online! Revive a node to allow automatic election.']);
+      return;
+    }
+
+    if (aliveCount < 2) {
+      setLedgerLogs(p => [...p, '[ABORTED] Quorum lost (needs >= 2 nodes). Writes locked to prevent split-brain.']);
+      return;
+    }
+
+    if (balanceA < transAmt) {
+      setLedgerLogs(p => [...p, `[REJECTED] Insufficient funds: Acc_A ($${balanceA}) < Transfer ($${transAmt}).`]);
+      return;
+    }
+
     if (isTransacting) return;
     setIsTransacting(true);
-    setLedgerLogs(p => [...p, `[INIT] Request: Transfer $${transAmt} from Account_A -> Account_B`]);
+
+    setLedgerLogs(p => [...p, `[INIT] Transfer $${transAmt} from Account_A -> Account_B via ${leader.id}`]);
 
     setTimeout(() => {
-      setLedgerLogs(p => [...p, '[CONSENSUS] Raft leader acquiring transaction mutability lock.']);
-    }, 300);
+      setLedgerLogs(p => [...p, `[LOCK] ${leader.id} acquired distributed WAL mutex lock.`]);
+    }, 250);
 
     setTimeout(() => {
-      setLedgerLogs(p => [...p, '[BALANCE] Checking Account_A balance... Validated ($1500 >= $150).']);
-    }, 600);
+      setLedgerLogs(p => [...p, `[REPLICATE] WAL entry replicated to active follower quorum.`]);
+    }, 550);
 
     setTimeout(() => {
-      setLedgerLogs(p => [...p, '[REPLICATE] Distributing WAL ledger logs to node_2 and node_3 follower replicas...']);
-    }, 950);
-
-    setTimeout(() => {
-      setLedgerLogs(p => [...p, '[AUDIT] Commit double-entry ledger stream: [ACC_A: -$150] | [ACC_B: +$150]. Hash: cb89f...']);
-    }, 1300);
-
-    setTimeout(() => {
-      setLedgerLogs(p => [...p, `[SUCCESS] Transaction committed. Balanced Sync state. Acc_A: $1350, Acc_B: $450.`]);
+      setBalanceA(prev => prev - transAmt);
+      setBalanceB(prev => prev + transAmt);
+      setLedgerLogs(p => [
+        ...p,
+        `[AUDIT] Commit double-entry stream: [ACC_A: -$${transAmt}] | [ACC_B: +$${transAmt}].`,
+        `[SUCCESS] Quorum achieved! Account_A: $${balanceA - transAmt}, Account_B: $${balanceB + transAmt}.`
+      ]);
       setIsTransacting(false);
-    }, 1600);
+    }, 950);
   };
 
   return (
@@ -938,49 +1033,131 @@ spec:
         </div>
       )}
 
-      {/* 9. BANK SYSTEM LEDGER SANDBOX */}
+            {/* 9. BANK SYSTEM LEDGER SANDBOX WITH CHAOS CONTROLS */}
       {projectId === 'bank' && (
         <div className="flex flex-col gap-4 font-mono text-xs">
           <div className="flex justify-between items-center border-b border-zinc-900 pb-3">
             <h4 className="text-sm font-bold text-white uppercase flex items-center gap-2">
-              <DollarSign className="w-4 h-4 text-rose-400" /> Append-Only Replicated Consensus Ledger
+              <DollarSign className="w-4 h-4 text-rose-400" /> Raft Ledger & Chaos Engineering Simulator
             </h4>
-            <span className="text-[10px] text-rose-400 bg-rose-500/10 border border-rose-500/20 px-2 py-0.5 rounded uppercase">
-              Raft WAL Ledger
-            </span>
+            <div className="flex items-center gap-2">
+              <span className="text-[10px] text-amber-400 bg-amber-500/10 border border-amber-500/20 px-2 py-0.5 rounded uppercase">
+                Quorum: 2/3 Nodes
+              </span>
+              <span className="text-[10px] text-rose-400 bg-rose-500/10 border border-rose-500/20 px-2 py-0.5 rounded uppercase">
+                Raft WAL Consensus
+              </span>
+            </div>
+          </div>
+
+          {/* Interactive Cluster Nodes Chaos Bar */}
+          <div className="p-3 bg-zinc-950/90 border border-zinc-800 rounded-lg space-y-2">
+            <div className="flex justify-between items-center">
+              <span className="text-[10px] text-zinc-400 font-bold uppercase tracking-wider">
+                ⚡ Interactive Cluster Node Health (Click to Inject Fault / Revive)
+              </span>
+              <span className="text-[9px] text-zinc-500">
+                {isElectionRunning ? '⚠️ ELECTION IN PROGRESS' : 'CLUSTER HEALTHY'}
+              </span>
+            </div>
+
+            <div className="grid grid-cols-3 gap-3">
+              {raftNodes.map((node) => {
+                const isLeader = node.role === 'Leader';
+                const isCrashed = node.role === 'Crashed';
+
+                return (
+                  <button
+                    key={node.id}
+                    onClick={() => toggleNodeCrash(node.id)}
+                    className={`p-2.5 rounded-lg border text-left transition-all cursor-pointer relative overflow-hidden ${
+                      isCrashed
+                        ? 'bg-red-950/20 border-red-500/40 text-red-400 hover:bg-red-950/40'
+                        : isLeader
+                        ? 'bg-amber-950/20 border-amber-500/60 text-amber-300 shadow-[0_0_12px_rgba(245,158,11,0.15)]'
+                        : 'bg-zinc-900/60 border-zinc-800 text-zinc-300 hover:border-zinc-700'
+                    }`}
+                  >
+                    <div className="flex items-center justify-between mb-1">
+                      <span className="font-bold text-xs">{node.id}</span>
+                      <span className={`text-[9px] px-1.5 py-0.5 rounded font-bold uppercase ${
+                        isCrashed
+                          ? 'bg-red-500/20 text-red-400'
+                          : isLeader
+                          ? 'bg-amber-500/20 text-amber-300 animate-pulse'
+                          : 'bg-green-500/10 text-green-400'
+                      }`}>
+                        {node.role}
+                      </span>
+                    </div>
+
+                    <div className="text-[9px] text-zinc-500 flex justify-between">
+                      <span>Term: {node.term}</span>
+                      <span>{isCrashed ? 'OFFLINE' : `${node.latency}ms ping`}</span>
+                    </div>
+
+                    <div className="mt-2 text-[8px] uppercase tracking-wider text-center py-0.5 rounded bg-black/40 border border-white/5">
+                      {isCrashed ? '🟢 Click to Revive' : '💥 Click to Kill Node'}
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
           </div>
 
           <div className="grid md:grid-cols-5 gap-6">
             <div className="md:col-span-2 space-y-4">
-              <div className="space-y-2">
-                <span className="text-[9px] text-zinc-500 uppercase block">Input Transaction Amount</span>
+              {/* Balances Display */}
+              <div className="grid grid-cols-2 gap-2 bg-zinc-900/40 border border-zinc-850 p-2.5 rounded-lg text-center">
+                <div className="p-2 bg-black/60 rounded border border-zinc-800">
+                  <span className="text-[9px] text-zinc-500 uppercase block">Account_A</span>
+                  <span className="text-sm font-bold text-emerald-400">${balanceA}</span>
+                </div>
+                <div className="p-2 bg-black/60 rounded border border-zinc-800">
+                  <span className="text-[9px] text-zinc-500 uppercase block">Account_B</span>
+                  <span className="text-sm font-bold text-cyan-400">${balanceB}</span>
+                </div>
+              </div>
+
+              <div className="space-y-1.5">
+                <span className="text-[9px] text-zinc-500 uppercase block">Transfer Amount</span>
                 <input 
-                  type="number" value={transAmt}
+                  type="number" 
+                  value={transAmt}
                   onChange={(e) => setTransAmt(Math.max(Number(e.target.value), 1))}
-                  className="w-full bg-black border border-zinc-800 rounded p-2.5 text-zinc-300 text-xs focus:border-rose-500 focus:outline-none"
+                  className="w-full bg-black border border-zinc-800 rounded p-2 text-zinc-300 text-xs focus:border-rose-500 focus:outline-none"
                 />
               </div>
 
               <button
                 onClick={triggerTransaction}
-                disabled={isTransacting}
-                className="w-full py-2 bg-rose-950/20 hover:bg-rose-950/40 border border-rose-500/30 text-[10px] font-bold text-rose-400 rounded uppercase cursor-pointer"
+                disabled={isTransacting || isElectionRunning}
+                className="w-full py-2 bg-rose-950/30 hover:bg-rose-950/50 border border-rose-500/40 text-[10px] font-bold text-rose-300 rounded uppercase cursor-pointer disabled:opacity-40 transition-all"
               >
-                {isTransacting ? 'Processing Consensus logs...' : 'Submit Transaction'}
+                {isTransacting ? 'Replicating WAL Consensus...' : 'Execute Transaction ($' + transAmt + ')'}
               </button>
             </div>
 
-            <div className="md:col-span-3 bg-black/95 border border-zinc-900 rounded-lg p-4 min-h-[170px] flex flex-col justify-between">
+            <div className="md:col-span-3 bg-black/95 border border-zinc-900 rounded-lg p-4 min-h-[190px] flex flex-col justify-between">
               <div className="space-y-2">
-                <span className="text-[8px] text-zinc-500 uppercase block">Raft Ledger Transaction Pipeline Logs</span>
-                <div className="space-y-1 max-h-[110px] overflow-y-auto custom-scrollbar text-[9px] leading-relaxed">
+                <div className="flex justify-between items-center border-b border-zinc-900 pb-1">
+                  <span className="text-[8px] text-zinc-500 uppercase block">Consensus WAL Audit Log Stream</span>
+                  <button 
+                    onClick={() => setLedgerLogs(['[INIT] Logs cleared by operator.'])}
+                    className="text-[8px] text-zinc-600 hover:text-zinc-400 uppercase"
+                  >
+                    Clear Logs
+                  </button>
+                </div>
+                <div className="space-y-1 max-h-[140px] overflow-y-auto custom-scrollbar text-[9px] leading-relaxed">
                   {ledgerLogs.map((log, i) => {
-                    let color = 'text-zinc-500';
+                    let color = 'text-zinc-400';
                     if (log.startsWith('[INIT]')) color = 'text-white font-bold';
-                    else if (log.startsWith('[BALANCE]')) color = 'text-yellow-400';
-                    else if (log.startsWith('[REPLICATE]')) color = 'text-purple-400';
-                    else if (log.startsWith('[AUDIT]')) color = 'text-cyan-400';
-                    else if (log.startsWith('[SUCCESS]')) color = 'text-green-400 font-bold text-glow-green';
+                    else if (log.startsWith('[CHAOS-KILL]')) color = 'text-red-400 font-bold';
+                    else if (log.startsWith('[CHAOS]')) color = 'text-emerald-400';
+                    else if (log.startsWith('[ELECTION]')) color = 'text-amber-400';
+                    else if (log.startsWith('[SUCCESS]')) color = 'text-green-400 font-bold';
+                    else if (log.startsWith('[ABORTED]') || log.startsWith('[CRITICAL]')) color = 'text-rose-400 font-semibold';
                     return <div key={i} className={color}>{log}</div>;
                   })}
                 </div>
@@ -989,7 +1166,7 @@ spec:
           </div>
         </div>
       )}
-      
-    </div>
+
+</div>
   );
 }
