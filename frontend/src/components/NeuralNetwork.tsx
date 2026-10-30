@@ -2,7 +2,6 @@
 import React, { useRef, useMemo } from 'react';
 import { useFrame, useThree } from '@react-three/fiber';
 import * as THREE from 'three';
-import { useUIStore } from '../store/uiStore';
 
 interface Node {
   pos: THREE.Vector3;
@@ -27,15 +26,15 @@ interface NeuralNetworkProps {
   interactive?: boolean;
 }
 
-const MOUSE_INFLUENCE_RADIUS = 4.0;
-const MOUSE_GRAVITY = 0.05; // attraction strength
+const MOUSE_INFLUENCE_RADIUS = 4.5;
+const MOUSE_GRAVITY = 0.04;
 
 export const NeuralNetwork: React.FC<NeuralNetworkProps> = ({
   particleCount,
   proximityThreshold,
   pointColor = '#ffffff',
-  lineColor = '#27272a', // delicate zinc-800
-  pulseColor = '#ffffff',
+  lineColor = '#3f3f46', // zinc-700 for clear persistent visibility
+  pulseColor = '#22d3ee', // bright cyan pulse
   pulseCount,
   interactive = true,
 }) => {
@@ -44,37 +43,34 @@ export const NeuralNetwork: React.FC<NeuralNetworkProps> = ({
   const pulsesRef = useRef<THREE.Points>(null);
   const groupRef = useRef<THREE.Group>(null);
   const { viewport } = useThree();
-  const { isDevModeActive } = useUIStore();
 
-  // Dynamic mobile viewport optimizations
   const isMobile = useMemo(() => typeof window !== 'undefined' && window.innerWidth < 768, []);
   
-  const PARTICLE_COUNT = useMemo(() => particleCount || (isMobile ? 28 : 70), [particleCount, isMobile]);
-  const PROXIMITY_THRESHOLD = useMemo(() => proximityThreshold || (isMobile ? 3.8 : 3.0), [proximityThreshold, isMobile]);
-  const maxLineConnections = useMemo(() => (isMobile ? 80 : 250), [isMobile]);
-  const PULSE_COUNT = useMemo(() => pulseCount || (isMobile ? 8 : 22), [pulseCount, isMobile]);
+  const PARTICLE_COUNT = useMemo(() => particleCount || (isMobile ? 36 : 90), [particleCount, isMobile]);
+  const PROXIMITY_THRESHOLD = useMemo(() => proximityThreshold || (isMobile ? 3.8 : 3.4), [proximityThreshold, isMobile]);
+  const maxLineConnections = useMemo(() => (isMobile ? 120 : 320), [isMobile]);
+  const PULSE_COUNT = useMemo(() => pulseCount || (isMobile ? 12 : 28), [pulseCount, isMobile]);
 
-  // Pre-allocated vector references to guarantee zero per-frame allocations (GC protection)
   const mouse3D = useRef(new THREE.Vector3());
   const forceDirection = useRef(new THREE.Vector3());
   const tempPulseVector = useRef(new THREE.Vector3());
 
-  // Create nodes with stable floating parameters
+  // Create persistent nodes with bounded floating physics
   const nodes = useMemo(() => {
     const temp: Node[] = [];
-    const boundaryX = viewport.width * 0.7;
-    const boundaryY = viewport.height * 0.7;
+    const boundaryX = viewport.width * 0.85;
+    const boundaryY = viewport.height * 0.85;
     
     for (let i = 0; i < PARTICLE_COUNT; i++) {
       const pos = new THREE.Vector3(
         (Math.random() - 0.5) * boundaryX,
         (Math.random() - 0.5) * boundaryY,
-        (Math.random() - 0.5) * 6
+        (Math.random() - 0.5) * 5
       );
       const vel = new THREE.Vector3(
-        (Math.random() - 0.5) * 0.015,
-        (Math.random() - 0.5) * 0.015,
-        (Math.random() - 0.5) * 0.01
+        (Math.random() - 0.5) * 0.008,
+        (Math.random() - 0.5) * 0.008,
+        (Math.random() - 0.5) * 0.006
       );
       temp.push({
         pos,
@@ -85,7 +81,6 @@ export const NeuralNetwork: React.FC<NeuralNetworkProps> = ({
     return temp;
   }, [viewport, PARTICLE_COUNT]);
 
-  // Positions array for points
   const pointsPositions = useMemo(() => {
     const arr = new Float32Array(PARTICLE_COUNT * 3);
     nodes.forEach((n, idx) => {
@@ -96,13 +91,9 @@ export const NeuralNetwork: React.FC<NeuralNetworkProps> = ({
     return arr;
   }, [nodes, PARTICLE_COUNT]);
 
-  // Buffer geometries references for lines
   const linePositions = useMemo(() => new Float32Array(maxLineConnections * 2 * 3), [maxLineConnections]);
-
-  // Positions array for moving synapse signals (pulses)
   const pulsePositions = useMemo(() => new Float32Array(PULSE_COUNT * 3), [PULSE_COUNT]);
 
-  // Instantiated pulse signals
   const activePulses = useMemo(() => {
     const temp: PulseSignal[] = [];
     for (let i = 0; i < PULSE_COUNT; i++) {
@@ -110,25 +101,22 @@ export const NeuralNetwork: React.FC<NeuralNetworkProps> = ({
       temp.push({
         start,
         end: Math.floor(Math.random() * PARTICLE_COUNT),
-        progress: Math.random(), // Distribute starting offsets
-        speed: 0.006 + Math.random() * 0.012,
+        progress: Math.random(),
+        speed: 0.005 + Math.random() * 0.01,
       });
     }
     return temp;
   }, [PULSE_COUNT, PARTICLE_COUNT]);
 
   useFrame((state) => {
-    if (isDevModeActive) return;
     const { pointer } = state;
     
-    // Ambient multi-axis slow drift rotation for depth immersion
     if (groupRef.current) {
       const time = state.clock.getElapsedTime();
-      groupRef.current.rotation.y = time * 0.012;
-      groupRef.current.rotation.x = Math.sin(time * 0.06) * 0.015;
+      groupRef.current.rotation.y = time * 0.01;
+      groupRef.current.rotation.x = Math.sin(time * 0.04) * 0.012;
     }
     
-    // Map normalized device mouse coords (pointer.x, pointer.y) to 3D workspace
     const m3D = mouse3D.current;
     if (interactive) {
       m3D.set(
@@ -137,23 +125,20 @@ export const NeuralNetwork: React.FC<NeuralNetworkProps> = ({
         0
       );
     } else {
-      m3D.set(9999, 9999, 9999); // Bypass interaction
+      m3D.set(9999, 9999, 9999);
     }
 
-    const boundaryX = viewport.width * 0.8;
-    const boundaryY = viewport.height * 0.8;
+    const boundaryX = viewport.width * 0.9;
+    const boundaryY = viewport.height * 0.9;
 
-    // 1. Update node physics
+    // 1. Continuous smooth particle motion (never vanishes)
     nodes.forEach((node) => {
-      // Add standard flow velocity
       node.pos.add(node.vel);
 
-      // Subtle float oscillation around original position
       const time = state.clock.getElapsedTime();
-      node.pos.x += Math.sin(time + node.originalPos.y) * 0.002;
-      node.pos.y += Math.cos(time + node.originalPos.x) * 0.002;
+      node.pos.x += Math.sin(time * 0.8 + node.originalPos.y) * 0.0015;
+      node.pos.y += Math.cos(time * 0.8 + node.originalPos.x) * 0.0015;
 
-      // Mouse interactive pull
       if (interactive) {
         const distToMouse = node.pos.distanceTo(m3D);
         if (distToMouse < MOUSE_INFLUENCE_RADIUS) {
@@ -164,13 +149,22 @@ export const NeuralNetwork: React.FC<NeuralNetworkProps> = ({
         }
       }
 
-      // Boundary bounds check
-      if (Math.abs(node.pos.x) > boundaryX) node.vel.x *= -1;
-      if (Math.abs(node.pos.y) > boundaryY) node.vel.y *= -1;
-      if (Math.abs(node.pos.z) > 4) node.vel.z *= -1;
+      // Smooth bounce inside viewport boundary
+      if (Math.abs(node.pos.x) > boundaryX) {
+        node.vel.x *= -1;
+        node.pos.x = Math.sign(node.pos.x) * boundaryX;
+      }
+      if (Math.abs(node.pos.y) > boundaryY) {
+        node.vel.y *= -1;
+        node.pos.y = Math.sign(node.pos.y) * boundaryY;
+      }
+      if (Math.abs(node.pos.z) > 4) {
+        node.vel.z *= -1;
+        node.pos.z = Math.sign(node.pos.z) * 4;
+      }
     });
 
-    // 2. Update Points rendering attributes
+    // 2. Update Points attributes
     if (pointsRef.current) {
       const positionAttr = pointsRef.current.geometry.attributes.position as THREE.BufferAttribute;
       nodes.forEach((node, idx) => {
@@ -179,7 +173,7 @@ export const NeuralNetwork: React.FC<NeuralNetworkProps> = ({
       positionAttr.needsUpdate = true;
     }
 
-    // 3. Connect close nodes dynamically to build network line coordinates
+    // 3. Update dynamic connection lines
     let lineIdx = 0;
     for (let i = 0; i < PARTICLE_COUNT; i++) {
       for (let j = i + 1; j < PARTICLE_COUNT; j++) {
@@ -190,12 +184,10 @@ export const NeuralNetwork: React.FC<NeuralNetworkProps> = ({
         const dist = n1.pos.distanceTo(n2.pos);
 
         if (dist < PROXIMITY_THRESHOLD) {
-          // Write coordinates for node 1
           linePositions[lineIdx * 6] = n1.pos.x;
           linePositions[lineIdx * 6 + 1] = n1.pos.y;
           linePositions[lineIdx * 6 + 2] = n1.pos.z;
 
-          // Write coordinates for node 2
           linePositions[lineIdx * 6 + 3] = n2.pos.x;
           linePositions[lineIdx * 6 + 4] = n2.pos.y;
           linePositions[lineIdx * 6 + 5] = n2.pos.z;
@@ -205,7 +197,6 @@ export const NeuralNetwork: React.FC<NeuralNetworkProps> = ({
       }
     }
 
-    // Clear unused segments by zeroing them out
     for (let i = lineIdx; i < maxLineConnections; i++) {
       for (let offset = 0; offset < 6; offset++) {
         linePositions[i * 6 + offset] = 0;
@@ -217,7 +208,7 @@ export const NeuralNetwork: React.FC<NeuralNetworkProps> = ({
       linePosAttr.needsUpdate = true;
     }
 
-    // 4. Update dynamic synapse signal pulses
+    // 4. Update dynamic signal pulses
     activePulses.forEach((pulse, idx) => {
       pulse.progress += pulse.speed;
       
@@ -225,7 +216,6 @@ export const NeuralNetwork: React.FC<NeuralNetworkProps> = ({
         pulse.progress = 0;
         pulse.start = Math.floor(Math.random() * PARTICLE_COUNT);
         
-        // Find a connected candidate target index
         let found = false;
         const startNode = nodes[pulse.start];
         for (let k = 0; k < 6; k++) {
@@ -241,7 +231,6 @@ export const NeuralNetwork: React.FC<NeuralNetworkProps> = ({
         }
       }
 
-      // Linear interpolation to find current signal position between start and end node
       const startNode = nodes[pulse.start];
       const endNode = nodes[pulse.end];
       const vec = tempPulseVector.current;
@@ -260,7 +249,7 @@ export const NeuralNetwork: React.FC<NeuralNetworkProps> = ({
 
   return (
     <group ref={groupRef}>
-      {/* 3D static node points */}
+      {/* 3D Node points */}
       <points ref={pointsRef}>
         <bufferGeometry>
           <bufferAttribute
@@ -270,10 +259,10 @@ export const NeuralNetwork: React.FC<NeuralNetworkProps> = ({
         </bufferGeometry>
         <pointsMaterial
           color={pointColor}
-          size={isMobile ? 0.09 : 0.08}
+          size={isMobile ? 0.12 : 0.1}
           sizeAttenuation={true}
           transparent
-          opacity={0.5}
+          opacity={0.75}
         />
       </points>
 
@@ -288,12 +277,12 @@ export const NeuralNetwork: React.FC<NeuralNetworkProps> = ({
         <lineBasicMaterial
           color={lineColor}
           transparent
-          opacity={0.3}
+          opacity={0.45}
           linewidth={1}
         />
       </lineSegments>
 
-      {/* Brighter energetic synapse pulses moving along lines */}
+      {/* Energetic pulses flowing through the network */}
       <points ref={pulsesRef}>
         <bufferGeometry>
           <bufferAttribute
@@ -303,10 +292,10 @@ export const NeuralNetwork: React.FC<NeuralNetworkProps> = ({
         </bufferGeometry>
         <pointsMaterial
           color={pulseColor}
-          size={isMobile ? 0.16 : 0.14}
+          size={isMobile ? 0.22 : 0.18}
           sizeAttenuation={true}
           transparent
-          opacity={0.9}
+          opacity={0.95}
         />
       </points>
     </group>
