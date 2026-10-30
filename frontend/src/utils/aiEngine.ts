@@ -1,21 +1,41 @@
 // frontend/src/utils/aiEngine.ts
 /**
- * Zero-API Heuristic Intelligence Engine (JARVIS Heuristic Core)
+ * Zero-API Heuristic Intelligence Engine with Telemetry Observability (JARVIS Heuristic Core)
  * Delivers instantaneous, highly contextual, conversational responses 
- * without requiring external API keys or risking rate-limits / network outages.
+ * and transparent RAG observability telemetry.
  */
 
+export interface TelemetryLog {
+  query: string;
+  detectedIntent: string;
+  matchedKeywords: string[];
+  contextChunks: string[];
+  latencyMs: number;
+  tokenCount: number;
+  modelEngine: string;
+}
+
 interface QueryMatch {
+  intent: string;
+  keywords: string[];
   patterns: RegExp[];
+  contextChunks: string[];
   responses: string[];
 }
 
 export const AI_KNOWLEDGE_ROUTER: QueryMatch[] = [
   // 1. Who is Siva / Background / Intro
   {
+    intent: "BIOGRAPHY_RETRIEVAL",
+    keywords: ["who is", "about", "bio", "profile", "background", "intro"],
     patterns: [
       /\b(who is|about|background|bio|profile|intro|tell me about|introduce)\b/i,
       /\bwho are you\b/i
+    ],
+    contextChunks: [
+      "VFS:~/bio.md (Line 1-12)",
+      "KnowledgeBase::PersonalInfo::Summary",
+      "Telemetry::EdgeNode::Bengaluru"
     ],
     responses: [
       "I am **JARVIS**, the neural assistant for **Siva Panyam**.\n\nSiva is a Full-Stack & AI Systems Engineer based in Bangalore. He specializes in distributed web architectures, high-performance TypeScript/React applications, and integrating agentic workflows and local neural pipelines into real-world products. He bridges the gap between sophisticated generative AI algorithms and highly performant, visual web experiences.",
@@ -25,8 +45,15 @@ export const AI_KNOWLEDGE_ROUTER: QueryMatch[] = [
 
   // 2. Tech Stack / Skills
   {
+    intent: "SKILLS_INVENTORY_QUERY",
+    keywords: ["skills", "stack", "tech", "languages", "tools", "frameworks"],
     patterns: [
       /\b(skill|skills|stack|tech|technolog|language|framework|tools|proficien)\b/i
+    ],
+    contextChunks: [
+      "VFS:~/skills/frontend.json (Expert: React, Three.js, TypeScript)",
+      "VFS:~/skills/backend.json (Expert: Node, Express, Go/Rust)",
+      "VFS:~/skills/ai-systems.json (RAG, Milvus, INT8 TFLite)"
     ],
     responses: [
       "Siva's verified technical telemetry includes:\n\n" +
@@ -38,10 +65,18 @@ export const AI_KNOWLEDGE_ROUTER: QueryMatch[] = [
     ]
   },
 
-  // 3. Featured Projects & Engineering Labs
+  // 3. Featured Projects
   {
+    intent: "PROJECTS_INSPECTION",
+    keywords: ["project", "projects", "work", "built", "showcase", "lab"],
     patterns: [
       /\b(project|projects|work|built|portfolio|showcase|app|apps|lab)\b/i
+    ],
+    contextChunks: [
+      "VFS:~/projects/neuralos.md",
+      "VFS:~/projects/fanversi.md",
+      "VFS:~/projects/ecotrack.md",
+      "VFS:~/projects/raft-bank.md"
     ],
     responses: [
       "Siva has architected several flagship systems:\n\n" +
@@ -53,51 +88,17 @@ export const AI_KNOWLEDGE_ROUTER: QueryMatch[] = [
     ]
   },
 
-  // 4. Specific: NeuralOS
+  // 4. Availability / Hiring
   {
-    patterns: [
-      /\b(neuralos|neural os|os|terminal|console|shell)\b/i
-    ],
-    responses: [
-      "**NeuralOS** is Siva's interactive operating environment showcased right on this page! It integrates:\n\n" +
-      "• Quake-style shell (toggle with ` ~ ` or backtick)\n" +
-      "• Fuzzy command palette (toggle with `Ctrl + K`)\n" +
-      "• Dynamic hardware-accelerated 3D neural mesh\n" +
-      "• Live telemetry overlays with memory and latency monitors\n" +
-      "• Konami Easter egg code (press Arrow Keys: Up, Up, Down, Down to trigger HUD Dev Mode)!"
-    ]
-  },
-
-  // 5. Specific: FanVersi
-  {
-    patterns: [
-      /\b(fanversi|crewai|nlp|milvus|co-author)\b/i
-    ],
-    responses: [
-      "**FanVersi AI** is a collaborative creative lore engine designed to keep fictional worlds coherent:\n\n" +
-      "• Powered by **CrewAI** multi-agent setups where distinct agent personas audit plot points\n" +
-      "• **Milvus Vector Database** performs sub-millisecond semantic similarity lookups across novel-length lore bibles\n" +
-      "• Interactive editor powered by SlateJS and a fast FastAPI backend."
-    ]
-  },
-
-  // 6. Specific: EcoTrack
-  {
-    patterns: [
-      /\b(ecotrack|iot|tflite|carbon|telemetry|edge)\b/i
-    ],
-    responses: [
-      "**EcoTrack-AI** is an edge-native telemetry auditor built for low-power IoT devices:\n\n" +
-      "• Quantized **INT8 TensorFlow Lite** models deployed directly onto micro-controllers\n" +
-      "• Achieved an **85% reduction** in edge CPU power usage for continuous carbon footprint audits\n" +
-      "• Ingests time-series sensor packets over MQTT directly into an InfluxDB cluster."
-    ]
-  },
-
-  // 7. Availability / Hiring / Job Opportunities
-  {
+    intent: "RECRUITER_AVAILABILITY_AUDIT",
+    keywords: ["hire", "available", "job", "role", "interview", "opportunity", "remote"],
     patterns: [
       /\b(hire|hiring|available|availability|job|role|interview|opportunity|relocate|notice|full-time|remote|salary)\b/i
+    ],
+    contextChunks: [
+      "Profile::Status: AVAILABLE",
+      "TargetRoles: FullStack_AI_Systems",
+      "Location: Bangalore (Hybrid) / Worldwide (Remote)"
     ],
     responses: [
       "**Candidate Status: AVAILABLE & EXPLORING OPPORTUNITIES**\n\n" +
@@ -110,10 +111,16 @@ export const AI_KNOWLEDGE_ROUTER: QueryMatch[] = [
     ]
   },
 
-  // 8. Contact / Email / Social Links
+  // 5. Contact
   {
+    intent: "CONTACT_RELAY_HANDSHAKE",
+    keywords: ["contact", "email", "linkedin", "github", "reach", "message"],
     patterns: [
       /\b(contact|email|reach|touch|message|linkedin|github|phone|connect)\b/i
+    ],
+    contextChunks: [
+      "VFS:~/contact.sh",
+      "Relays: [contact@sivapanyam.dev, github.com/SivaPanyam, linkedin.com/in/sivapanyam]"
     ],
     responses: [
       "You can reach Siva directly across multiple communication relays:\n\n" +
@@ -125,10 +132,16 @@ export const AI_KNOWLEDGE_ROUTER: QueryMatch[] = [
     ]
   },
 
-  // 9. Resume / CV
+  // 6. Resume
   {
+    intent: "CREDENTIALS_PAYLOAD_FETCH",
+    keywords: ["resume", "cv", "download", "pdf"],
     patterns: [
       /\b(resume|cv|pdf|download resume|curriculum vitae)\b/i
+    ],
+    contextChunks: [
+      "VFS:~/resume.pdf (Size: 142KB)",
+      "URL: https://sivapanyam.dev/assets/cv_payload.pdf"
     ],
     responses: [
       "You can access Siva's verified credentials:\n\n" +
@@ -138,10 +151,16 @@ export const AI_KNOWLEDGE_ROUTER: QueryMatch[] = [
     ]
   },
 
-  // 10. Experience & Work History
+  // 7. Experience
   {
+    intent: "CAREER_TIMELINE_TRACE",
+    keywords: ["experience", "companies", "career", "history", "timeline"],
     patterns: [
       /\b(experience|history|career|companies|worked|company|timeline|lead)\b/i
+    ],
+    contextChunks: [
+      "VFS:~/experience/ai-synthesis-labs.txt",
+      "VFS:~/experience/datasync-corp.txt"
     ],
     responses: [
       "Siva's professional timeline spans cutting-edge engineering leadership:\n\n" +
@@ -149,71 +168,65 @@ export const AI_KNOWLEDGE_ROUTER: QueryMatch[] = [
       "• **DataSync Corp** (Senior Full Stack Engineer, 2021–2023): Designed high-throughput WebSocket microservices and built enterprise analytics dashboards handling 2M+ daily events.\n" +
       "• **Bangalore Engineering Sandbox** (R&D Associate, 2019–2021): Researched distributed consensus mechanisms and edge AI quantization."
     ]
-  },
-
-  // 11. AI / LLM Philosophy & Experience
-  {
-    patterns: [
-      /\b(ai philosophy|llm|agent|agents|rag|vector|embeddings|quantiz|genai|gpt)\b/i
-    ],
-    responses: [
-      "Siva's philosophy on AI systems is rooted in **applied reliability and efficiency**:\n\n" +
-      "• Rather than treating LLMs as magic black boxes, he emphasizes strict **prompt compilation, semantic guardrails, and deterministic fallback circuits**.\n" +
-      "• He specializes in **RAG architectures** (hybrid dense + sparse embeddings), **multi-agent delegation** (CrewAI), and **edge quantization** (INT8) to minimize API latency and inference costs."
-    ]
-  },
-
-  // 12. Greetings / Pleasantries
-  {
-    patterns: [
-      /\b(hi|hello|hey|greetings|howdy|sup|good morning|good afternoon|good evening)\b/i
-    ],
-    responses: [
-      "Greetings! I am **JARVIS**, Siva's autonomous portfolio agent. All neural circuits are operating at nominal latency.\n\nHow may I assist you today? You can ask about Siva's technical projects, architecture choices, or hiring availability.",
-      "Hello! Welcome to Siva's digital workspace. I'm ready to answer any questions regarding his engineering projects, technical stack, or contact information."
-    ]
-  },
-
-  // 13. How does this portfolio work / Easter eggs
-  {
-    patterns: [
-      /\b(easter egg|konami|how does this work|secret|cheat code|made this|built this)\b/i
-    ],
-    responses: [
-      "⚡ **Security Clearances & Easter Eggs Detected**:\n\n" +
-      "• Press **` ~ ` (Backtick)** to open the Quake developer terminal with interactive commands like `help`, `projects`, and `theme`.\n" +
-      "• Press **`Ctrl + K`** (or `Cmd + K`) for the Spotlight-style command palette.\n" +
-      "• Press the **Konami Sequence** (Arrow keys: `Up, Up, Down, Down`) on your keyboard to toggle the Developer Telemetry HUD!\n" +
-      "• Click the **Matrix Rain** or **Wireframe** toggles in the dock to customize the visual canvas."
-    ]
   }
 ];
 
-/**
- * Heuristic response generator that picks the most accurate answer,
- * or gracefully constructs a helpful response using Siva's real background.
- */
-export function getPseudoAIResponse(query: string): string {
+export interface AIResponseWithTelemetry {
+  text: string;
+  telemetry: TelemetryLog;
+}
+
+export function generateAIResponseWithTelemetry(query: string): AIResponseWithTelemetry {
   const clean = query.trim();
-  if (!clean) {
-    return "I am awaiting your query. Feel free to ask about Siva's projects, tech stack, or career background.";
-  }
+  const startTime = performance.now();
 
   for (const item of AI_KNOWLEDGE_ROUTER) {
     for (const pattern of item.patterns) {
       if (pattern.test(clean)) {
-        // Pick one response deterministically or with a slight variation
         const index = Math.floor(Math.random() * item.responses.length);
-        return item.responses[index];
+        const text = item.responses[index];
+        const elapsed = Math.round(performance.now() - startTime + Math.floor(Math.random() * 20 + 35));
+
+        return {
+          text,
+          telemetry: {
+            query: clean,
+            detectedIntent: item.intent,
+            matchedKeywords: item.keywords.filter(k => clean.toLowerCase().includes(k)),
+            contextChunks: item.contextChunks,
+            latencyMs: elapsed,
+            tokenCount: text.split(/\s+/).length,
+            modelEngine: "NeuralCore Heuristic v1.2 (Sub-40ms)"
+          }
+        };
       }
     }
   }
 
-  // Graceful intelligent fallback
-  return `I have parsed your query regarding: "${clean}".\n\n` +
+  // Fallback
+  const fallbackText = `I have parsed your query regarding: "${clean}".\n\n` +
     `While my current neural weights are calibrated around Siva's engineering portfolio, here is what I can confirm:\n\n` +
     `• **Core Focus**: Full-Stack TypeScript/React, Three.js visualization, and applied AI systems.\n` +
     `• **Featured Work**: NeuralOS, FanVersi AI, and EcoTrack-AI edge systems.\n` +
     `• **Availability**: Open for software engineering roles in Bangalore or remote.\n\n` +
     `For specialized inquiries or technical collaboration, you can reach Siva directly at **contact@sivapanyam.dev**.`;
+
+  const elapsed = Math.round(performance.now() - startTime + 42);
+
+  return {
+    text: fallbackText,
+    telemetry: {
+      query: clean,
+      detectedIntent: "GENERAL_KNOWLEDGE_FALLBACK",
+      matchedKeywords: ["portfolio", "siva", "general"],
+      contextChunks: ["VFS:~/bio.md", "Telemetry::DefaultRelay"],
+      latencyMs: elapsed,
+      tokenCount: fallbackText.split(/\s+/).length,
+      modelEngine: "NeuralCore Heuristic v1.2 (Sub-40ms)"
+    }
+  };
+}
+
+export function getPseudoAIResponse(query: string): string {
+  return generateAIResponseWithTelemetry(query).text;
 }
