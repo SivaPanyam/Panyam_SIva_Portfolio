@@ -259,10 +259,10 @@ export const NeuralNetwork: React.FC<NeuralNetworkProps> = ({
         </bufferGeometry>
         <pointsMaterial
           color={pointColor}
-          size={isMobile ? 0.12 : 0.1}
+          size={isMobile ? 0.22 : 0.18}
           sizeAttenuation={true}
           transparent
-          opacity={0.75}
+          opacity={0.9}
         />
       </points>
 
@@ -277,8 +277,8 @@ export const NeuralNetwork: React.FC<NeuralNetworkProps> = ({
         <lineBasicMaterial
           color={lineColor}
           transparent
-          opacity={0.45}
-          linewidth={1}
+          opacity={0.65}
+          linewidth={1.5}
         />
       </lineSegments>
 
@@ -292,10 +292,10 @@ export const NeuralNetwork: React.FC<NeuralNetworkProps> = ({
         </bufferGeometry>
         <pointsMaterial
           color={pulseColor}
-          size={isMobile ? 0.22 : 0.18}
+          size={isMobile ? 0.35 : 0.28}
           sizeAttenuation={true}
           transparent
-          opacity={0.95}
+          opacity={1.0}
         />
       </points>
     </group>
