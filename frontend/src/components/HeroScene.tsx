@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Canvas } from '@react-three/fiber';
-import { OrbitControls, Stars } from '@react-three/drei';
+import { Stars } from '@react-three/drei';
 import NeuralNetwork from './NeuralNetwork';
 import { useUIStore, THEME_CONFIGS } from '../store/uiStore';
 
@@ -20,8 +20,8 @@ const HeroScene = () => {
 
   return (
     <div className="hero-canvas-container w-full h-full fixed inset-0 -z-10 pointer-events-none transition-colors duration-700">
-      <Canvas camera={{ position: [0, 0, 10] }} data-testid="mock-canvas">
-        <ambientLight intensity={0.4} />
+      <Canvas camera={{ position: [0, 0, 7.5], fov: 60 }} data-testid="mock-canvas">
+        <ambientLight intensity={0.5} />
         <directionalLight position={[10, 10, 5]} intensity={0.8} />
         <pointLight position={[-10, -10, -5]} intensity={0.5} />
         
@@ -34,9 +34,6 @@ const HeroScene = () => {
         
         {/* Ambient starry backdrop */}
         <Stars radius={100} depth={50} count={isMobile ? 1400 : 4000} factor={4} saturation={1} fade speed={1.2} />
-        
-        {/* Cinematic orbiting camera */}
-        <OrbitControls enableZoom={false} enablePan={false} autoRotate autoRotateSpeed={0.35} />
       </Canvas>
     </div>
   );

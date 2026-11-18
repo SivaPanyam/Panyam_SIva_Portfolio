@@ -55,17 +55,17 @@ export const NeuralNetwork: React.FC<NeuralNetworkProps> = ({
   const forceDirection = useRef(new THREE.Vector3());
   const tempPulseVector = useRef(new THREE.Vector3());
 
-  // Create persistent nodes with bounded floating physics
+  // Create persistent nodes with bounded floating physics centered in camera view
   const nodes = useMemo(() => {
     const temp: Node[] = [];
-    const boundaryX = viewport.width * 0.85;
-    const boundaryY = viewport.height * 0.85;
+    const boundaryX = viewport.width * 0.95;
+    const boundaryY = viewport.height * 0.95;
     
     for (let i = 0; i < PARTICLE_COUNT; i++) {
       const pos = new THREE.Vector3(
         (Math.random() - 0.5) * boundaryX,
         (Math.random() - 0.5) * boundaryY,
-        (Math.random() - 0.5) * 5
+        (Math.random() - 0.5) * 3
       );
       const vel = new THREE.Vector3(
         (Math.random() - 0.5) * 0.008,
@@ -113,8 +113,9 @@ export const NeuralNetwork: React.FC<NeuralNetworkProps> = ({
     
     if (groupRef.current) {
       const time = state.clock.getElapsedTime();
-      groupRef.current.rotation.y = time * 0.01;
-      groupRef.current.rotation.x = Math.sin(time * 0.04) * 0.012;
+      // Gentle floating oscillation without flipping nodes behind camera
+      groupRef.current.rotation.y = Math.sin(time * 0.1) * 0.08;
+      groupRef.current.rotation.x = Math.cos(time * 0.08) * 0.05;
     }
     
     const m3D = mouse3D.current;
