@@ -26,8 +26,8 @@ interface NeuralNetworkProps {
   interactive?: boolean;
 }
 
-const MOUSE_INFLUENCE_RADIUS = 4.5;
-const MOUSE_GRAVITY = 0.04;
+const MOUSE_INFLUENCE_RADIUS = 5.5;
+const MOUSE_GRAVITY = 0.08;
 
 export const NeuralNetwork: React.FC<NeuralNetworkProps> = ({
   particleCount,

@@ -22,7 +22,7 @@ interface PaletteProps {
 export default function CommandPalette({ onSelectProject }: PaletteProps) {
   const { 
     isCommandPaletteOpen, toggleCommandPalette, 
-    toggleTerminal, toggleDevMode 
+    toggleTerminal, cycleNextTheme, toggleAudioSynth, isAudioSynthActive
   } = useUIStore();
 
   const [query, setQuery] = useState('');
@@ -138,14 +138,33 @@ export default function CommandPalette({ onSelectProject }: PaletteProps) {
       }
     },
     {
-      id: 'cmd-devmode',
-      title: 'Command: Trigger Developer Matrix Mode',
-      subtitle: 'Swap color themes and cascade canvas code rains.',
+      id: 'cmd-theme',
+      title: 'Command: Cycle Global Color Theme',
+      subtitle: 'Cycle through Polar White, Cyber Cyan, Matrix Green, Quantum Amber, and Violet.',
       category: 'Commands',
-      shortcut: '↑↑↓↓',
       action: () => {
         toggleCommandPalette();
-        toggleDevMode();
+        cycleNextTheme();
+      }
+    },
+    {
+      id: 'cmd-audio',
+      title: isAudioSynthActive ? 'Command: Mute Ambient Cyber Synth' : 'Command: Play Ambient Cyber Synth',
+      subtitle: 'Toggle procedural low-frequency binaural focus soundscape.',
+      category: 'Commands',
+      action: () => {
+        toggleCommandPalette();
+        toggleAudioSynth();
+      }
+    },
+    {
+      id: 'cmd-agent',
+      title: 'Command: Simulate AI Agent Execution',
+      subtitle: 'Open terminal and execute simulated bounded recovery benchmark.',
+      category: 'Commands',
+      action: () => {
+        toggleCommandPalette();
+        toggleTerminal();
       }
     },
     {

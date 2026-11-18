@@ -1,11 +1,12 @@
 // frontend/src/components/DockNavbar.tsx
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useUIStore } from '../store/uiStore';
+import { useUIStore, THEME_CONFIGS } from '../store/uiStore';
 import { transitions } from '../utils/motion';
+import { ambientSynth } from '../utils/audioSynthEngine';
 import { 
   Home, User, Briefcase, Code, History, Award, 
-  FlaskConical, Mail, Terminal as TerminalIcon 
+  FlaskConical, Mail, Terminal as TerminalIcon, Palette, Volume2, VolumeX 
 } from 'lucide-react';
 
 interface DockItem {
@@ -14,10 +15,18 @@ interface DockItem {
   targetId: string;
   isAction?: boolean;
   action?: () => void;
+  accentColor?: string;
+  isActiveAction?: boolean;
 }
 
 const DockNavbar: React.FC = () => {
-  const { toggleTerminal } = useUIStore();
+  const { 
+    toggleTerminal, 
+    activeTheme, 
+    cycleNextTheme, 
+    isAudioSynthActive, 
+    toggleAudioSynth 
+  } = useUIStore();
   const [activeSection, setActiveSection] = useState('home');
   const [hoveredIdx, setHoveredIdx] = useState<number | null>(null);
   const [isTouch, setIsTouch] = useState(false);
@@ -25,6 +34,17 @@ const DockNavbar: React.FC = () => {
   useEffect(() => {
     setIsTouch('ontouchstart' in window || navigator.maxTouchPoints > 0);
   }, []);
+
+  const handleToggleSound = () => {
+    if (!isAudioSynthActive) {
+      ambientSynth.start();
+    } else {
+      ambientSynth.stop();
+    }
+    toggleAudioSynth();
+  };
+
+  const currentThemeConfig = THEME_CONFIGS[activeTheme] || THEME_CONFIGS.default;
 
   const navigationItems: DockItem[] = [
     { name: 'Home', icon: Home, targetId: 'home' },
@@ -35,6 +55,22 @@ const DockNavbar: React.FC = () => {
     { name: 'Certifications', icon: Award, targetId: 'certifications' },
     { name: 'Lab', icon: FlaskConical, targetId: 'lab' },
     { name: 'Contact', icon: Mail, targetId: 'contact' },
+    { 
+      name: `Theme: ${currentThemeConfig.name}`, 
+      icon: Palette, 
+      targetId: 'theme',
+      isAction: true,
+      action: cycleNextTheme,
+      accentColor: currentThemeConfig.hex
+    },
+    { 
+      name: isAudioSynthActive ? 'Mute Focus Synth' : 'Ambient Cyber Synth', 
+      icon: isAudioSynthActive ? Volume2 : VolumeX, 
+      targetId: 'audio',
+      isAction: true,
+      action: handleToggleSound,
+      isActiveAction: isAudioSynthActive
+    },
     { 
       name: 'Terminal', 
       icon: TerminalIcon, 
@@ -138,10 +174,15 @@ const DockNavbar: React.FC = () => {
                 className={`p-2.5 md:p-3 rounded-full flex items-center justify-center transition-all relative ${
                   isActive 
                     ? 'bg-white text-black shadow-[0_0_22px_rgba(255,255,255,0.35)] border border-white' 
-                    : item.isAction
-                      ? 'bg-zinc-900 border border-green-500/20 text-green-400 hover:bg-green-500/10 hover:border-green-400 hover:shadow-[0_0_12px_rgba(74,222,128,0.25)]'
-                      : 'bg-zinc-900/60 border border-zinc-800 text-zinc-400 hover:text-white hover:bg-zinc-800/80 hover:border-zinc-500 hover:shadow-[0_0_15px_rgba(255,255,255,0.06)]'
+                    : item.isActiveAction
+                      ? 'bg-emerald-500/20 border border-emerald-400 text-emerald-300 shadow-[0_0_15px_rgba(16,185,129,0.35)]'
+                      : item.targetId === 'theme'
+                        ? 'bg-zinc-900 border border-zinc-700 hover:border-white text-zinc-300 hover:text-white shadow-[0_0_10px_rgba(255,255,255,0.1)]'
+                        : item.isAction
+                          ? 'bg-zinc-900 border border-green-500/20 text-green-400 hover:bg-green-500/10 hover:border-green-400 hover:shadow-[0_0_12px_rgba(74,222,128,0.25)]'
+                          : 'bg-zinc-900/60 border border-zinc-800 text-zinc-400 hover:text-white hover:bg-zinc-800/80 hover:border-zinc-500 hover:shadow-[0_0_15px_rgba(255,255,255,0.06)]'
                 }`}
+                style={item.accentColor ? { color: item.accentColor } : undefined}
               >
                 <Icon className="w-4 h-4 md:w-4.5 md:h-4.5 shrink-0" />
                 

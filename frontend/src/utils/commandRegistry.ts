@@ -53,11 +53,12 @@ ${list}
 [FILESYSTEM DIRECTORY]
   ls, cd, pwd, cat, tree   - Navigate virtual portfolio filesystem
 [SYSTEM TOOLS]
-  neofetch, ping, clear    - Telemetry and system diagnostics
+  agent, query, neofetch   - AI agent simulator & semantic RAG search
+  ping, clear, projects    - Telemetry and system diagnostics
 [EASTER EGGS]
   sudo hire siva, rm -rf / - Root access overrides
 
-[TIP] Try: "neofetch" or "ls -la" or "cat bio.md"
+[TIP] Try: "agent run" or "query agentbench" or "cat bio.md"
 `;
     }
   },
@@ -479,6 +480,41 @@ All assets survived unharmed.
 `;
       }
       return `rm: missing operand or permission denied in read-only sandbox.`;
+    }
+  },
+
+  // 18. AI AGENT SIMULATOR: AGENT RUN
+  agent: {
+    name: 'agent',
+    description: 'Simulates live AgentBench-Lite tool-calling loop & bounded self-correction.',
+    usage: 'agent run [task_name]',
+    execute: async (args) => {
+      const task = args.slice(1).join(' ') || 'customer_identity_verification';
+      return `
+[AGENTBENCH-LITE RUNTIME // STRATEGY: BOUNDED_RECOVERY]
+Task Initialized: "${task}"
+Model Provider: Local MockDecisionEngine (Seed: 42)
+Max Allowed Steps: 4 | Recovery Retries Left: 1
+
+-> [STEP 1] Model emits action: lookup_customer(id="USR_9821")
+   * Executing tool via registry...
+   * [FAULT INJECTED]: schema_validation_error: expected integer 'id', received string.
+   * Baseline Agent would terminate here: FAILED (0% recovery rate)
+
+-> [FAULT TRAP] Bounded Recovery Interceptor triggers.
+   * Formatting typed error feedback frame:
+     {"error": "validation_error", "field": "id", "expected": "int", "retries_remaining": 1}
+
+-> [STEP 2] Model ingests error feedback and computes self-correction:
+   * Action revised: lookup_customer(id=9821)
+   * Tool execution status: HTTP 200 OK
+   * Payload: {"status": "verified", "tier": "enterprise", "mandi_node": "Kurnool"}
+
+-> [TERMINAL STATUS: SUCCESS]
+   * Total steps: 2/4 (50% budget utilized)
+   * Self-correction delta: +100% recovery verified
+   * ISO Telemetry Audit Record logged: VFS:~/projects/agentbench.md
+`;
     }
   }
 };

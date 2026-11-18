@@ -82,9 +82,14 @@ interface UIState {
   setJarvisOpen: (open: boolean) => void;
   activeTheme: GlobalAccentTheme;
   setActiveTheme: (theme: GlobalAccentTheme) => void;
+  cycleNextTheme: () => void;
+  isAudioSynthActive: boolean;
+  toggleAudioSynth: () => void;
 }
 
-export const useUIStore = create<UIState>((set) => ({
+const THEME_ORDER: GlobalAccentTheme[] = ['default', 'cyan', 'matrix', 'amber', 'violet', 'rose'];
+
+export const useUIStore = create<UIState>((set, get) => ({
   isTerminalOpen: false,
   toggleTerminal: () => set((state) => ({ isTerminalOpen: !state.isTerminalOpen })),
   isCommandPaletteOpen: false,
@@ -104,4 +109,11 @@ export const useUIStore = create<UIState>((set) => ({
     }
     set({ activeTheme: theme });
   },
+  cycleNextTheme: () => {
+    const current = get().activeTheme;
+    const nextIdx = (THEME_ORDER.indexOf(current) + 1) % THEME_ORDER.length;
+    get().setActiveTheme(THEME_ORDER[nextIdx]);
+  },
+  isAudioSynthActive: false,
+  toggleAudioSynth: () => set((state) => ({ isAudioSynthActive: !state.isAudioSynthActive })),
 }));
