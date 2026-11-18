@@ -128,83 +128,83 @@ export const skillCategories: SkillCategory[] = [
 
 export const experienceTimeline: ExperienceItem[] = [
   {
-    id: 'lead-architect',
-    role: 'Lead Architect',
-    company: 'AI Synthesis Labs',
+    id: 'ai-agent-systems',
+    role: 'AI Systems & Agentic Orchestration Lead',
+    company: 'Agentic Systems & Open Source R&D',
     location: 'Bangalore, India',
     period: '2024 - Present',
     category: 'professional',
     themeColor: 'violet',
     glowColor: '#8b5cf6',
     highlights: [
-      'Orchestrated production-grade event-driven agentic pipelines incorporating LLM logic and dynamic AI-mood solvers.',
-      'Reduced cloud computational footprint by 85% by deploying quantized edge intelligence frameworks (TFLite INT8).',
-      'Engineered premium reactive workspaces with Web Audio procedural synthesis and real-time biometric telemetry loops.'
+      'Architected AgentBench-Lite, an evaluation harness isolating LLM tool-calling failure modes, infinite loops, and recovery strategies under runtime parameter fault injection.',
+      'Designed self-correcting agent state machines achieving a +42.5% recovery rate delta over baseline naive tool invocation pipelines.',
+      'Engineered VoiceKisan, a low-latency multimodal Indic voice agent integrating Gnani Prisma STT and Sarvam AI models with sub-1.1s perceived latency for wholesale APMC Mandi queries.'
     ],
-    technicalExposure: ['LangChain', 'CrewAI', 'React', 'Rust-WASM', 'Web Audio API', 'Docker'],
+    technicalExposure: ['Python 3.11', 'FastAPI', 'LangChain', 'FastEmbed', 'Ollama (Llama 3.2)', 'Pytest', 'Docker'],
     metrics: [
-      { label: 'Agent Throughput', value: '45k tx/s' },
-      { label: 'Compute Power Saved', value: '85%' }
+      { label: 'Recovery Delta', value: '+42.5%' },
+      { label: 'Perceived Latency', value: '<1.1s' }
     ]
   },
   {
-    id: 'full-stack',
-    role: 'Full Stack Engineer',
-    company: 'DataSync Corp',
+    id: 'fde-incident-systems',
+    role: 'Forward Deployed Systems Engineer (FDE)',
+    company: 'Infrastructure & Clean Systems Lab',
     location: 'Bangalore, India',
-    period: '2022 - 2024',
+    period: '2023 - 2024',
     category: 'professional',
+    themeColor: 'cyan',
+    glowColor: '#06b6d4',
+    highlights: [
+      'Developed GitOps-WarRoom, an interactive production incident disaster simulator training forward deployed engineers in Git reflog recovery, headless detachment, and cherry-pick conflict resolution.',
+      'Engineered Aegis-AI OS following Uncle Bob Clean Architecture, decoupling core business entity logic from volatile third-party LLM provider APIs and UI frameworks.',
+      'Constructed distributed microservice workflows with FastAPI, Redis distributed locks, and Docker containerization ensuring reproducible zero-leakage deployments.'
+    ],
+    technicalExposure: ['FastAPI', 'TypeScript', 'Clean Architecture', 'Redis', 'Docker', 'Git DAG Engine', 'Vitest'],
+    metrics: [
+      { label: 'Triage Mean-Time', value: '-65%' },
+      { label: 'VFS Query Speed', value: '<4.2ms' }
+    ]
+  },
+  {
+    id: 'ml-time-series',
+    role: 'Applied ML & Time-Series Systems Engineer',
+    company: 'AgriTech Intelligence & Algorithmic R&D',
+    location: 'Bangalore, India',
+    period: '2022 - 2023',
+    category: 'internship',
     themeColor: 'emerald',
     glowColor: '#10b981',
     highlights: [
-      'Constructed scalable low-latency data ingestion systems using Node.js, Express, GraphQL, and Postgres storage WAL lanes.',
-      'Engineered interactive data visualizations and customizable developer consoles tracking namespace pod telemetry.',
-      'Integrated automated CI/CD deployment pipelines on AWS Elastic Beanstalk and ECS Fargate containers.'
+      'Built AgriCast-AI commodity forecasting models leveraging SARIMA and gradient-boosted regression over 500+ Indian APMC Mandis with 7.8% Mean Absolute Percentage Error (MAPE).',
+      'Engineered Local-RAG and Mini-Semantic-Search, implementing high-dimensional vector cosine distance and dot products from first principles using pure NumPy without external vector libraries.',
+      'Developed 3D mathematical optimization visualizers comparing Stochastic Gradient Descent, Momentum, and Adam convergence trajectories over non-convex loss surfaces.'
     ],
-    technicalExposure: ['Node.js', 'Express', 'GraphQL', 'PostgreSQL', 'AWS ECS Fargate', 'Tailwind CSS'],
+    technicalExposure: ['NumPy', 'PyTorch', 'SARIMA', 'Scikit-Learn', 'Plotly 3D', 'ChromaDB', 'Pandas'],
     metrics: [
-      { label: 'PDF OCR Latency', value: '1.8s' },
-      { label: 'RAG Lookup Speed', value: '14ms' }
+      { label: 'Forecast MAPE', value: '7.8%' },
+      { label: 'Token Ingestion Cost', value: '$0.00' }
     ]
   },
   {
-    id: 'intern',
-    role: 'Innovation & Design Thinking Intern',
-    company: 'FutureTech Labs',
+    id: 'systems-academia',
+    role: 'Computer Science & Engineering Specialist',
+    company: 'Academic & Distributed Systems Engineering',
     location: 'Bangalore, India',
-    period: '2021 - 2022',
-    category: 'internship',
+    period: '2020 - 2024',
+    category: 'workshop',
     themeColor: 'amber',
     glowColor: '#f59e0b',
     highlights: [
-      'Conducted rapid prototyping sandboxes evaluating AI accessibility systems and human-centered design principles.',
-      'Facilitated collaborative design sprints, user empathy workshops, and journey mapping exercises to align teams.',
-      'Constructed high-fidelity mockups, interactive wireframes, and responsive dashboard layouts for cloud operators.'
+      'Graduated with Bachelor of Technology (B.Tech) in Computer Science & Engineering with a 9.24 CGPA, specializing in distributed systems and algorithms.',
+      'Authored consensus engine sandboxes implementing Raft Write-Ahead Logs (WAL), double-entry transaction ledgers, and SQLite FTS5 hybrid search indices.',
+      'Awarded top honors across technical hackathons for rapid prototyping of edge ML IoT telemetry sandboxes and local-first memory graphs (Recall-OS).'
     ],
-    technicalExposure: ['Design Sprints', 'Wireframing', 'Figma', 'User Empathy Maps', 'Rapid Prototyping'],
+    technicalExposure: ['Distributed Systems', 'Raft Consensus', 'SQLite FTS5', 'Algorithms & Data Structures', 'Linux'],
     metrics: [
-      { label: 'Sprints Delivered', value: '12+' },
-      { label: 'User Parity Score', value: '94%' }
-    ]
-  },
-  {
-    id: 'hackathons-workshops',
-    role: 'Specialist Hackathons & Workshops',
-    company: 'R&D Rapid Builds',
-    location: 'Developer Ecosystem',
-    period: '2020 - 2025',
-    category: 'hackathon',
-    themeColor: 'rose',
-    glowColor: '#f43f5e',
-    highlights: [
-      'Bangalore Smart Hackathon Winner: Engineered EcoTrack-AI edge ML IoT telemetry sandboxes in under 48 hours.',
-      'Pioneered NLP R&D Sprints: Built FanVersi AI lore verification checkers utilizing Milvus vector databases.',
-      'Designed and conducted interactive workshops focusing on distributed systems consensus, Raft WAL logs, and double-entry ledgers.'
-    ],
-    technicalExposure: ['Raft Consensus', 'NumPy Matrix Math', 'Milvus RAG', 'TensorFlow Lite', 'MQTT Broking'],
-    metrics: [
-      { label: 'Hackathons Run', value: '6' },
-      { label: 'Total Sprints Completed', value: '15+' }
+      { label: 'Academic CGPA', value: '9.24' },
+      { label: 'Core Projects Built', value: '18+' }
     ]
   }
 ];

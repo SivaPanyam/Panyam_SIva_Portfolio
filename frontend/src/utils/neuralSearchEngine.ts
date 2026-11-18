@@ -101,8 +101,8 @@ export const KNOWLEDGE_INDEX: KnowledgeDocument[] = [
     category: 'contact',
     title: 'Engineering Handshake & Availability',
     tags: ['hire', 'hiring', 'available', 'job', 'interview', 'contact', 'email', 'linkedin', 'github', 'reach', 'salary', 'remote'],
-    content: 'Candidate Status: Available. Target Roles: AI Engineer, Machine Learning Engineer, Forward Deployed Engineer (FDE). Location: Bangalore, India (Hybrid) or Remote Worldwide. Direct email: contact@sivapanyam.dev.',
-    directAnswer: "**Candidate Status: AVAILABLE & EXPLORING OPPORTUNITIES**\n\n• **Target Roles**: AI Engineer / ML Engineer / Forward Deployed Engineer (FDE)\n• **Location**: Bangalore, Karnataka, India (Hybrid) or Remote Worldwide\n• **Direct Email**: [contact@sivapanyam.dev](mailto:contact@sivapanyam.dev)\n• **GitHub**: [github.com/SivaPanyam](https://github.com/SivaPanyam)\n• **LinkedIn**: [linkedin.com/in/sivapanyam](https://linkedin.com/in/sivapanyam)",
+    content: 'Candidate Status: Available. Target Roles: AI Engineer, Machine Learning Engineer, Forward Deployed Engineer (FDE). Location: Bangalore, India (Hybrid) or Remote Worldwide. Direct email: sivapanyam1@gmail.com.',
+    directAnswer: "**Candidate Status: AVAILABLE & EXPLORING OPPORTUNITIES**\n\n• **Target Roles**: AI Engineer / ML Engineer / Forward Deployed Engineer (FDE)\n• **Location**: Bangalore, Karnataka, India (Hybrid) or Remote Worldwide\n• **Direct Email**: [sivapanyam1@gmail.com](mailto:sivapanyam1@gmail.com)\n• **GitHub**: [github.com/SivaPanyam](https://github.com/SivaPanyam)\n• **LinkedIn**: [linkedin.com/in/siva-panyam-587268290](https://www.linkedin.com/in/siva-panyam-587268290/)",
     vfsReference: 'VFS:~/contact.sh'
   }
 ];

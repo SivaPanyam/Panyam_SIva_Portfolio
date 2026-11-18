@@ -177,9 +177,9 @@ Core Highlights:
 echo "RECRUITER TRANSMISSION PROTOCOL"
 echo "Candidate: Siva Panyam"
 echo "Target Roles: AI Engineer | ML Engineer | Forward Deployed Engineer (FDE)"
-echo "Direct Email: contact@sivapanyam.dev"
+echo "Direct Email: sivapanyam1@gmail.com"
 echo "GitHub: https://github.com/SivaPanyam"
-echo "LinkedIn: https://linkedin.com/in/sivapanyam"`
+echo "LinkedIn: https://www.linkedin.com/in/siva-panyam-587268290/"`
     }
   }
 };

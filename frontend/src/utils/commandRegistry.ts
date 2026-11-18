@@ -411,12 +411,12 @@ STACK: ${exp.technicalExposure.join(', ')}
       return `
 SECURE TRANSMISSION RELAYS // SIVA PANYAM
 ===================================================
-Email: contact@sivapanyam.dev
+Email: sivapanyam1@gmail.com
 GitHub: https://github.com/SivaPanyam
-LinkedIn: https://linkedin.com/in/sivapanyam
+LinkedIn: https://www.linkedin.com/in/siva-panyam-587268290/
 Location: Bangalore, Karnataka, India (UTC+5:30)
 
-Available for Full-Stack, Frontend Architect, and AI Systems roles.
+Available for AI Engineer, ML Systems Engineer, and Forward Deployed Engineer roles.
 Direct inquiries receive responses within 24 hours.
 `;
     }
@@ -446,14 +446,20 @@ ACCESS GRANTED: ROOT OVERRIDE GRANTED TO RECRUITER / TECH LEAD.
   🎉 CONGRATULATIONS! YOU HAVE INITIATED SIVA'S RECRUITMENT PIPELINE!
   ======================================================
   Candidate: Siva Panyam (B.Tech CS, CGPA: 9.24)
-  Target Roles: Full Stack Engineer / AI Systems Engineer
+  Target Roles: AI Engineer | ML Engineer | Forward Deployed Engineer
   Notice Period: Immediate / Flexible
-  Location: Bangalore or Remote Worldwide
+  Location: Bangalore, India or Remote Worldwide
+  Direct Transmissions: sivapanyam1@gmail.com
+  Key Strengths:
+    • Bounded Self-Correcting Agent Architectures (AgentBench-Lite: +42.5% recovery)
+    • Multimodal Indic Voice & Agri Intelligence (VoiceKisan: <1.1s latency)
+    • Zero-Cloud Vector Retrieval & Cosine Engines (Local-RAG, Recall-OS)
+    • Forward Deployed Disaster Simulation & Clean Architecture (GitOps-WarRoom, Aegis-AI)
 
   ACTION ITEMS:
-  1. Dispatch offer / invitation to: contact@sivapanyam.dev
-  2. Connect on LinkedIn: https://linkedin.com/in/sivapanyam
-  3. Review verified GitHub commits: https://github.com/SivaPanyam
+  1. Dispatch invitation to: sivapanyam1@gmail.com
+  2. Connect on LinkedIn: https://www.linkedin.com/in/siva-panyam-587268290/
+  3. Review verified GitHub repos: https://github.com/SivaPanyam
 
   Clearance code: #SIVA-ROOT-2026-HIRED
   ======================================================

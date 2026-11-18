@@ -294,17 +294,21 @@ function App() {
                     </div>
                     <div className="md:col-span-2 space-y-6 font-sans text-sm md:text-base text-zinc-400 leading-relaxed">
                       <p>
-                        Based in Bangalore, India, I specialize in crafting full-stack architectures integrated with modern AI models. I bridge the gap between complex artificial intelligence algorithms and delightful, highly interactive frontends.
+                        Based in Bangalore, India, I specialize in architecting autonomous AI agentic workflows, machine learning models, and resilient forward-deployed cloud infrastructure.
                       </p>
                       <p>
-                        My core expertise centers on engineering highly-optimized developer workflows, constructing reliable systems, and bringing complex datasets to life using robust visualization models.
+                        My core focus centers on tool-calling reliability (AgentBench-Lite), low-latency multimodal voice intelligence (VoiceKisan), local-first vector memory retrieval (Recall-OS, Local-RAG), and production incident disaster engineering (GitOps-WarRoom).
                       </p>
                       <div className="pt-4 flex flex-wrap gap-4 font-mono text-xs">
                         <a 
-                          href="#resume-placeholder"
+                          href="#resume.pdf"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            toggleTerminal();
+                          }}
                           className="px-4 py-2 bg-zinc-950 border border-zinc-800 hover:border-zinc-500 rounded text-zinc-400 hover:text-white transition-all flex items-center gap-2 cursor-pointer"
                         >
-                          <FileText className="w-3.5 h-3.5" /> Download Resume
+                          <FileText className="w-3.5 h-3.5" /> View VFS Resume
                         </a>
                       </div>
                     </div>
@@ -480,11 +484,11 @@ function App() {
                   </div>
                   <div className="max-w-md mx-auto text-xs space-y-4">
                     <p className="text-zinc-500 font-sans mb-8">
-                      Feel free to reach out to collaborate on high-fidelity web projects, generative AI applications, or server architectures.
+                      Feel free to reach out to collaborate on autonomous agentic workflows, machine learning systems, or forward deployed cloud infrastructure.
                     </p>
                     <div className="flex flex-col gap-4 font-mono">
                       <a 
-                        href="mailto:contact@sivapanyam.dev"
+                        href="mailto:sivapanyam1@gmail.com"
                         className="w-full py-3.5 bg-white text-black hover:bg-zinc-200 rounded-full font-bold uppercase tracking-widest transition-all active:scale-95 flex items-center justify-center gap-2 cursor-pointer"
                       >
                         <Mail className="w-4 h-4" /> Send Synapse Message
