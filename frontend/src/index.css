@@ -27,12 +27,12 @@
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
-  background-color: #000000;
+  background-color: transparent;
 }
 
 body {
   margin: 0;
-  background-color: #000000;
+  background-color: #05060a;
   color: #f4f4f5;
   overflow-x: hidden;
 }

@@ -19,7 +19,7 @@ const HeroScene = () => {
   }, []);
 
   return (
-    <div className="hero-canvas-container w-full h-full fixed inset-0 -z-10 pointer-events-none transition-colors duration-700">
+    <div className="hero-canvas-container w-full h-full fixed inset-0 z-0 pointer-events-none transition-colors duration-700">
       <Canvas camera={{ position: [0, 0, 7.5], fov: 60 }} data-testid="mock-canvas">
         <ambientLight intensity={0.5} />
         <directionalLight position={[10, 10, 5]} intensity={0.8} />

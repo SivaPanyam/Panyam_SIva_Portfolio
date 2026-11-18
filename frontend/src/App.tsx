@@ -142,14 +142,19 @@ function App() {
   }, [toggleTerminal, toggleCommandPalette, toggleDevMode]);
 
   return (
-    <div className={`bg-[#05060a] text-zinc-100 min-h-screen relative font-mono overflow-x-hidden selection:bg-white selection:text-black transition-colors duration-700 theme-${activeTheme} ${isDevModeActive ? "dev-mode-active" : ""}`}>
+    <div className={`text-zinc-100 min-h-screen relative font-mono overflow-x-hidden selection:bg-white selection:text-black transition-colors duration-700 theme-${activeTheme} ${isDevModeActive ? "dev-mode-active" : ""}`}>
+      {/* Immersive 3D Starry Background with Neural System - placed at fixed base */}
+      <Suspense fallback={null}>
+        <HeroScene />
+      </Suspense>
+
       {/* Cinematic ambient depth glow with cybernetic aura */}
-      <div className="fixed inset-0 z-0 pointer-events-none bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(14,165,233,0.15),rgba(255,255,255,0))]" />
-      <div className="fixed inset-0 z-0 pointer-events-none bg-[radial-gradient(circle_at_bottom_left,rgba(99,102,241,0.08),transparent_50%)]" />
-      <div className="fixed inset-0 z-0 pointer-events-none bg-[radial-gradient(circle_at_top_right,rgba(16,185,129,0.06),transparent_50%)]" />
+      <div className="fixed inset-0 z-0 pointer-events-none bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(14,165,233,0.12),transparent)]" />
+      <div className="fixed inset-0 z-0 pointer-events-none bg-[radial-gradient(circle_at_bottom_left,rgba(99,102,241,0.06),transparent_50%)]" />
+      <div className="fixed inset-0 z-0 pointer-events-none bg-[radial-gradient(circle_at_top_right,rgba(16,185,129,0.05),transparent_50%)]" />
       
       {/* CRT Scanlines and soft vignetting */}
-      <div className="fixed inset-0 z-30 pointer-events-none scanlines-overlay opacity-25" />
+      <div className="fixed inset-0 z-30 pointer-events-none scanlines-overlay opacity-20" />
       
       <AnimatePresence mode="wait">
         {isBooting ? (
@@ -160,13 +165,8 @@ function App() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 1, ease: 'easeOut' }}
-            className="relative"
+            className="relative z-10"
           >
-            {/* Immersive 3D Starry Background with Neural System */}
-            <Suspense fallback={<div className="fixed inset-0 -z-10 bg-black" />}>
-              <HeroScene />
-            </Suspense>
-
             {/* Matrix rain Canvas backdrop */}
             {isDevModeActive && <MatrixRain />}
 
