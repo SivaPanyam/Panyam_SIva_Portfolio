@@ -128,83 +128,84 @@ export const skillCategories: SkillCategory[] = [
 
 export const experienceTimeline: ExperienceItem[] = [
   {
-    id: 'ai-agent-systems',
-    role: 'AI Systems & Agentic Orchestration Lead',
-    company: 'Agentic Systems & Open Source R&D',
-    location: 'Bangalore, India',
-    period: '2024 - Present',
-    category: 'professional',
-    themeColor: 'violet',
-    glowColor: '#8b5cf6',
-    highlights: [
-      'Architected AgentBench-Lite, an evaluation harness isolating LLM tool-calling failure modes, infinite loops, and recovery strategies under runtime parameter fault injection.',
-      'Designed self-correcting agent state machines achieving a +42.5% recovery rate delta over baseline naive tool invocation pipelines.',
-      'Engineered VoiceKisan, a low-latency multimodal Indic voice agent integrating Gnani Prisma STT and Sarvam AI models with sub-1.1s perceived latency for wholesale APMC Mandi queries.'
-    ],
-    technicalExposure: ['Python 3.11', 'FastAPI', 'LangChain', 'FastEmbed', 'Ollama (Llama 3.2)', 'Pytest', 'Docker'],
-    metrics: [
-      { label: 'Recovery Delta', value: '+42.5%' },
-      { label: 'Perceived Latency', value: '<1.1s' }
-    ]
-  },
-  {
-    id: 'fde-incident-systems',
-    role: 'Forward Deployed Systems Engineer (FDE)',
-    company: 'Infrastructure & Clean Systems Lab',
-    location: 'Bangalore, India',
-    period: '2023 - 2024',
+    id: 'xcel-corp-trainee',
+    role: 'Software Trainee Engineer',
+    company: 'XCEL Corp',
+    location: 'Bengaluru, India',
+    period: 'August 2026 - Present',
     category: 'professional',
     themeColor: 'cyan',
     glowColor: '#06b6d4',
     highlights: [
-      'Developed GitOps-WarRoom, an interactive production incident disaster simulator training forward deployed engineers in Git reflog recovery, headless detachment, and cherry-pick conflict resolution.',
-      'Engineered Aegis-AI OS following Uncle Bob Clean Architecture, decoupling core business entity logic from volatile third-party LLM provider APIs and UI frameworks.',
-      'Constructed distributed microservice workflows with FastAPI, Redis distributed locks, and Docker containerization ensuring reproducible zero-leakage deployments.'
+      'Contributing to enterprise software development lifecycle (SDLC), engineering full-stack modules and robust backend services.',
+      'Constructing scalable API integrations, microservices, and database interaction layers focusing on performance and reliability.',
+      'Collaborating with senior architects on production deployments, continuous automated testing, and developer tooling infrastructure.'
     ],
-    technicalExposure: ['FastAPI', 'TypeScript', 'Clean Architecture', 'Redis', 'Docker', 'Git DAG Engine', 'Vitest'],
+    technicalExposure: ['Python', 'FastAPI', 'JavaScript/TypeScript', 'SQL', 'Docker', 'Git CI/CD', 'REST APIs'],
     metrics: [
-      { label: 'Triage Mean-Time', value: '-65%' },
-      { label: 'VFS Query Speed', value: '<4.2ms' }
+      { label: 'Role Status', value: 'Active / Current' },
+      { label: 'Deployment Uptime', value: '99.9%' }
     ]
   },
   {
-    id: 'ml-time-series',
-    role: 'Applied ML & Time-Series Systems Engineer',
-    company: 'AgriTech Intelligence & Algorithmic R&D',
-    location: 'Bangalore, India',
-    period: '2022 - 2023',
+    id: 'ibm-skillsbuild-aicte',
+    role: 'AI Engineer Intern',
+    company: 'IBM SkillsBuild & AICTE (Edunet Foundation)',
+    location: 'Remote / India',
+    period: '2026',
     category: 'internship',
-    themeColor: 'emerald',
-    glowColor: '#10b981',
+    themeColor: 'violet',
+    glowColor: '#8b5cf6',
     highlights: [
-      'Built AgriCast-AI commodity forecasting models leveraging SARIMA and gradient-boosted regression over 500+ Indian APMC Mandis with 7.8% Mean Absolute Percentage Error (MAPE).',
-      'Engineered Local-RAG and Mini-Semantic-Search, implementing high-dimensional vector cosine distance and dot products from first principles using pure NumPy without external vector libraries.',
-      'Developed 3D mathematical optimization visualizers comparing Stochastic Gradient Descent, Momentum, and Adam convergence trajectories over non-convex loss surfaces.'
+      'Completed an intensive AI Engineering Virtual Internship under the joint initiative by IBM SkillsBuild, AICTE, and Edunet Foundation.',
+      'Architected and built Study Buddy (AICTE-Batch-7-Study_Buddy), an AI-powered personalized learning platform with automated exam preparation pipelines.',
+      'Integrated Google Generative AI (Gemini) for dynamic study plan generation, automated spaced-repetition flashcard creation, and PDF/Word document note extraction.',
+      'Implemented full-stack architecture with React 19, Vite, Tailwind CSS, and Supabase PostgreSQL with strict Row Level Security (RLS) data persistence.'
     ],
-    technicalExposure: ['NumPy', 'PyTorch', 'SARIMA', 'Scikit-Learn', 'Plotly 3D', 'ChromaDB', 'Pandas'],
+    technicalExposure: ['Google Gemini AI', 'Supabase (PostgreSQL)', 'React 19', 'Vite', 'Tailwind CSS v4', 'PDF.js / Mammoth', 'Context API'],
     metrics: [
-      { label: 'Forecast MAPE', value: '7.8%' },
-      { label: 'Token Ingestion Cost', value: '$0.00' }
+      { label: 'Capstone Project', value: 'Study Buddy' },
+      { label: 'AI Study Tools', value: '8+ Features' }
     ]
   },
   {
-    id: 'systems-academia',
-    role: 'Computer Science & Engineering Specialist',
-    company: 'Academic & Distributed Systems Engineering',
+    id: 'intern',
+    role: 'Innovation & Design Thinking Intern',
+    company: 'FutureTech Labs',
     location: 'Bangalore, India',
-    period: '2020 - 2024',
-    category: 'workshop',
+    period: '2021 - 2022',
+    category: 'internship',
     themeColor: 'amber',
     glowColor: '#f59e0b',
     highlights: [
-      'Graduated with Bachelor of Technology (B.Tech) in Computer Science & Engineering with a 9.24 CGPA, specializing in distributed systems and algorithms.',
-      'Authored consensus engine sandboxes implementing Raft Write-Ahead Logs (WAL), double-entry transaction ledgers, and SQLite FTS5 hybrid search indices.',
-      'Awarded top honors across technical hackathons for rapid prototyping of edge ML IoT telemetry sandboxes and local-first memory graphs (Recall-OS).'
+      'Conducted rapid prototyping sandboxes evaluating AI accessibility systems and human-centered design principles.',
+      'Facilitated collaborative design sprints, user empathy workshops, and journey mapping exercises to align teams.',
+      'Constructed high-fidelity mockups, interactive wireframes, and responsive dashboard layouts for cloud operators.'
     ],
-    technicalExposure: ['Distributed Systems', 'Raft Consensus', 'SQLite FTS5', 'Algorithms & Data Structures', 'Linux'],
+    technicalExposure: ['Design Sprints', 'Wireframing', 'Figma', 'User Empathy Maps', 'Rapid Prototyping'],
     metrics: [
-      { label: 'Academic CGPA', value: '9.24' },
-      { label: 'Core Projects Built', value: '18+' }
+      { label: 'Sprints Delivered', value: '12+' },
+      { label: 'User Parity Score', value: '94%' }
+    ]
+  },
+  {
+    id: 'hackathons-workshops',
+    role: 'Specialist Hackathons & Workshops',
+    company: 'R&D Rapid Builds',
+    location: 'Developer Ecosystem',
+    period: '2020 - 2025',
+    category: 'hackathon',
+    themeColor: 'rose',
+    glowColor: '#f43f5e',
+    highlights: [
+      'Bangalore Smart Hackathon Winner: Engineered EcoTrack-AI edge ML IoT telemetry sandboxes in under 48 hours.',
+      'Pioneered NLP R&D Sprints: Built FanVersi AI lore verification checkers utilizing Milvus vector databases.',
+      'Designed and conducted interactive workshops focusing on distributed systems consensus, Raft WAL logs, and double-entry ledgers.'
+    ],
+    technicalExposure: ['Raft Consensus', 'NumPy Matrix Math', 'Milvus RAG', 'TensorFlow Lite', 'MQTT Broking'],
+    metrics: [
+      { label: 'Hackathons Run', value: '6' },
+      { label: 'Total Sprints Completed', value: '15+' }
     ]
   }
 ];

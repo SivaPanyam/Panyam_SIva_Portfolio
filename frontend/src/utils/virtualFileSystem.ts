@@ -21,17 +21,20 @@ export const virtualFileSystem: VFSNode = {
     'bio.md': {
       name: 'bio.md',
       type: 'file',
-      size: '1.2KB',
+      size: '1.4KB',
       permissions: '-rw-r--r--',
-      content: `# SIVA PANYAM // AI Engineer, ML Engineer & Forward Deployed Engineer
-Location: Bangalore, Karnataka, India
-Status: Active & Available for Full-Time Engineering Roles
+      content: `# SIVA PANYAM // Software Trainee Engineer & AI Systems Engineer
+Location: Bengaluru, Karnataka, India
+Current Role: Software Trainee Engineer at XCEL Corp (August 2026 - Present)
+Internship: AI Engineer Intern at IBM SkillsBuild & AICTE (Edunet Foundation) - Built Study Buddy
 
-Specialization:
+Engineering Milestones:
+- XCEL Corp: Software Trainee Engineer engineering production backend services, API interfaces, and scalable architectures.
+- IBM SkillsBuild & AICTE: AI Engineer Intern architecting Study Buddy (AICTE-Batch-7-Study_Buddy), powered by Google Gemini, React 19, and Supabase PostgreSQL.
 - Agent Reliability & Tool-Use Harnesses: Bounded self-correction, loop prevention, fault injection (AgentBench-Lite).
 - Multimodal Indic Speech Intelligence: Low-latency regional voice agents with APMC Mandi price forecasting (VoiceKisan).
-- Local-First AI & Offline RAG: First-principles vector math, NumPy cosine engines, SQLite FTS5 hybrid search (Recall-OS, Local-RAG).
-- Mission-Critical Production Incident Triage: Forward Deployed Engineer workflows, Clean Architecture, and Git DAG simulation.`
+- Local-First AI & Offline RAG: First-principles vector math, pure NumPy cosine engines, SQLite FTS5 hybrid search (Recall-OS, Local-RAG).
+- Innovation & Rapid Hackathon Prototyping: Bangalore Smart Hackathon winner, Raft consensus WAL engines, and interactive design sprints.`
     },
 
     'resume.pdf': {
@@ -124,6 +127,23 @@ Stack: TypeScript, React, Canvas Graph Renderer, Vitest
 Core Highlights:
 - Production Git disaster response simulator for Forward Deployed Engineers.
 - Interactive Git DAG engine visualizing detached HEADs and reflog recovery.`
+        },
+        'studybuddy.md': {
+          name: 'studybuddy.md',
+          type: 'file',
+          size: '2.8KB',
+          permissions: '-rw-r--r--',
+          content: `# Study Buddy — AI-Powered Personalized Learning Platform
+Repository: https://github.com/SivaPanyam/AICTE-Batch-7-Study_Buddy
+Program: IBM SkillsBuild & AICTE Virtual Internship (Edunet Foundation)
+Category: Capstone Project | Status: COMPLETED
+Stack: React 19, Google Generative AI (Gemini), Supabase PostgreSQL, Tailwind CSS v4, PDF.js, Mammoth
+
+Core Highlights:
+- Architected full-stack personalized learning system with structured weekly AI study plans.
+- Automated spaced-repetition flashcard creation and interactive quiz generation with scoring telemetry.
+- Upload document processing extracting clean text notes directly from PDFs and Word documents.
+- Gamification mechanics with XP levels, streaks, badges, and Supabase RLS database synchronization.`
         }
       }
     },

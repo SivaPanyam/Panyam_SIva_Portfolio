@@ -294,7 +294,10 @@ function App() {
                     </div>
                     <div className="md:col-span-2 space-y-6 font-sans text-sm md:text-base text-zinc-400 leading-relaxed">
                       <p>
-                        Based in Bangalore, India, I specialize in architecting autonomous AI agentic workflows, machine learning models, and resilient forward-deployed cloud infrastructure.
+                        Based in Bengaluru, India, I am a Software Trainee Engineer at <span className="text-white font-medium">XCEL Corp</span> and an AI Systems Engineer specializing in autonomous agentic workflows and resilient backend systems.
+                      </p>
+                      <p>
+                        Previously an AI Engineer Intern under the joint initiative by <span className="text-white font-medium">IBM SkillsBuild &amp; AICTE</span> (Edunet Foundation), where I built <span className="text-white font-medium">Study Buddy</span>—a personalized AI learning and examination platform powered by Google Gemini and Supabase.
                       </p>
                       <p>
                         My core focus centers on tool-calling reliability (AgentBench-Lite), low-latency multimodal voice intelligence (VoiceKisan), local-first vector memory retrieval (Recall-OS, Local-RAG), and production incident disaster engineering (GitOps-WarRoom).

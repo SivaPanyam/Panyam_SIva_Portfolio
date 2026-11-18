@@ -28,9 +28,9 @@ export const KNOWLEDGE_INDEX: KnowledgeDocument[] = [
     id: 'bio-overview',
     category: 'biography',
     title: 'Biography & Engineering Identity',
-    tags: ['who', 'about', 'bio', 'profile', 'background', 'intro', 'siva', 'panyam', 'engineer', 'architect', 'ai', 'ml', 'fde'],
-    content: 'Siva Panyam is an AI Engineer, ML Systems Engineer, and Forward Deployed Engineer based in Bangalore, Karnataka, India. He builds production-grade tool-calling agent harnesses, multimodal voice intelligence systems, offline RAG pipelines, and resilient distributed architectures.',
-    directAnswer: 'I am the neural interface for **Siva Panyam**.\n\nSiva is an **AI Engineer / ML Engineer / Forward Deployed Engineer** based in Bangalore, India. He specializes in reliable tool-using agents (AgentBench-Lite), multimodal Indic voice systems (VoiceKisan), local-first vector memory (Recall-OS, Local-RAG), and mission-critical production systems.',
+    tags: ['who', 'about', 'bio', 'profile', 'background', 'intro', 'siva', 'panyam', 'engineer', 'architect', 'ai', 'ml', 'fde', 'xcel', 'ibm'],
+    content: 'Siva Panyam is a Software Trainee Engineer at XCEL Corp and AI Systems Engineer based in Bengaluru, India. Previously AI Engineer Intern under IBM SkillsBuild and AICTE (Edunet Foundation), where he built Study Buddy. Specializes in agentic workflows, LLM tool harnesses, and robust backend microservices.',
+    directAnswer: 'I am the neural interface for **Siva Panyam**.\n\n• **Current Role**: Software Trainee Engineer at **XCEL Corp** (August 2026 – Present)\n• **Internship**: AI Engineer Intern at **IBM SkillsBuild & AICTE** (Built Study Buddy)\n• **Specialization**: Autonomous agent reliability (AgentBench-Lite), Indic voice systems (VoiceKisan), local RAG (Recall-OS, Local-RAG), and production backend systems.',
     vfsReference: 'VFS:~/bio.md'
   },
   {
@@ -95,6 +95,15 @@ export const KNOWLEDGE_INDEX: KnowledgeDocument[] = [
     content: 'GitOps-WarRoom is an incident response simulator designed for Forward Deployed Engineers to diagnose production deployment outages, broken merges, and git reflog recoveries.',
     directAnswer: '**GitOps-WarRoom** (Forward Deployed Engineer Incident Simulator):\n\n• **Repository**: [github.com/SivaPanyam/GitOps-WarRoom](https://github.com/SivaPanyam/GitOps-WarRoom)\n• **Core Impact**: Interactive Git DAG engine and terminal training engineers on production reflog recovery and conflict resolution.\n• **Tech Stack**: TypeScript, React, Canvas Graph Renderer, Vitest.',
     vfsReference: 'VFS:~/projects/gitops.md'
+  },
+  {
+    id: 'project-studybuddy',
+    category: 'projects',
+    title: 'Study Buddy: AI-Powered Learning Platform',
+    tags: ['studybuddy', 'study', 'buddy', 'gemini', 'supabase', 'aicte', 'ibm', 'flashcards', 'quiz', 'notes'],
+    content: 'Study Buddy is an AI-powered personalized exam prep platform built during the IBM SkillsBuild & AICTE Internship. Features Gemini-driven study plans, spaced repetition flashcards, automated quizzes, and PDF/Word document note parsing.',
+    directAnswer: '**Study Buddy** (AI-Powered Learning Platform — IBM SkillsBuild & AICTE):\n\n• **Repository**: [github.com/SivaPanyam/AICTE-Batch-7-Study_Buddy](https://github.com/SivaPanyam/AICTE-Batch-7-Study_Buddy)\n• **Core Impact**: Capstone project integrating Google Gemini AI and Supabase PostgreSQL with gamified XP streaks, PDF/Docx text parsers, and auto-generated study decks.\n• **Tech Stack**: React 19, Google Generative AI (Gemini), Supabase PostgreSQL, Tailwind CSS v4, PDF.js, Mammoth.',
+    vfsReference: 'VFS:~/projects/studybuddy.md'
   },
   {
     id: 'contact-hiring',
