@@ -3,10 +3,9 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useUIStore, THEME_CONFIGS } from '../store/uiStore';
 import { transitions } from '../utils/motion';
-import { ambientSynth } from '../utils/audioSynthEngine';
 import { 
   Home, User, Briefcase, Code, History, Award, 
-  FlaskConical, Mail, Terminal as TerminalIcon, Palette, Volume2, VolumeX 
+  FlaskConical, Mail, Terminal as TerminalIcon, Palette 
 } from 'lucide-react';
 
 interface DockItem {
@@ -23,9 +22,7 @@ const DockNavbar: React.FC = () => {
   const { 
     toggleTerminal, 
     activeTheme, 
-    cycleNextTheme, 
-    isAudioSynthActive, 
-    toggleAudioSynth 
+    cycleNextTheme 
   } = useUIStore();
   const [activeSection, setActiveSection] = useState('home');
   const [hoveredIdx, setHoveredIdx] = useState<number | null>(null);
@@ -34,15 +31,6 @@ const DockNavbar: React.FC = () => {
   useEffect(() => {
     setIsTouch('ontouchstart' in window || navigator.maxTouchPoints > 0);
   }, []);
-
-  const handleToggleSound = () => {
-    if (!isAudioSynthActive) {
-      ambientSynth.start();
-    } else {
-      ambientSynth.stop();
-    }
-    toggleAudioSynth();
-  };
 
   const currentThemeConfig = THEME_CONFIGS[activeTheme] || THEME_CONFIGS.default;
 
@@ -62,14 +50,6 @@ const DockNavbar: React.FC = () => {
       isAction: true,
       action: cycleNextTheme,
       accentColor: currentThemeConfig.hex
-    },
-    { 
-      name: isAudioSynthActive ? 'Mute Focus Synth' : 'Ambient Cyber Synth', 
-      icon: isAudioSynthActive ? Volume2 : VolumeX, 
-      targetId: 'audio',
-      isAction: true,
-      action: handleToggleSound,
-      isActiveAction: isAudioSynthActive
     },
     { 
       name: 'Terminal', 
