@@ -3,6 +3,7 @@ import React from 'react';
 import { portfolioProjects } from './projectData';
 import { skillCategories, experienceTimeline } from './profileData';
 import { resolvePath, type VFSNode } from './virtualFileSystem';
+import { queryKnowledgeIndex } from './neuralSearchEngine';
 
 export interface CommandContext {
   currentPath: string[];
@@ -62,6 +63,29 @@ ${list}
   },
 
   // 1. FILESYSTEM: PWD
+  query: {
+    name: 'query',
+    description: 'Executes zero-API BM25 semantic query across portfolio index.',
+    usage: 'query <search term>',
+    execute: async (args) => {
+      const q = args.join(' ').trim();
+      if (!q) {
+        return 'Usage: query <term> (e.g., query consensus or query react)';
+      }
+      const res = queryKnowledgeIndex(q);
+      return `
+[NEURAL_INDEX_MATCH]
+  Document:    ${res.doc.title}
+  VFS Target:  ${res.vfsReference}
+  Confidence:  ${Math.min(Math.round(res.score * 100), 100)}%
+  Latency:     ${res.latencyMs}ms
+  Intent:      ${res.intent}
+---------------------------------------------------
+${res.doc.directAnswer}
+`;
+    }
+  },
+
   pwd: {
     name: 'pwd',
     description: 'Prints current working directory path.',

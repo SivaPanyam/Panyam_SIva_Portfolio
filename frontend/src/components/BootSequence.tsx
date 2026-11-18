@@ -7,18 +7,18 @@ interface BootSequenceProps {
   onComplete: () => void;
 }
 
-type BootPhase = 'wakeup' | 'neural' | 'diagnostics' | 'network' | 'jarvis' | 'loading';
+type BootPhase = 'wakeup' | 'neural' | 'diagnostics' | 'network' | 'telemetry' | 'loading';
 
 const BOOT_LOGS = [
   { text: 'SYSTEM WAKEUP: NEURAL OS v1.0.4', delay: 200 },
   { text: 'LOADING HYPERVISOR DRIVERS... DONE', delay: 450 },
-  { text: 'INITIALIZING COGNITIVE INTERFACE LAYER...', delay: 750 },
-  { text: 'ALLOCATING NEURAL MEMORY (16.4 TFLOPs)... SUCCESS', delay: 1050 },
+  { text: 'INITIALIZING ARCHITECTURE BENCHMARK ENGINE...', delay: 750 },
+  { text: 'ALLOCATING SPATIAL VERTEX BUFFERS (3,500 NODES)... SUCCESS', delay: 1050 },
   { text: 'DIAGNOSTICS: CORE MODULES AUDITED', delay: 1350 },
-  { text: 'DIAGNOSTICS COMPLETED. COGNITIVE REGISTERS SECURE.', delay: 1650 },
-  { text: 'ESTABLISHING SECURE PORTFOLIO SYNAPSE...', delay: 1950 },
+  { text: 'DIAGNOSTICS COMPLETED. RUNTIME REGISTERS SECURE.', delay: 1650 },
+  { text: 'ESTABLISHING DISTRIBUTED CLUSTER BENCHMARK...', delay: 1950 },
   { text: 'NETWORK LATENCY: 12ms (BANGALORE EDGE LINKED)', delay: 2250 },
-  { text: 'AI COPROCESSOR "JARVIS" STATUS: ONLINE', delay: 2550 },
+  { text: 'ZERO-API IN-MEMORY BM25 RETRIEVAL CORE: ACTIVE', delay: 2550 },
   { text: 'SYNCHRONIZING CORE CONTEXT MATRIX...', delay: 2850 },
   { text: 'RESOLVING INTERACTION & BRAND SCHEMAS...', delay: 3150 },
   { text: 'GATEWAY READY. COMPILING PORTFOLIO ENVIRONMENT...', delay: 3450 },
@@ -170,9 +170,9 @@ const NetworkWidget = () => (
   </div>
 );
 
-// 5. Jarvis Activation Sub-Widget (Immersive voice assistant frequency orb)
-const JarvisWidget = () => (
-  <div className="flex flex-col items-center justify-center" data-testid="widget-jarvis">
+// 5. Telemetry Benchmark Sub-Widget
+const TelemetryWidget = () => (
+  <div className="flex flex-col items-center justify-center" data-testid="widget-telemetry">
     <div className="relative w-44 h-44 flex items-center justify-center">
       <motion.div 
         animate={{ scale: [1, 1.15, 1], opacity: [0.15, 0.4, 0.15] }}
@@ -180,27 +180,19 @@ const JarvisWidget = () => (
         className="absolute w-36 h-36 border border-zinc-800 rounded-full"
       />
       <motion.div 
-        animate={{ scale: [1.12, 0.9, 1.12], opacity: [0.08, 0.28, 0.08] }}
-        transition={{ repeat: Infinity, duration: 1.8, ease: 'easeInOut' }}
-        className="absolute w-40 h-40 border border-zinc-900 rounded-full"
+        animate={{ rotate: 360 }}
+        transition={{ repeat: Infinity, duration: 6, ease: 'linear' }}
+        className="absolute w-40 h-40 border border-dashed border-emerald-500/40 rounded-full"
       />
       
-      {/* Interactive voice core */}
-      <div className="relative w-24 h-24 rounded-full bg-zinc-950 border border-zinc-900 flex items-center justify-center shadow-[0_0_35px_rgba(255,255,255,0.08)]">
-        <motion.div 
-          animate={{ 
-            scale: [1, 1.25, 0.9, 1.15, 1],
-            opacity: [0.6, 0.95, 0.5, 0.85, 0.6]
-          }}
-          transition={{ repeat: Infinity, duration: 3, ease: 'easeInOut' }}
-          className="w-12 h-12 rounded-full bg-white blur-[2.5px] shadow-[0_0_20px_rgba(255,255,255,0.85)]"
-        />
-        <span className="absolute text-[8px] text-zinc-500 font-bold tracking-widest uppercase">JARVIS</span>
+      <div className="relative w-24 h-24 rounded-full bg-zinc-950 border border-zinc-900 flex flex-col items-center justify-center shadow-[0_0_35px_rgba(16,185,129,0.1)]">
+        <span className="text-[14px] font-bold text-emerald-400 font-mono">60 FPS</span>
+        <span className="text-[7px] text-zinc-500 font-bold tracking-widest uppercase font-mono">BM25 INDEX</span>
       </div>
     </div>
     <div className="mt-6 flex flex-col items-center font-mono">
-      <span className="text-[11px] text-white font-bold uppercase tracking-widest">Jarvis Activation</span>
-      <span className="text-[9px] text-zinc-500 mt-1.5 uppercase">Cognitive Co-Pilot Gateway Online</span>
+      <span className="text-[11px] text-white font-bold uppercase tracking-widest">Runtime Telemetry</span>
+      <span className="text-[9px] text-zinc-500 mt-1.5 uppercase">Zero-API Search Subsystem Active</span>
     </div>
   </div>
 );
@@ -258,9 +250,9 @@ const BootSequence: React.FC<BootSequenceProps> = ({ onComplete }) => {
         increment = 0.6;
         nextDelay = 65; // Network delay checking
       } else if (currentPercent >= 75 && currentPercent < 90) {
-        setBootPhase('jarvis');
+        setBootPhase('telemetry');
         increment = 1.4;
-        nextDelay = 30; // Jarvis sync
+        nextDelay = 30; // Telemetry sync
       } else {
         setBootPhase('loading');
         increment = 2.2;
@@ -358,7 +350,7 @@ const BootSequence: React.FC<BootSequenceProps> = ({ onComplete }) => {
               {bootPhase === 'neural' && <NeuralWidget />}
               {bootPhase === 'diagnostics' && <DiagnosticsWidget />}
               {bootPhase === 'network' && <NetworkWidget />}
-              {bootPhase === 'jarvis' && <JarvisWidget />}
+              {bootPhase === 'telemetry' && <TelemetryWidget />}
               {bootPhase === 'loading' && <EnvironmentWidget />}
             </motion.div>
           </AnimatePresence>

@@ -4,10 +4,10 @@ import { useUIStore } from './store/uiStore';
 import { transitions, variants } from './utils/motion';
 import BootSequence from './components/BootSequence';
 import DockNavbar from './components/DockNavbar';
-import JarvisAssistant from './components/JarvisAssistant';
+import SystemTelemetryInspector from './components/SystemTelemetryInspector';
 import Logo from './components/Logo';
 import BrandShowcase from './components/BrandShowcase';
-import { Sparkles, ArrowDown, ChevronRight, Terminal as TermIcon, FileText, Mail, Bot } from 'lucide-react';
+import { Sparkles, ArrowDown, ChevronRight, Terminal as TermIcon, FileText, Mail } from 'lucide-react';
 import { portfolioProjects } from './utils/projectData';
 import type { ProjectData } from './utils/projectData';
 import ProjectCard from './components/ProjectCard';
@@ -26,6 +26,7 @@ const ProjectModal = lazy(() => import('./components/ProjectModal'));
 
 const innovationTimeline = [
   {
+    projectId: 'ecotrack',
     date: 'Q3 2024',
     title: 'EcoTrack-AI // Telemetry Ingestion',
     category: '⚡ 48H Hackathon Prototype',
@@ -34,6 +35,7 @@ const innovationTimeline = [
     color: 'emerald'
   },
   {
+    projectId: 'fanversi',
     date: 'Q4 2024',
     title: 'FanVersi AI // Semantic Lore Engine',
     category: '🧪 Creative NLP Research',
@@ -42,6 +44,7 @@ const innovationTimeline = [
     color: 'violet'
   },
   {
+    projectId: 'election',
     date: 'Q1 2025',
     title: 'Election Journey // Demographic Grid',
     category: '🎲 Game-Theoretic Simulation',
@@ -50,6 +53,7 @@ const innovationTimeline = [
     color: 'cyan'
   },
   {
+    projectId: 'bank',
     date: 'Q2 2025',
     title: 'Bank Management System // Raft Consensus',
     category: '💼 Distributed Ledger Sandbox',
@@ -66,7 +70,6 @@ function App() {
     toggleCommandPalette, 
     isDevModeActive, 
     toggleDevMode,
-    toggleJarvis,
     activeTheme
   } = useUIStore();
   const [isBooting, setIsBooting] = useState(true);
@@ -168,8 +171,8 @@ function App() {
             {/* FLOATING NAVIGATION DOCK */}
             <DockNavbar />
 
-            {/* JARVIS AI ASSISTANT ORB */}
-            <JarvisAssistant />
+            {/* LIVE SYSTEM TELEMETRY & RUNTIME INSPECTOR */}
+            <SystemTelemetryInspector />
 
             {/* SECTIONS */}
             <main className="max-w-6xl mx-auto px-6 relative z-10">
@@ -220,16 +223,16 @@ function App() {
                     onClick={() => document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth' })}
                     className="px-8 py-3.5 bg-white text-black rounded-full font-bold text-xs uppercase tracking-widest cursor-pointer flex items-center gap-1"
                   >
-                    View Projects <ChevronRight className="w-3.5 h-3.5" />
+                    View Architecture & Projects <ChevronRight className="w-3.5 h-3.5" />
                   </motion.button>
                   <motion.button 
                     whileHover={{ scale: 1.04, y: -2.5, borderColor: '#ffffff', color: '#ffffff', boxShadow: '0 0 15px rgba(255, 255, 255, 0.05)' }}
                     whileTap={{ scale: 0.98 }}
                     transition={transitions.springHover}
-                    onClick={toggleJarvis}
+                    onClick={toggleTerminal}
                     className="px-8 py-3.5 border border-zinc-800 bg-zinc-950/60 text-zinc-300 rounded-full font-bold text-xs uppercase tracking-widest cursor-pointer flex items-center gap-1.5"
                   >
-                    <Bot className="w-3.5 h-3.5 animate-pulse text-zinc-400" /> Talk to Jarvis
+                    <TermIcon className="w-3.5 h-3.5 text-emerald-400" /> Launch Shell (` ~ )
                   </motion.button>
                 </motion.div>
 
@@ -406,12 +409,19 @@ function App() {
                             whileInView={{ opacity: 1, y: 0 }}
                             viewport={{ once: true }}
                             transition={{ ...transitions.easeCinematic, delay: idx * 0.12 }}
-                            className="p-5 border border-zinc-900 bg-zinc-950/40 rounded-xl relative group flex flex-col justify-between h-full hover:border-zinc-700/50 transition-colors"
+                            onClick={() => {
+                              const proj = portfolioProjects.find(p => p.id === item.projectId);
+                              if (proj) setSelectedProject(proj);
+                            }}
+                            className="p-5 border border-zinc-900 bg-zinc-950/40 rounded-xl relative group flex flex-col justify-between h-full hover:border-zinc-700/50 hover:bg-zinc-900/20 cursor-pointer transition-all"
                           >
                             <div>
                               <div className="flex justify-between items-center mb-3">
                                 <span className="text-white font-bold text-xs uppercase tracking-widest">{item.date}</span>
-                                <span className={`w-1.5 h-1.5 rounded-full ${dotColor} animate-pulse`} />
+                                <div className="flex items-center gap-1.5">
+                                  <span className="text-[8px] text-zinc-500 opacity-0 group-hover:opacity-100 transition-opacity uppercase font-mono">Launch Sandbox ↗</span>
+                                  <span className={`w-1.5 h-1.5 rounded-full ${dotColor} animate-pulse`} />
+                                </div>
                               </div>
                               <span className={`text-[8px] px-2 py-0.5 border rounded-full uppercase tracking-wider block w-fit font-bold mb-3 ${style}`}>
                                 {item.category}
