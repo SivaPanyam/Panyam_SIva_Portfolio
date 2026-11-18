@@ -44,34 +44,37 @@ const DockNavbar: React.FC = () => {
     },
   ];
 
-  // Viewport Active section tracking via IntersectionObserver
+  // Viewport Active section tracking with scroll listener and bottom boundary check
   useEffect(() => {
-    const sections = navigationItems
-      .filter(item => !item.isAction)
-      .map(item => document.getElementById(item.targetId));
+    const handleScroll = () => {
+      const scrollPosition = window.scrollY + window.innerHeight * 0.45;
+      const docHeight = document.documentElement.scrollHeight;
+      const atBottom = window.innerHeight + window.scrollY >= docHeight - 80;
 
-    const observerOptions = {
-      root: null,
-      rootMargin: '-30% 0px -60% 0px', // focused in the middle-upper window
-      threshold: 0,
+      if (atBottom) {
+        setActiveSection('contact');
+        return;
+      }
+
+      for (let i = navigationItems.length - 1; i >= 0; i--) {
+        const item = navigationItems[i];
+        if (item.isAction) continue;
+        const el = document.getElementById(item.targetId);
+        if (el) {
+          const top = el.offsetTop;
+          if (scrollPosition >= top) {
+            setActiveSection(item.targetId);
+            break;
+          }
+        }
+      }
     };
 
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          setActiveSection(entry.target.id);
-        }
-      });
-    }, observerOptions);
-
-    sections.forEach((sec) => {
-      if (sec) observer.observe(sec);
-    });
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll();
 
     return () => {
-      sections.forEach((sec) => {
-        if (sec) observer.unobserve(sec);
-      });
+      window.removeEventListener('scroll', handleScroll);
     };
   }, []);
 

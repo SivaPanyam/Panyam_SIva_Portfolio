@@ -142,9 +142,14 @@ function App() {
   }, [toggleTerminal, toggleCommandPalette, toggleDevMode]);
 
   return (
-    <div className={`bg-black text-zinc-100 min-h-screen relative font-mono overflow-x-hidden selection:bg-white selection:text-black transition-colors duration-700 theme-${activeTheme} ${isDevModeActive ? "dev-mode-active" : ""}`}>
-      {/* Cinematic CRT Scanlines and ambient vignetting */}
-      <div className="fixed inset-0 z-30 pointer-events-none bg-[radial-gradient(circle_at_center,rgba(0,0,0,0)_0%,rgba(0,0,0,0.85)_100%)]" />
+    <div className={`bg-[#05060a] text-zinc-100 min-h-screen relative font-mono overflow-x-hidden selection:bg-white selection:text-black transition-colors duration-700 theme-${activeTheme} ${isDevModeActive ? "dev-mode-active" : ""}`}>
+      {/* Cinematic ambient depth glow with cybernetic aura */}
+      <div className="fixed inset-0 z-0 pointer-events-none bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(14,165,233,0.15),rgba(255,255,255,0))]" />
+      <div className="fixed inset-0 z-0 pointer-events-none bg-[radial-gradient(circle_at_bottom_left,rgba(99,102,241,0.08),transparent_50%)]" />
+      <div className="fixed inset-0 z-0 pointer-events-none bg-[radial-gradient(circle_at_top_right,rgba(16,185,129,0.06),transparent_50%)]" />
+      
+      {/* CRT Scanlines and soft vignetting */}
+      <div className="fixed inset-0 z-30 pointer-events-none scanlines-overlay opacity-25" />
       
       <AnimatePresence mode="wait">
         {isBooting ? (
@@ -467,7 +472,7 @@ function App() {
               </section>
 
               {/* 8. CONTACT SECTION */}
-              <section id="contact" className="py-24 border-t border-zinc-900 pb-36 select-text text-center">
+              <section id="contact" className="min-h-[75vh] py-24 border-t border-zinc-900 pb-44 flex flex-col justify-center items-center select-text text-center">
                 <ScrollReveal delay={0.2}>
                   <div className="mb-12">
                     <h2 className="text-2xl font-bold tracking-widest uppercase text-white mb-2">07 // SECURE COMMUNICATION</h2>

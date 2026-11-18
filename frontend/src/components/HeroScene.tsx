@@ -19,11 +19,11 @@ const HeroScene = () => {
   }, []);
 
   return (
-    <div className="hero-canvas-container w-full h-full fixed inset-0 -z-10 bg-black pointer-events-none transition-colors duration-700">
+    <div className="hero-canvas-container w-full h-full fixed inset-0 -z-10 pointer-events-none transition-colors duration-700">
       <Canvas camera={{ position: [0, 0, 10] }} data-testid="mock-canvas">
-        <ambientLight intensity={0.3} />
-        <directionalLight position={[10, 10, 5]} intensity={0.6} />
-        <pointLight position={[-10, -10, -5]} intensity={0.3} />
+        <ambientLight intensity={0.4} />
+        <directionalLight position={[10, 10, 5]} intensity={0.8} />
+        <pointLight position={[-10, -10, -5]} intensity={0.5} />
         
         {/* Dynamic Persistent Neural Network reflecting Global Theme */}
         <NeuralNetwork 
@@ -33,10 +33,10 @@ const HeroScene = () => {
         />
         
         {/* Ambient starry backdrop */}
-        <Stars radius={100} depth={50} count={isMobile ? 1200 : 3500} factor={3.5} saturation={0} fade speed={0.8} />
+        <Stars radius={100} depth={50} count={isMobile ? 1400 : 4000} factor={4} saturation={1} fade speed={1.2} />
         
         {/* Cinematic orbiting camera */}
-        <OrbitControls enableZoom={false} enablePan={false} autoRotate autoRotateSpeed={0.25} />
+        <OrbitControls enableZoom={false} enablePan={false} autoRotate autoRotateSpeed={0.35} />
       </Canvas>
     </div>
   );

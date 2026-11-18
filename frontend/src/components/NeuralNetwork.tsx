@@ -32,9 +32,9 @@ const MOUSE_GRAVITY = 0.04;
 export const NeuralNetwork: React.FC<NeuralNetworkProps> = ({
   particleCount,
   proximityThreshold,
-  pointColor = '#ffffff',
-  lineColor = '#3f3f46', // zinc-700 for clear persistent visibility
-  pulseColor = '#22d3ee', // bright cyan pulse
+  pointColor = '#38bdf8', // radiant sky/cyan
+  lineColor = '#0284c7',  // distinct visible cyber blue
+  pulseColor = '#00f5ff', // ultra-bright cyan pulse
   pulseCount,
   interactive = true,
 }) => {
@@ -46,10 +46,10 @@ export const NeuralNetwork: React.FC<NeuralNetworkProps> = ({
 
   const isMobile = useMemo(() => typeof window !== 'undefined' && window.innerWidth < 768, []);
   
-  const PARTICLE_COUNT = useMemo(() => particleCount || (isMobile ? 36 : 90), [particleCount, isMobile]);
-  const PROXIMITY_THRESHOLD = useMemo(() => proximityThreshold || (isMobile ? 3.8 : 3.4), [proximityThreshold, isMobile]);
-  const maxLineConnections = useMemo(() => (isMobile ? 120 : 320), [isMobile]);
-  const PULSE_COUNT = useMemo(() => pulseCount || (isMobile ? 12 : 28), [pulseCount, isMobile]);
+  const PARTICLE_COUNT = useMemo(() => particleCount || (isMobile ? 55 : 125), [particleCount, isMobile]);
+  const PROXIMITY_THRESHOLD = useMemo(() => proximityThreshold || (isMobile ? 4.2 : 3.8), [proximityThreshold, isMobile]);
+  const maxLineConnections = useMemo(() => (isMobile ? 180 : 450), [isMobile]);
+  const PULSE_COUNT = useMemo(() => pulseCount || (isMobile ? 18 : 38), [pulseCount, isMobile]);
 
   const mouse3D = useRef(new THREE.Vector3());
   const forceDirection = useRef(new THREE.Vector3());
@@ -259,10 +259,10 @@ export const NeuralNetwork: React.FC<NeuralNetworkProps> = ({
         </bufferGeometry>
         <pointsMaterial
           color={pointColor}
-          size={isMobile ? 0.12 : 0.1}
+          size={isMobile ? 0.22 : 0.18}
           sizeAttenuation={true}
           transparent
-          opacity={0.75}
+          opacity={0.88}
         />
       </points>
 
@@ -277,8 +277,8 @@ export const NeuralNetwork: React.FC<NeuralNetworkProps> = ({
         <lineBasicMaterial
           color={lineColor}
           transparent
-          opacity={0.45}
-          linewidth={1}
+          opacity={0.65}
+          linewidth={1.5}
         />
       </lineSegments>
 
@@ -292,10 +292,10 @@ export const NeuralNetwork: React.FC<NeuralNetworkProps> = ({
         </bufferGeometry>
         <pointsMaterial
           color={pulseColor}
-          size={isMobile ? 0.22 : 0.18}
+          size={isMobile ? 0.35 : 0.28}
           sizeAttenuation={true}
           transparent
-          opacity={0.95}
+          opacity={1.0}
         />
       </points>
     </group>
