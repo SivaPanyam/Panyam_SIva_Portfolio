@@ -209,7 +209,7 @@ function App() {
                   initial={{ opacity: 0, y: 30 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ ...transitions.easeCinematic, delay: 0.5 }}
-                  className="max-w-xl text-zinc-500 text-xs md:text-sm leading-relaxed mb-12 tracking-wide font-sans select-text pointer-events-auto"
+                  className="max-w-xl text-zinc-300 text-xs md:text-sm leading-relaxed mb-12 tracking-wide font-sans select-text pointer-events-auto"
                 >
                   "I build AI-powered applications, scalable web platforms, and developer-focused systems with a strong focus on real-world problem solving."
                 </motion.p>
@@ -246,7 +246,7 @@ function App() {
                   initial={{ opacity: 0, y: 30 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ ...transitions.easeCinematic, delay: 0.7 }}
-                  className="mt-8 flex flex-wrap justify-center gap-4 text-[10px] md:text-xs text-zinc-500 pointer-events-auto z-10"
+                  className="mt-8 flex flex-wrap justify-center gap-4 text-[10px] md:text-xs text-zinc-400 pointer-events-auto z-10"
                 >
                   <motion.a 
                     whileHover={{ scale: 1.04, borderColor: '#ffffff', color: '#ffffff', backgroundColor: 'rgba(255,255,255,0.02)' }}
@@ -279,8 +279,8 @@ function App() {
                   className="absolute bottom-10 flex flex-col items-center gap-1 cursor-pointer pointer-events-auto"
                   onClick={() => document.getElementById('about')?.scrollIntoView({ behavior: 'smooth' })}
                 >
-                  <span className="text-[10px] uppercase text-zinc-600 tracking-widest">Scroll to explore</span>
-                  <ArrowDown className="w-3.5 h-3.5 text-zinc-600" />
+                  <span className="text-[10px] uppercase text-zinc-400 tracking-widest font-mono">Scroll to explore</span>
+                  <ArrowDown className="w-3.5 h-3.5 text-zinc-400" />
                 </motion.div>
               </section>
 

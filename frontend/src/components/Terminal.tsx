@@ -189,7 +189,7 @@ export default function Terminal() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className={`fixed inset-0 z-50 flex items-center justify-center bg-black/85 backdrop-blur-md ${
+          className={`fixed inset-0 z-50 flex items-center justify-center bg-black/45 backdrop-blur-sm ${
             isMobile ? 'p-0' : 'p-4 md:p-6'
           }`}
         >
@@ -202,10 +202,10 @@ export default function Terminal() {
               if (e.target instanceof HTMLButtonElement || (e.target as HTMLElement).closest('button')) return;
               inputRef.current?.focus();
             }}
-            className={`bg-black/95 w-full flex flex-col font-mono text-zinc-300 overflow-hidden glass-panel-heavy scanlines-overlay relative ${
+            className={`bg-zinc-950/85 backdrop-blur-xl w-full flex flex-col font-mono text-zinc-300 overflow-hidden glass-panel-heavy scanlines-overlay relative ${
               isMobile 
                 ? 'h-full rounded-none border-none' 
-                : 'border border-zinc-800 max-w-4xl rounded-2xl shadow-2xl h-[78vh]'
+                : 'border border-zinc-700/60 max-w-4xl rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.85)] h-[78vh]'
             }`}
           >
             {/* Header Bar */}

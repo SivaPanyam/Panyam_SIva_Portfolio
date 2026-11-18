@@ -18,10 +18,10 @@ export const THEME_CONFIGS: Record<GlobalAccentTheme, ThemeConfig> = {
     id: 'default',
     name: 'Monochrome Polar',
     hex: '#ffffff',
-    glow: 'rgba(56, 189, 248, 0.4)',
-    pulseColor: '#00f5ff',
-    lineColor: '#0284c7',
-    pointColor: '#38bdf8',
+    glow: 'rgba(255, 255, 255, 0.4)',
+    pulseColor: '#ffffff',
+    lineColor: '#71717a', // clean neutral zinc/white line
+    pointColor: '#ffffff', // crisp pure white nodes
   },
   cyan: {
     id: 'cyan',
