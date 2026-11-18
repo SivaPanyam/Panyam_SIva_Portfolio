@@ -7,7 +7,6 @@ import DockNavbar from './components/DockNavbar';
 import SystemTelemetryInspector from './components/SystemTelemetryInspector';
 import Logo from './components/Logo';
 import BrandShowcase from './components/BrandShowcase';
-import ContactModal from './components/ContactModal';
 import { Sparkles, ArrowDown, ChevronRight, Terminal as TermIcon, FileText, Mail } from 'lucide-react';
 import { portfolioProjects } from './utils/projectData';
 import type { ProjectData } from './utils/projectData';
@@ -75,7 +74,6 @@ function App() {
   } = useUIStore();
   const [isBooting, setIsBooting] = useState(true);
   const [selectedProject, setSelectedProject] = useState<ProjectData | null>(null);
-  const [isContactOpen, setIsContactOpen] = useState(false);
 
 
   // Styled Console Greetings on boot
@@ -206,42 +204,10 @@ function App() {
                   initial={{ opacity: 0, y: 30 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ ...transitions.easeCinematic, delay: 0.5 }}
-                  className="max-w-xl text-zinc-400 text-xs md:text-sm leading-relaxed mb-8 tracking-wide font-sans select-text pointer-events-auto"
+                  className="max-w-xl text-zinc-500 text-xs md:text-sm leading-relaxed mb-12 tracking-wide font-sans select-text pointer-events-auto"
                 >
-                  Full-Stack &amp; Distributed Systems Architect specializing in React 19, TypeScript, Three.js WebGL spatial interfaces, and quantized edge AI pipelines.
+                  "I build AI-powered applications, scalable web platforms, and developer-focused systems with a strong focus on real-world problem solving."
                 </motion.p>
-
-                {/* Verified Engineering Telemetry Blueprint Strip */}
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ ...transitions.easeCinematic, delay: 0.55 }}
-                  className="mb-10 grid grid-cols-2 sm:grid-cols-4 gap-3 max-w-3xl w-full pointer-events-auto font-mono text-left"
-                >
-                  {[
-                    { label: 'Distributed Systems', val: '4 Flagships', note: 'Raft WAL / WebSockets', id: 'bank' },
-                    { label: 'Edge Quantization', val: '85% Efficiency', note: 'INT8 TFLite / IoT', id: 'ecotrack' },
-                    { label: 'Semantic Lookups', val: '<14ms Latency', note: 'Milvus / Hybrid RAG', id: 'fanversi' },
-                    { label: 'Interactive 3D', val: '60 FPS WebGL', note: 'React 19 / Three.js', id: 'tuneaura' },
-                  ].map((stat) => (
-                    <motion.div
-                      key={stat.label}
-                      whileHover={{ scale: 1.03, y: -2 }}
-                      onClick={() => {
-                        const proj = portfolioProjects.find(p => p.id === stat.id);
-                        if (proj) setSelectedProject(proj);
-                      }}
-                      className="p-3 bg-zinc-950/80 border border-zinc-800/80 hover:border-zinc-500 rounded-xl cursor-pointer transition-all glass-panel group"
-                    >
-                      <div className="flex justify-between items-center mb-1">
-                        <span className="text-[8px] text-zinc-500 uppercase tracking-widest">{stat.label}</span>
-                        <span className="text-[8px] text-emerald-400 opacity-0 group-hover:opacity-100 transition-opacity">Inspect ↗</span>
-                      </div>
-                      <div className="text-white font-bold text-xs tracking-tight mb-0.5">{stat.val}</div>
-                      <div className="text-[9px] text-zinc-500 font-sans">{stat.note}</div>
-                    </motion.div>
-                  ))}
-                </motion.div>
 
                 {/* Primary/Secondary Call To Actions */}
                 <motion.div 
@@ -512,17 +478,11 @@ function App() {
                       Feel free to reach out to collaborate on high-fidelity web projects, generative AI applications, or server architectures.
                     </p>
                     <div className="flex flex-col gap-4 font-mono">
-                      <button 
-                        onClick={() => setIsContactOpen(true)}
-                        className="w-full py-3.5 bg-white text-black hover:bg-zinc-200 rounded-full font-bold uppercase tracking-widest transition-all active:scale-95 flex items-center justify-center gap-2 cursor-pointer shadow-lg hover:shadow-[0_0_25px_rgba(255,255,255,0.2)]"
-                      >
-                        <Mail className="w-4 h-4" /> Open Secure Message Gateway
-                      </button>
                       <a 
                         href="mailto:contact@sivapanyam.dev"
-                        className="text-[10px] text-zinc-500 hover:text-white transition-colors py-1 uppercase"
+                        className="w-full py-3.5 bg-white text-black hover:bg-zinc-200 rounded-full font-bold uppercase tracking-widest transition-all active:scale-95 flex items-center justify-center gap-2 cursor-pointer"
                       >
-                        Or dispatch via direct email: contact@sivapanyam.dev ↗
+                        <Mail className="w-4 h-4" /> Send Synapse Message
                       </a>
                     </div>
                   </div>
@@ -537,12 +497,6 @@ function App() {
               <div>Secure synapse: stable</div>
               <div>Bangalore edge network</div>
             </div>
-
-            {/* Contact Gateway Modal */}
-            <ContactModal 
-              isOpen={isContactOpen} 
-              onClose={() => setIsContactOpen(false)} 
-            />
 
             {/* Global CLI overlay modal */}
             <Suspense fallback={null}>
