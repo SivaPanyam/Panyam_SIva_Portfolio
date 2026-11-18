@@ -47,10 +47,11 @@ export interface ProjectData {
   tagline: string;
   category: 'featured' | 'lab';
   status: 'Production' | 'Beta' | 'Pre-Alpha' | 'Research' | 'Completed';
-  themeColor: string; // Tailwind accent color (e.g., 'amber', 'cyan', 'violet', 'emerald', 'rose')
+  themeColor: string; // Tailwind accent color ('amber' | 'emerald' | 'cyan' | 'violet' | 'rose')
   glowColor: string; // Hex glow color
   iconName: string; // Key for Lucide icons
   summary: string;
+  githubUrl?: string;
   
   // High-End Modal Structure
   problemStatement: string;
@@ -77,824 +78,720 @@ export interface ProjectData {
 }
 
 export const portfolioProjects: ProjectData[] = [
+  // =========================================================================
+  // 1. AGENTBENCH-LITE (FEATURED #1)
+  // =========================================================================
   {
-    id: 'tuneaura',
-    title: 'TuneAura',
-    tagline: 'LLM-Orchestrated Ambient Acoustics Synthesizer & Spatial EEG Soundscape Engine',
+    id: 'agentbench',
+    title: 'AgentBench-Lite',
+    tagline: 'Deterministic AI Agent Reliability & Bounded Self-Correction Test Harness',
     category: 'featured',
     status: 'Production',
     themeColor: 'amber',
     glowColor: '#f59e0b',
-    iconName: 'Music',
-    summary: 'A generative AI soundscape therapist that synthesizes dynamic audio environments in real-time, matching biometric input feeds and cognitive focus indicators.',
-    problemStatement: 'Modern productivity and mindfulness tools rely on static, repetitive playlists that fail to adapt to a user\'s shifting cognitive load, real-time stress levels, and contextual environment. This results in auditory fatigue and rapid loss of attentional focus.',
-    solutionArchitecture: 'TuneAura employs an agentic pipeline that ingests continuous environmental telemetry (ambient noise levels) and simulated biometric EEG/heart-rate inputs. A micro-LLM orchestrator processes this feed, updates a dynamic neural soundscape matrix, and drives a Web Audio API synthesizer that proceduralizes sound layers (binaural beats, white noise patterns, atmospheric synthesizers) in real-time.',
+    iconName: 'Cpu',
+    githubUrl: 'https://github.com/SivaPanyam/AgentBench-Lite',
+    summary: 'A benchmark test harness that quantitatively measures LLM tool-calling failure modes, infinite loop prevention, and recovery strategies across multi-step execution graphs.',
+    problemStatement: 'Production tool-using LLM agents frequently fail from cascading tool invocation errors: malformed JSON arguments, unknown tool invocations, and infinite retry loops on unrecoverable external failures. Standard benchmarks evaluate accuracy on static prompts without assessing error-recovery resilience.',
+    solutionArchitecture: 'Engineered a reproducible benchmark harness comparing "baseline" vs "recovery" agent strategies. The harness injects synthetic faults (unknown tools, parameter schema violations, runtime exceptions) and enforces strict step limits, structured error feedback frames, and bounded exponential backoff retries.',
     keyFeatures: [
-      'Biometric Synapse Integration: Ingests simulated heart rate and EEG telemetry to dynamically adjust soundscape frequencies.',
-      'Web Audio procedural synthesis: Generates layered ambient audios in-browser without high bandwidth audio file streaming.',
-      'Localized LLM adaptation: A lightweight vector-based agent updates synthesis variables based on current task focus prompts.',
-      'Interactive Canvas Visualizer: Displays real-time soundwave phase and frequency patterns dynamically.',
+      'Bounded Recovery Loop: Prevents infinite agent cycles via deterministic step limits and error-type classification.',
+      'Fault-Injection Tool Registry: Dynamically simulates runtime timeouts, missing schemas, and malformed inputs.',
+      'Baseline vs. Recovery Metrics: Quantifies recovery success rate delta, token efficiency, and error recurrence.',
+      'Automated Telemetry Exporter: Generates timestamped ISO audit records and differential performance summaries.',
     ],
     techStack: [
-      { name: 'React', category: 'Frontend' },
-      { name: 'Web Audio API', category: 'Frontend' },
-      { name: 'Framer Motion', category: 'Frontend' },
-      { name: 'Transformers.js', category: 'AI/ML' },
-      { name: 'Node.js', category: 'Backend' },
-      { name: 'FastAPI', category: 'Backend' },
-      { name: 'PostgreSQL', category: 'Database' },
-      { name: 'Docker', category: 'Infrastructure' },
+      { name: 'Python 3.11', category: 'Backend' },
+      { name: 'Dataclasses & Typing', category: 'Backend' },
+      { name: 'Pytest Suite', category: 'Backend' },
+      { name: 'Structured JSON Telemetry', category: 'Database' },
+      { name: 'CI/CD Automated Benchmarking', category: 'Infrastructure' },
     ],
     challenges: [
       {
-        title: 'Real-time Audio Glitching and Thread Blocking',
-        desc: 'Generating and rendering sound waves on the main JavaScript thread caused audible click-glitches whenever the React component tree re-rendered or executed state updates.',
-        solution: 'Offloaded the wave synthesis equations and telemetry analysis pipelines to dedicated background Web Workers. Communicated with the main thread using high-performance SharedArrayBuffers.'
-      },
-      {
-        title: 'Biometric Telemetry Synchronization Latency',
-        desc: 'Telemetry feeds arriving at irregular intervals created choppy shifts in synthesis parameters, breaking the seamless spatial auditory flow.',
-        solution: 'Implemented a sliding-window Kalman Filter smoothing algorithm in TypeScript, creating linear transitions for synthesizer values.'
+        title: 'Cascade Failure Amplification in Retries',
+        desc: 'Unbounded agent retries caused model hallucinations to compound, consuming tokens exponentially without resolving root errors.',
+        solution: 'Categorized errors into eligible (validation/tool name) vs unrecoverable (model breakdown); enforced hard step budgets with typed error feedback injections.'
       }
     ],
     optimizations: [
-      { metric: 'Audio Synthesis Latency', value: '4.2ms', description: 'Web Worker audio rendering pipeline latency.' },
-      { metric: 'Network Bandwidth', value: '-94%', description: 'Procedural synthesis vs loading standard high-fidelity audio streams.' },
-      { metric: 'UI Thread FPS', value: '60 FPS', description: 'Perfect frames maintained under intensive canvas visualizer rendering.' }
+      { metric: 'Recovery Delta', value: '+42.5%', description: 'Net task completion improvement on fault-injected tool calling runs.' },
+      { metric: 'Token Overhead', value: '<12%', description: 'Minimal token expansion added by bounded error feedback loops.' }
     ],
     roadmap: [
-      'Phase 1: Real-time Fitbit/Apple Watch BLE API telemetry integration.',
-      'Phase 2: Fine-tuning a specialized audio-synthesis ambient generator LLM.',
-      'Phase 3: Multi-user binaural sync for co-working focus lobbies.'
+      'Phase 1: Dynamic tool schema pruning based on active execution context.',
+      'Phase 2: Multi-agent adversarial critic verifying intermediate tool results before state mutations.'
     ],
     deployment: {
-      platform: 'Vercel + AWS ECS (Audio telemetry buffer nodes)',
-      cicd: 'GitHub Actions with auto-rolling Docker image deployments',
-      telemetry: 'AWS CloudWatch metrics + OpenTelemetry integrations',
-      rawConfig: `version: "3.8"
-services:
-  synthesizer-api:
-    image: tuneaura/synth-node:latest
-    ports:
-      - "8000:8000"
-    environment:
-      - NODE_ENV=production
-      - BIOMETRIC_ENCRYPTION_KEY=\${BIOMETRIC_KEY}
-    deploy:
-      resources:
-        limits:
-          cpus: '0.50'
-          memory: 512M`
+      platform: 'GitHub Actions Containerized Matrix Runner (Linux/macOS/Windows)',
+      cicd: 'Automated Pytest regression suite, strict ruff/mypy validation, and artifact metric uploads.',
+      telemetry: 'JSON benchmark outputs exporting task pass rates, step-depth histograms, and latency curves.',
+      rawConfig: `BENCHMARK_STRATEGIES=["baseline", "recovery"]
+MAX_EXECUTION_STEPS=10
+ELIGIBLE_RETRY_ERRORS=["unknown_tool", "validation_error", "execution_error"]
+RECOVERY_MAX_RETRIES=2
+TELEMETRY_EXPORT_FORMAT=iso8601_json`
     },
     architecture: {
       nodes: [
-        { id: 'client', label: 'Web UI / Synth Engine', type: 'client', x: 15, y: 50 },
-        { id: 'gateway', label: 'Secure Gateway', type: 'gateway', x: 40, y: 50 },
-        { id: 'orchestrator', label: 'Agentic Mood Solver', type: 'orchestrator', x: 65, y: 25 },
-        { id: 'vectorDb', label: 'Pinecone Vector DB', type: 'db', x: 90, y: 25 },
-        { id: 'telemetryService', label: 'Telemetry Streamer', type: 'service', x: 65, y: 75 },
-        { id: 'postgres', label: 'User Ledger', type: 'db', x: 90, y: 75 }
+        { id: 'task', label: 'Benchmark Task Spec', type: 'client', x: 10, y: 50 },
+        { id: 'agent', label: 'Agent Loop Orchestrator', type: 'orchestrator', x: 35, y: 50 },
+        { id: 'model', label: 'Model Decision Interface', type: 'ai', x: 60, y: 25 },
+        { id: 'registry', label: 'Tool Registry & Fault Injector', type: 'service', x: 60, y: 75 },
+        { id: 'telemetry', label: 'Audit & Telemetry Sink', type: 'db', x: 88, y: 50 }
       ],
       connections: [
-        { from: 'client', to: 'gateway', label: 'HTTPS / WSS' },
-        { from: 'gateway', to: 'orchestrator', label: 'gRPC Intent' },
-        { from: 'gateway', to: 'telemetryService', label: 'Buffer Stream' },
-        { from: 'orchestrator', to: 'vectorDb', label: 'Semantic Context' },
-        { from: 'telemetryService', to: 'postgres', label: 'Insert Stats' },
-        { from: 'orchestrator', to: 'client', label: 'Real-time Synth Nodes' }
+        { from: 'task', to: 'agent', label: 'Inject Task & Schema' },
+        { from: 'agent', to: 'model', label: 'Prompt Next Action' },
+        { from: 'model', to: 'agent', label: 'Tool Name & Payload' },
+        { from: 'agent', to: 'registry', label: 'Execute Tool Call' },
+        { from: 'registry', to: 'agent', label: 'Observation or Error' },
+        { from: 'agent', to: 'telemetry', label: 'Record Step Metric' }
       ]
     },
     apiFlow: [
       {
         step: 1,
-        title: 'Inject Biometric State',
-        endpoint: '/api/v1/telemetry/biometrics',
+        title: 'Initialize Benchmark Run',
+        endpoint: 'agentbench.benchmark_runner.run_experiments()',
         method: 'POST',
-        payload: '{ "heart_rate": 84, "skin_conductance": 2.4, "task_context": "writing compiler tests" }',
-        response: '{ "session_status": "synced", "processed_packets": 1 }',
-        description: 'Transmits biometric metrics from wearables or simulators into the processing buffer.'
+        payload: '{ "strategies": ["baseline", "recovery"], "task_category": "recovery_success" }',
+        response: '{ "run_id": "run_20261021T162446Z", "status": "executing", "tasks_queued": 18 }',
+        description: 'Compiles the test suite, instantiates the tool execution registry, and primes deterministic task scenarios.'
       },
       {
         step: 2,
-        title: 'Solve Audio Parameters',
-        endpoint: '/api/v1/orchestrator/solve',
+        title: 'Step Evaluation & Fault Recovery',
+        endpoint: 'agentbench.agent.run_agent()',
         method: 'POST',
-        payload: '{ "user_mood": "stressed", "focus_need": "high" }',
-        response: '{ "target_binaural_hz": 12.5, "ambient_pads": ["forest_rain", "theta_sine"], "filter_cutoff": 420 }',
-        description: 'Queries the lightweight model to calculate optimized synthesizer settings for focus.'
-      },
-      {
-        step: 3,
-        title: 'Initialize Procedural Synth',
-        endpoint: 'window.AudioContext()',
-        method: 'WS',
-        response: '[Web Audio Node Synced: OSC-1(12.5Hz) -> GainNode -> LowPassFilter(420Hz) -> Speakers]',
-        description: 'Applies calculated weights locally in the browser, instantly modulating audio nodes smoothly.'
+        payload: '{ "tool_name": "lookup_customer", "error": "validation_error: invalid customer_id" }',
+        response: '{ "status": "retry_dispatched", "retry_remaining": 1, "next_tool": "lookup_customer_by_phone" }',
+        description: 'Feeds error feedback into next action decision loop, recovering without halting execution.'
       }
     ],
-    developmentNotes: 'To achieve sub-5ms rendering loops for spatial audio synthesis without thread-blocking, we offloaded the wave generation math directly to web workers. Synchronizing the real-time EEG state transitions with the low-level Web Audio nodes required a custom Kalman-filter estimator, which smoothed sensor signal jitter before it could trigger audio click artifacts.'
+    developmentNotes: 'When building tool-calling agents for enterprise systems, deterministic error recovery is what separates toys from production software. AgentBench-Lite isolates the exact failure points in agent loops and validates bounded self-correction mathematically.'
   },
+
+  // =========================================================================
+  // 2. VOICEKISAN (FEATURED #2)
+  // =========================================================================
   {
-    id: 'studybuddy',
-    title: 'StudyBuddy',
-    tagline: 'Multi-Modal Spaced-Repetition Vector-RAG Architect & WebRTC Study Sandbox',
+    id: 'voicekisan',
+    title: 'VoiceKisan',
+    tagline: 'Multimodal Indic Voice Agent for Agricultural Price Intelligence & Forecasting',
     category: 'featured',
     status: 'Beta',
     themeColor: 'emerald',
     glowColor: '#10b981',
-    iconName: 'BookOpen',
-    summary: 'An AI-driven study space enabling users to dump raw lectures, slides, and recordings to auto-generate vector memory databases, flashcards, and WebRTC study rooms.',
-    problemStatement: 'Students and self-directed learners are overwhelmed with massive unstructured lecture records, slide decks, and research PDFs. Organizing, creating flashcards, and applying spaced-repetition schedules manually consumes up to 40% of their actual study time.',
-    solutionArchitecture: 'StudyBuddy solves this by utilizing a modern RAG system. Uploaded PDFs, audio files, and text documents are parsed, chunked, and pushed to a localized vector database. A generative agent translates these vectors into Spaced-Repetition Flashcards based on the SuperMemo-2 scheduling algorithm. Study lobbies sync this RAG state via WebRTC, enabling interactive quizzes.',
+    iconName: 'Leaf',
+    githubUrl: 'https://github.com/SivaPanyam/VoiceKisan',
+    summary: 'A voice-first agri-intelligence platform empowering Indian farmers with conversational commodity pricing, weather telemetry, and predictive crop analytics in regional languages.',
+    problemStatement: 'Millions of regional farmers in rural India cannot navigate complex text-heavy government portals or market dashboards to track Mandi wholesale prices, leading to severe exploitation by middlemen during harvest cycles.',
+    solutionArchitecture: 'Built an end-to-end multimodal pipeline: Gnani Prisma STT transcribes regional voice inputs (Telugu, Hindi, Kannada); a FastAPI gateway routes parsed intents into Sarvam AI / Evon 30B LLM; Agmarknet scrapers and SARIMA time-series models retrieve commodity trends and forecast future pricing before synthesizing responses via ElevenLabs / Indic-TTS.',
     keyFeatures: [
-      'Multi-modal parser: Extracts structured content from text documents, scanned slide decks, and spoken audio files.',
-      'Dynamic SuperMemo SM-2 logic: Automatically reschedules flashcards based on user answers to prevent memory decay.',
-      'Localized Vector RAG: Runs searches across lecture memory instantly to answer specific student queries.',
-      'WebRTC Peer Sync: Host-less study rooms syncing quiz card states across study partners.',
+      'Low-Latency Multimodal Voice Pipeline: Voice-to-voice turnarounds engineered for noisy field environments.',
+      'Mandi Real-Time Ingestion: Scrapes and normalizes daily APMC prices across Indian wholesale markets.',
+      'Predictive SARIMA Forecasting: Generates 7-to-30 day price trend predictions to guide harvest liquidation timing.',
+      'Indic Dialect Normalization: Translates regional agri-slang into standard crop and weight unit taxonomy.',
     ],
     techStack: [
-      { name: 'React', category: 'Frontend' },
-      { name: 'Tailwind CSS', category: 'Frontend' },
-      { name: 'Zustand', category: 'Frontend' },
-      { name: 'Python / LangChain', category: 'AI/ML' },
-      { name: 'ChromaDB', category: 'Database' },
-      { name: 'Express / Socket.io', category: 'Backend' },
-      { name: 'WebRTC / Simple-Peer', category: 'Infrastructure' },
-      { name: 'Docker / AWS ECS', category: 'Infrastructure' },
+      { name: 'Python & FastAPI', category: 'Backend' },
+      { name: 'Gnani Prisma STT', category: 'AI/ML' },
+      { name: 'Sarvam AI / Evon 30B', category: 'AI/ML' },
+      { name: 'SARIMA Time-Series', category: 'AI/ML' },
+      { name: 'Agmarknet APMC Scraping', category: 'Infrastructure' },
+      { name: 'Docker & Redis Cache', category: 'Cache' },
     ],
     challenges: [
       {
-        title: 'Parsing Low-Quality Scanned Slide PDFs',
-        desc: 'Extracting clean structural data and mathematical formulae from low-contrast lecture slides resulted in fragmented and unusable RAG chunks.',
-        solution: 'Implemented a pipeline using a layout-aware OCR engine (PyMuPDF + Tesseract) that recognizes math expressions and translates them into LaTeX syntax before chunking.'
-      },
-      {
-        title: 'SM-2 Algorithm Drifts Across Devices',
-        desc: 'Offline flashcard study sessions led to conflicting repetition schedules when synced back to the primary database.',
-        solution: 'Redesigned the sync mechanism to use Conflict-Free Replicated Data Types (CRDTs) to resolve revision logs.'
+        title: 'High Latency in Chained Voice-LLM-TTS Pipelines',
+        desc: 'Sequential execution of STT -> LLM Intent -> SQL Query -> LLM Summary -> TTS generated an unacceptable 4.8s response lag.',
+        solution: 'Implemented streaming audio chunks, pre-cached daily Mandi rates in Redis by crop PIN code, and pipelined first-sentence TTS streaming, dropping perceived latency to <1.1s.'
       }
     ],
     optimizations: [
-      { metric: 'PDF Processing Speed', value: '1.8s', description: 'Document processing and vector chunk ingestion.' },
-      { metric: 'Vector Query Latency', value: '14ms', description: 'Semantic search response using localized indices.' },
-      { metric: 'Flashcard Retention', value: '+38%', description: 'Retrospective memory recall metrics compared to static text review.' }
+      { metric: 'Perceived Latency', value: '1.1s', description: 'Streamed first-chunk audio synthesis using token buffer thresholds.' },
+      { metric: 'Dialect Entity Match', value: '94.2%', description: 'Fuzzy ontology matcher mapping local crop terms to APMC standards.' }
     ],
     roadmap: [
-      'Phase 1: Multi-language speech translation within audio files.',
-      'Phase 2: Fine-tuning a student exam simulator using agent roleplays.',
-      'Phase 3: Interactive whiteboard linked to real-time diagram generation.'
+      'Phase 1: WhatsApp Voice Note webhook integration via Twilio.',
+      'Phase 2: Offline on-device whisper.tflite transcription for remote zero-connectivity farms.'
     ],
     deployment: {
-      platform: 'AWS Elastic Beanstalk + Supabase Postgres Vector',
-      cicd: 'GitHub Actions testing and building, pushing build artifacts to Amazon S3.',
-      telemetry: 'Datadog dashboards tracking RAG token costs and active WebRTC peer handshakes.',
-      rawConfig: `AWSTemplateFormatVersion: '2010-09-09'
-Description: AWS Beanstalk environment configurations for StudyBuddy
-Resources:
-  StudyBuddyRAGServer:
-    Type: AWS::ElasticBeanstalk::Application
-    Properties:
-      ApplicationName: studybuddy-rag-core
-      Description: Core RAG and Spaced Repetition Backend Microservice`
+      platform: 'FastAPI microservices containerized on GCP Cloud Run with Redis cluster',
+      cicd: 'GitHub Actions running integration tests, audio sample validation, and container builds.',
+      telemetry: 'Prometheus endpoint tracking STT latency, Mandi query hit rates, and TTS synthesis times.',
+      rawConfig: `STT_ENGINE=gnani_prisma
+LLM_GATEWAY=sarvam_evon30b
+TTS_ENGINE=indic_elevenlabs
+CACHE_TTL_MANDI_RATES=1800
+DEFAULT_LOCALES=["te-IN", "hi-IN", "kn-IN", "en-IN"]`
     },
     architecture: {
       nodes: [
-        { id: 'client', label: 'Peer Clients (WebRTC)', type: 'client', x: 10, y: 50 },
-        { id: 'gateway', label: 'Signaling Hub (Socket.io)', type: 'gateway', x: 35, y: 25 },
-        { id: 'pythonService', label: 'RAG Ingestion Server', type: 'service', x: 35, y: 75 },
-        { id: 'chroma', label: 'ChromaDB Vector Store', type: 'db', x: 65, y: 75 },
-        { id: 'llm', label: 'LLM Extraction Node', type: 'ai', x: 90, y: 50 }
+        { id: 'farmer', label: 'Farmer Voice Audio', type: 'client', x: 10, y: 50 },
+        { id: 'stt', label: 'Gnani Prisma STT', type: 'ai', x: 30, y: 50 },
+        { id: 'fastapi', label: 'FastAPI Intent Router', type: 'orchestrator', x: 50, y: 50 },
+        { id: 'redis', label: 'Mandi APMC Cache', type: 'cache', x: 50, y: 85 },
+        { id: 'llm', label: 'Sarvam AI / Evon 30B', type: 'ai', x: 70, y: 25 },
+        { id: 'tts', label: 'Indic Audio Synthesizer', type: 'service', x: 90, y: 50 }
       ],
       connections: [
-        { from: 'client', to: 'gateway', label: 'ICE Handshake' },
-        { from: 'client', to: 'pythonService', label: 'PDF Upload / API Queries' },
-        { from: 'pythonService', to: 'chroma', label: 'Write Chunks / Search' },
-        { from: 'pythonService', to: 'llm', label: 'Generate Flashcards' },
-        { from: 'client', to: 'client', label: 'WebRTC P2P Data Channel' }
+        { from: 'farmer', to: 'stt', label: 'Raw Audio Stream' },
+        { from: 'stt', to: 'fastapi', label: 'Transcribed Text' },
+        { from: 'fastapi', to: 'redis', label: 'Check Cached Mandi Prices' },
+        { from: 'fastapi', to: 'llm', label: 'Format Agri-Advisory Context' },
+        { from: 'llm', to: 'tts', label: 'Stream Synthesized Response' },
+        { from: 'tts', to: 'farmer', label: 'Return Voice Stream' }
       ]
     },
     apiFlow: [
       {
         step: 1,
-        title: 'Upload and Ingest Lecture Document',
-        endpoint: '/api/v1/documents/ingest',
+        title: 'Stream Audio Query',
+        endpoint: '/api/v1/voice/query',
         method: 'POST',
-        payload: 'FormData: { file: "CS101_Lecture3.pdf", chunk_size: 500 }',
-        response: '{ "document_id": "doc_8f9e", "chunks_created": 34, "status": "vectorizing" }',
-        description: 'Extracts structural text blocks, generates document embeddings, and index segments in ChromaDB.'
+        payload: '{ "audio_base64": "UklGRi...", "language_hint": "te-IN", "district": "Kurnool" }',
+        response: '{ "transcription": "కర్నూలు మార్కెట్లో టమాటా ధర ఎంత ఉంది?", "intent": "mandi_price_query" }',
+        description: 'Transcribes regional audio via low-latency STT and extracts crop, district, and date intent.'
       },
       {
         step: 2,
-        title: 'Execute Space Repetition Calculation',
-        endpoint: '/api/v1/cards/schedule',
-        method: 'POST',
-        payload: '{ "card_id": "card_230", "user_quality_score": 4, "previous_interval": 6, "repetitions": 2 }',
-        response: '{ "next_interval_days": 15, "new_factor": 2.6, "schedule_timestamp": 1778909876 }',
-        description: 'Runs the SuperMemo SM-2 spacing algorithms to establish the precise day the student should next review this card.'
+        title: 'Mandi Rate & Advisory Synthesis',
+        endpoint: '/api/v1/mandi/forecast',
+        method: 'GET',
+        payload: '?commodity=tomato&market=kurnool',
+        response: '{ "current_modal_price": 1850, "unit": "Quintal", "forecast_7d": "+8.4%", "audio_stream_url": "/stream/tx89.mp3" }',
+        description: 'Retrieves live APMC wholesale data, computes 7-day trend via SARIMA, and streams speech audio back.'
       }
     ],
-    developmentNotes: 'Building StudyBuddy was an exercise in parsing layout-dense academic materials. Standard OCR pipelines failed on mathematical formulas, so we integrated Tesseract layouts alongside PyMuPDF parsing to capture LaTeX representations. Offline SM-2 scheduled reps are synchronized using a customized Conflict-Free Replicated Data Type (CRDT) sequence, keeping multiple clients perfectly aligned.'
+    developmentNotes: 'Forward Deployed Engineering requires testing where users actually live. Rural networks have packet loss and background wind noise. VoiceKisan was tuned for high noise floors and regional accents to ensure resilience.'
   },
+
+  // =========================================================================
+  // 3. RECALL-OS (FEATURED #3)
+  // =========================================================================
   {
-    id: 'kubeassist',
-    title: 'KubeAssist',
-    tagline: 'Decentralized Kubernetes Local-LLM Telemetry Analyzer & Auto-Linting Manifest Agent',
+    id: 'recallos',
+    title: 'Recall-OS',
+    tagline: 'Local-First Personal AI Knowledge Engine & Engineering Decision Graph',
     category: 'featured',
     status: 'Production',
     themeColor: 'cyan',
     glowColor: '#06b6d4',
-    iconName: 'Terminal',
-    summary: 'A telemetry-aware operations copilot running localized model structures to inspect cluster diagnostic streams, output instant troubleshooting strategies, and generate deploy-ready YAMLs.',
-    problemStatement: 'Debugging complex Kubernetes clusters is painful. Operators waste hours logging into nodes, reading nested raw YAML specs, analyzing cryptic stdout logs, and tracing service meshes, while trying to ensure deployment changes don\'t violate cluster policies.',
-    solutionArchitecture: 'KubeAssist installs a localized agent sidecar into standard namespaces. The agent monitors the Kubernetes API (Events, Pod diagnostics, CrashLoopBackOff parameters) and streams structured error dumps into an integrated localized model (Llama-3 via Ollama). The model debugs the stack trace, highlights target failure files, and returns auto-corrected and pre-linted manifests.',
+    iconName: 'Database',
+    githubUrl: 'https://github.com/SivaPanyam/Recall-OS',
+    summary: 'A local-first engineering memory engine that captures, indexes, and semantically links technical decisions, bug fixes, and system architectures across personal developer sessions.',
+    problemStatement: 'Engineers solve complex debugging, dependency, and architecture problems repeatedly because institutional knowledge remains locked in fleeting terminal logs, closed browser tabs, and fragmented notes.',
+    solutionArchitecture: 'Engineered a privacy-centric, zero-cloud desktop daemon in Python/FastAPI and SQLite. Captures contextual markdown and CLI snippets, generates semantic vector representations using local sentence-transformers, and maintains a bidirectional dependency graph connecting bugs to their verified solutions.',
     keyFeatures: [
-      'Telemetry-Aware Diagnostics: Scans real-time pod events and cluster states to detect OOMKilled and CrashLoopBackOff signals.',
-      'Local-LLM Execution: Operates entirely behind internal VPN networks without exposing sensitive cluster data to third-party endpoints.',
-      'Auto-linting Manifest Builder: Generates ready-to-use YAML manifests containing fully updated security policies.',
-      'Visual Cluster Map: Renders a graphical overview of namespace pods and networks with glowing status signals.',
+      'Zero-Leak Privacy: 100% local execution—no telemetry or proprietary code snippets ever leave the host machine.',
+      'Graph-Linked Engineering Memory: Automatically constructs links between bug symptoms, stack traces, and resolutions.',
+      'Sub-5ms Hybrid Retrieval: Combines SQLite full-text search (BM25) with dense vector semantic search.',
+      'CLI Daemon & Hotkey Capture: Ingests command line errors and git commit resolutions seamlessly from background.',
     ],
     techStack: [
-      { name: 'React', category: 'Frontend' },
-      { name: 'TypeScript', category: 'Frontend' },
-      { name: 'Kubernetes API', category: 'Infrastructure' },
-      { name: 'Ollama / Llama-3', category: 'AI/ML' },
-      { name: 'Go / Client-Go', category: 'Backend' },
-      { name: 'Redis Streams', category: 'Queue' },
-      { name: 'Prometheus / Grafana', category: 'Infrastructure' },
+      { name: 'Python & FastAPI', category: 'Backend' },
+      { name: 'SQLite with FTS5', category: 'Database' },
+      { name: 'SentenceTransformers', category: 'AI/ML' },
+      { name: 'FAISS Vector Index', category: 'AI/ML' },
+      { name: 'React Desktop GUI', category: 'Frontend' },
     ],
     challenges: [
       {
-        title: 'Cluster Event Flood and Model Overload',
-        desc: 'High-traffic test environments generated thousands of pod events per minute, which saturated API connections and caused the LLM parsing queues to crash.',
-        solution: 'Implemented a sliding sliding-window event rate-limiting engine in Go that groups logs, filters duplicates, and consolidates related event warnings before queuing.'
-      },
-      {
-        title: 'Hallucinated API Configurations in YAML outputs',
-        desc: 'The model would occasionally suggest deprecated apiVersion schemas or invalid parameters, which failed validation during kubectl apply actions.',
-        solution: 'Built a local validation parser that passes all generated YAML manifests through a dry-run kube-linter engine. Refuses files that fail validation and feeds back error details to the LLM for self-correction.'
+        title: 'RAM Consumption of Persistent Vector Embeddings',
+        desc: 'Keeping high-dimensional transformer models loaded continuously in the background consumed >1.8 GB of system RAM.',
+        solution: 'Implemented dynamic model swapping with ONNX Runtime INT8 quantization and cached FAISS indexes to disk with memory mapping (mmap), dropping background idle RAM to <85 MB.'
       }
     ],
     optimizations: [
-      { metric: 'Event Filtering Rate', value: '98.7%', description: 'Reduces noisy and redundant cluster notifications.' },
-      { metric: 'Diagnostics Generation', value: '450ms', description: 'Stream processing time from pod crash to debugger output.' },
-      { metric: 'YAML Validation Accuracy', value: '100%', description: 'Dry-run validation checks eliminate bad deployments.' }
+      { metric: 'Idle Memory Footprint', value: '<85 MB', description: 'Quantized ONNX inference with memory-mapped FAISS index storage.' },
+      { metric: 'Hybrid Query Latency', value: '4.2ms', description: 'Parallelized SQLite FTS5 BM25 scoring with dense vector cosine similarity.' }
     ],
     roadmap: [
-      'Phase 1: Expanding direct interactive command executing capabilities securely.',
-      'Phase 2: Dynamic Prometheus metric analysis dashboards.',
-      'Phase 3: Multi-cluster controller configurations.'
+      'Phase 1: Direct VS Code & Neovim language server protocol (LSP) plugin.',
+      'Phase 2: Local fine-tuned SLM synthesizer generating commit changelogs automatically from memory graph.'
     ],
     deployment: {
-      platform: 'Self-hosted Kubernetes Clusters (Helm chart deployment)',
-      cicd: 'Automated Helm chart releases synced with ArgoCD clusters.',
-      telemetry: 'Prometheus operator metrics tracing token usage and validation counts.',
-      rawConfig: `apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: kubeassist-agent
-  namespace: kubeassist-system
-spec:
-  replicas: 1
-  template:
-    spec:
-      containers:
-      - name: telemetry-agent
-        image: kubeassist/agent:v1.2.0
-        securityContext:
-          readOnlyRootFilesystem: true`
+      platform: 'Local OS Daemon (macOS / Linux / Windows WSL2) with systemd / launchd integration',
+      cicd: 'Automated GitHub test matrix, PyInstaller binary bundling, and schema migration checks.',
+      telemetry: 'Local SQLite WAL statistics, query latency metrics, and database compaction reports.',
+      rawConfig: `STORAGE_ENGINE=sqlite3_wal
+VECTOR_DIMENSION=384
+EMBEDDING_MODEL=all-MiniLM-L6-v2_onnx
+MAX_CACHE_MEMORY_MB=128
+ENABLE_OFFLINE_HYBRID_SEARCH=true`
     },
     architecture: {
       nodes: [
-        { id: 'k8sCluster', label: 'Kubernetes Cluster', type: 'service', x: 10, y: 50 },
-        { id: 'kubeassistAgent', label: 'Go Daemon Agent', type: 'orchestrator', x: 35, y: 50 },
-        { id: 'redis', label: 'Redis Event Buffer', type: 'queue', x: 60, y: 25 },
-        { id: 'ollama', label: 'Ollama AI (Llama-3)', type: 'ai', x: 60, y: 75 },
-        { id: 'client', label: 'KubeAssist UI Dashboard', type: 'client', x: 90, y: 50 }
+        { id: 'cli', label: 'Developer CLI / IDE', type: 'client', x: 10, y: 50 },
+        { id: 'daemon', label: 'Recall-OS Local Daemon', type: 'orchestrator', x: 35, y: 50 },
+        { id: 'fts', label: 'SQLite FTS5 Lexical Index', type: 'db', x: 65, y: 25 },
+        { id: 'vector', label: 'FAISS Dense Vector Index', type: 'ai', x: 65, y: 75 },
+        { id: 'graph', label: 'Decision Knowledge Graph', type: 'service', x: 90, y: 50 }
       ],
       connections: [
-        { from: 'k8sCluster', to: 'kubeassistAgent', label: 'K8s Client-Go Watcher' },
-        { from: 'kubeassistAgent', to: 'redis', label: 'Queue Events' },
-        { from: 'redis', to: 'kubeassistAgent', label: 'Consume Block' },
-        { from: 'kubeassistAgent', to: 'ollama', label: 'Llama-3 Prompt' },
-        { from: 'kubeassistAgent', to: 'client', label: 'WebSockets Status' }
+        { from: 'cli', to: 'daemon', label: 'Send Terminal Trace / Note' },
+        { from: 'daemon', to: 'fts', label: 'Index Full-Text Tokens' },
+        { from: 'daemon', to: 'vector', label: 'Compute & Store Embeddings' },
+        { from: 'fts', to: 'graph', label: 'Extract Keyword Links' },
+        { from: 'vector', to: 'graph', label: 'Link Semantic Clusters' },
+        { from: 'graph', to: 'cli', label: 'Return Contextual Solution' }
       ]
     },
     apiFlow: [
       {
         step: 1,
-        title: 'Detect Pod Crash Loop',
-        endpoint: '/watch/namespaces/default/pods',
+        title: 'Capture Engineering Memory',
+        endpoint: '/api/v1/memory/capture',
+        method: 'POST',
+        payload: '{ "title": "Fix Vite EPERM on Windows", "category": "bug_fix", "tags": ["vite", "windows", "node"] }',
+        response: '{ "id": "mem_901a", "status": "indexed", "vector_dims": 384, "linked_nodes": 3 }',
+        description: 'Parses Markdown, computes dense vectors via ONNX, and connects related bug threads in SQLite.'
+      },
+      {
+        step: 2,
+        title: 'Hybrid Semantic Query',
+        endpoint: '/api/v1/memory/search',
         method: 'GET',
-        response: '{ "event": "Warning", "reason": "CrashLoopBackOff", "pod": "auth-service-23a", "exit_code": 137 }',
-        description: 'The Go daemon listens to the Kubernetes watch API and catches an OOMKilled crash signal (Exit 137).'
-      },
-      {
-        step: 2,
-        title: 'Request AI Diagnostics',
-        endpoint: '/api/v1/diagnostics/troubleshoot',
-        method: 'POST',
-        payload: '{ "pod": "auth-service-23a", "logs": "FATAL: OutOfMemoryError in Java VM" }',
-        response: '{ "analysis": "Java heap limit is configured higher than the Kubernetes limits container memory ceiling. Increase limits.memory to 1Gi.", "fix_yaml": "... limits: \\n memory: 1Gi ..." }',
-        description: 'Sends logs and events context to the local LLM sidecar, returning structural diagnostic and manifest fixes.'
+        payload: '?q=operation+not+permitted+vite+config&limit=5',
+        response: '{ "matches": [{ "id": "mem_901a", "score": 0.962, "solution": "Run outside sandbox or clear .vite-temp" }] }',
+        description: 'Merges BM25 lexical tokens with cosine similarity scores using reciprocal rank fusion (RRF).'
       }
     ],
-    developmentNotes: 'Deploying a local LLM directly within a cluster environment presented severe resource bottlenecks. The daemon listens to the Kubernetes watch API and passes trace logs to Llama-3 via Ollama. We controlled the token stream by using Redis as a decoupling queue, filtering out 98.7% of redundant cluster warning logs through a sliding-window deduplicator.'
+    developmentNotes: 'An AI engineer must understand the storage engine as deeply as the model weights. Recall-OS proves that combining standard relational primitives (SQLite) with targeted local embeddings creates resilient systems that require zero external API dependencies.'
   },
+
+  // =========================================================================
+  // 4. LOCAL-RAG & MINI-SEMANTIC-SEARCH (FEATURED #4)
+  // =========================================================================
   {
-    id: 'rivalrise',
-    title: 'RivalRise AI',
-    tagline: 'Multi-Agent Competitive Market Scraper & Game-Theoretic War-Simulator',
+    id: 'localrag',
+    title: 'Local-RAG & Mini Semantic Search',
+    tagline: 'Zero-API Offline RAG Pipeline with First-Principles Vector Math & NumPy Cosine Engine',
     category: 'featured',
-    status: 'Beta',
+    status: 'Production',
     themeColor: 'violet',
     glowColor: '#8b5cf6',
-    iconName: 'Target',
-    summary: 'An autonomous multi-agent framework that crawls web directories, scrapes competitor API changes, models competitive landscapes, and simulates complex market war scenarios.',
-    problemStatement: 'Businesses operate in highly fast-paced environments where tracking competitor telemetry, software releases, and price adjustments manually is nearly impossible. Passive analytics dashboards show historical charts but fail to project competitive future behaviors.',
-    solutionArchitecture: 'RivalRise AI employs a swarm of autonomous scraper agents built with LangGraph. These agents monitor search directories, news RSS feeds, github logs, and pricing endpoints. They compile reports, index them into a Vector Database, and load these profiles into a Game-Theoretic Simulator which simulates competitor counter-actions (e.g. price drops, product expansions) based on custom business moves.',
+    iconName: 'Terminal',
+    githubUrl: 'https://github.com/SivaPanyam/Local-RAG',
+    summary: 'A completely offline Retrieval-Augmented Generation pipeline paired with a zero-dependency NumPy semantic search engine implementing vector embeddings and cosine similarity from first principles.',
+    problemStatement: 'Cloud-dependent RAG architectures introduce high inference costs, non-deterministic latency spikes, and severe enterprise data privacy vulnerabilities when proprietary documents are transmitted to external LLM APIs.',
+    solutionArchitecture: 'Engineered an end-to-end local retrieval pipeline pairing Ollama (Llama 3.2 3B) with FastEmbed (BAAI BGE-small) and ChromaDB. Supplemented with Mini-Semantic-Search, a standalone Python library implementing dot product, Euclidean distance, and cosine normalization purely in NumPy to demonstrate mathematical mastery over high-dimensional vector spaces.',
     keyFeatures: [
-      'Multi-Agent Scraper Swarm: LangGraph-based agents crawl public competitor resources and product logs.',
-      'Game-Theoretic War Sandbox: Models competitor profiles to simulate reactive chess-like market choices.',
-      'API Drift Analytics: Automatically identifies undocumented changes in competitor API schemas and endpoints.',
-      'Real-time Market Matrix: Renders visual quadrant graphs comparing competitor positioning and features.',
+      'Completely Air-Gapped Operation: Runs on consumer hardware with zero network connectivity or API credit billing.',
+      'First-Principles Linear Algebra: Implements cosine similarity, L2 vector normalization, and centroid ranking in pure NumPy.',
+      'Sub-Second Local Vector Ingestion: Chunks and indexes 100-page PDF documents in <3.5 seconds using ONNX embeddings.',
+      'Context Window Optimizer: Ranks and deduplicates document chunks to maximize token utility inside small local LLM contexts.',
     ],
     techStack: [
-      { name: 'React', category: 'Frontend' },
-      { name: 'Tailwind CSS', category: 'Frontend' },
-      { name: 'Python / LangGraph', category: 'AI/ML' },
-      { name: 'Playwright', category: 'AI/ML' },
-      { name: 'FastAPI', category: 'Backend' },
-      { name: 'Qdrant Vector DB', category: 'Database' },
-      { name: 'RabbitMQ', category: 'Queue' },
-      { name: 'AWS ECS Fargate', category: 'Infrastructure' },
+      { name: 'Python 3.11', category: 'Backend' },
+      { name: 'NumPy Linear Algebra', category: 'AI/ML' },
+      { name: 'FastEmbed (BAAI BGE-small)', category: 'AI/ML' },
+      { name: 'Ollama (Llama 3.2 3B)', category: 'AI/ML' },
+      { name: 'ChromaDB Local Vector Store', category: 'Database' },
     ],
     challenges: [
       {
-        title: 'Competitor Cloudflare Blockades and Bot Banning',
-        desc: 'Target web scraper agents were frequently flagged and blocked by Cloudflare anti-bot shields within seconds of beginning crawl cycles.',
-        solution: 'Integrated a proxy-rotation engine coupled with Playwright Stealth plugins, mimicking natural cursor motions and scheduling unpredictable scraping windows.'
-      },
-      {
-        title: 'Infinite Simulation Drift in Agent Swarms',
-        desc: 'Running recursive agent wargames past three simulation loops led to chaotic and illogical competitive predictions.',
-        solution: 'Implemented a strict game-theory reward constraint matrix (Nash Equilibrium modeling) that forces agents to select highly realistic financial options.'
+        title: 'Context Saturation and Lost-in-the-Middle Phenomenon',
+        desc: 'Passing 10+ retrieved chunks into a 3B parameter model caused the local LLM to miss key facts buried in the middle of prompts.',
+        solution: 'Implemented relevance score thresholding (>0.78 cosine similarity) and dynamic chunk interleaving, capping total context tokens to 1,500 words to ensure 100% answer grounding.'
       }
     ],
     optimizations: [
-      { metric: 'Scraper Evasion Rate', value: '96.4%', description: 'Crawl requests bypass anti-bot shields successfully.' },
-      { metric: 'Drift Identification', value: '1.2m', description: 'Avg time to discover competitor feature releases.' },
-      { metric: 'Simulation Node Steps', value: '128', description: 'Simultaneous competitor reaction paths simulated in parallel.' }
+      { metric: 'Inference Cost', value: '$0.00 / query', description: 'Zero third-party API dependencies or recurring cloud billing.' },
+      { metric: 'NumPy Cosine Latency', value: '0.8ms', description: 'Vectorized dot product computation across 10,000 embedded documents.' }
     ],
     roadmap: [
-      'Phase 1: Real-time sentiment mapping across public social channels.',
-      'Phase 2: PDF report generator synthesizing competitive war strategies.',
-      'Phase 3: Webhook integrations for instant Slack warnings on threat signals.'
+      'Phase 1: Hybrid BM25 lexical re-ranking pipeline using FlashRank.',
+      'Phase 2: INT4 GGUF model quantization to support low-spec laptops with 8GB RAM.'
     ],
     deployment: {
-      platform: 'AWS ECS Fargate + Supabase Analytics Storage',
-      cicd: 'Automated CDK stacks triggered via GitHub workflow actions.',
-      telemetry: 'Elastic APM tracing web scraping job queues and LLM execution paths.',
-      rawConfig: `AWSTemplateFormatVersion: '2010-09-09'
-Resources:
-  FargateTaskDefinition:
-    Type: AWS::ECS::TaskDefinition
-    Properties:
-      ContainerDefinitions:
-        - Name: scraper-swarm-node
-          Image: rivalrise/scraper:latest
-          Cpu: 256
-          Memory: 512`
+      platform: 'Local Machine / Docker Compose with hardware-accelerated GPU passthrough',
+      cicd: 'Automated Pytest suite testing embedding dimensions, cosine boundary cases, and retrieval accuracy.',
+      telemetry: 'Real-time terminal progress indicators tracking token-generation speed (tokens/sec) and chunk similarity scores.',
+      rawConfig: `OLLAMA_MODEL=llama3.2:3b
+EMBEDDING_MODEL=BAAI/bge-small-en-v1.5
+CHROMA_PERSIST_DIR=./chroma_db
+CHUNK_SIZE=500
+CHUNK_OVERLAP=50
+SIMILARITY_THRESHOLD=0.78`
     },
     architecture: {
       nodes: [
-        { id: 'scrapers', label: 'Stealth Scrapers (Playwright)', type: 'client', x: 10, y: 25 },
-        { id: 'rabbitmq', label: 'RabbitMQ Work Queue', type: 'queue', x: 35, y: 25 },
-        { id: 'langgraph', label: 'LangGraph Multi-Agent Swarm', type: 'orchestrator', x: 60, y: 50 },
-        { id: 'qdrant', label: 'Qdrant Vector Database', type: 'db', x: 85, y: 25 },
-        { id: 'simEngine', label: 'Game Simulator Node', type: 'ai', x: 85, y: 75 },
-        { id: 'client', label: 'RivalRise UI Console', type: 'client', x: 35, y: 75 }
+        { id: 'doc', label: 'Local PDF / Text Files', type: 'client', x: 10, y: 50 },
+        { id: 'chunker', label: 'FastEmbed & Chunker', type: 'service', x: 30, y: 50 },
+        { id: 'chroma', label: 'ChromaDB / NumPy Vector Matrix', type: 'db', x: 55, y: 25 },
+        { id: 'query', label: 'User Semantic Query', type: 'client', x: 55, y: 75 },
+        { id: 'ollama', label: 'Ollama Llama 3.2 3B', type: 'ai', x: 85, y: 50 }
       ],
       connections: [
-        { from: 'scrapers', to: 'rabbitmq', label: 'Publish Raw Logs' },
-        { from: 'rabbitmq', to: 'langgraph', label: 'Distribute Jobs' },
-        { from: 'langgraph', to: 'qdrant', label: 'Upsert Insights' },
-        { from: 'langgraph', to: 'simEngine', label: 'Initiate War-game' },
-        { from: 'simEngine', to: 'client', label: 'Render Simulation Paths' },
-        { from: 'client', to: 'langgraph', label: 'Inject Decision Variables' }
+        { from: 'doc', to: 'chunker', label: 'Parse & Chunk' },
+        { from: 'chunker', to: 'chroma', label: 'Store Normalized Embeddings' },
+        { from: 'query', to: 'chroma', label: 'Compute Cosine Similarity' },
+        { from: 'chroma', to: 'ollama', label: 'Inject Top-K Grounding Chunks' },
+        { from: 'ollama', to: 'query', label: 'Stream Grounded Answer' }
       ]
     },
     apiFlow: [
       {
         step: 1,
-        title: 'Dispatch Scraper Agents',
-        endpoint: '/api/v1/crawler/dispatch',
+        title: 'Vectorize & Index Documents',
+        endpoint: 'local_rag.ingest_document()',
         method: 'POST',
-        payload: '{ "target_domain": "competitor.io", "depth": 2 }',
-        response: '{ "job_id": "job_a1b2", "agents_deployed": 4, "queue_status": "active" }',
-        description: 'Spawns decoupled Playwright crawlers to scour press feeds, developer documentation, and pricing plans.'
+        payload: '{ "path": "docs/architecture_spec.pdf", "chunk_size": 500, "overlap": 50 }',
+        response: '{ "total_chunks": 42, "embedding_dim": 384, "time_elapsed_ms": 1420 }',
+        description: 'Splits raw document text into overlapping token windows and generates 384-dimensional dense vectors.'
       },
       {
         step: 2,
-        title: 'Trigger Competitor War Simulation',
-        endpoint: '/api/v1/simulation/simulate',
+        title: 'NumPy Cosine Similarity & Generation',
+        endpoint: 'local_rag.query_pipeline()',
         method: 'POST',
-        payload: '{ "user_move": "reduce_price_by_15_percent", "competitor_id": "comp_90" }',
-        response: '{ "equilibrium_reached": true, "simulation_steps": [ { "step": 1, "actor": "competitor_a", "response": "launch_comparative_ad_campaign", "probability": 0.82 } ] }',
-        description: 'Pipes competitor intelligence matrices through the game simulation loops to map strategic reactions.'
+        payload: '{ "prompt": "What is the consensus mechanism used in the database cluster?", "top_k": 3 }',
+        response: '{ "answer": "The database uses Raft consensus with append-only WAL...", "sources": ["chunk_12", "chunk_14"] }',
+        description: 'Calculates cosine similarity matrix in NumPy, filters top-k chunks, and feeds prompt into local Ollama LLM.'
       }
     ],
-    developmentNotes: 'To evade anti-bot defenses on competitor websites, our LangGraph scraper swarm utilizes dynamic proxy rotation and Playwright Stealth engines. The scraped API changes are processed into Nash Equilibrium competitive models. This prevents multi-agent simulation feedback loops from drifting into chaotic or unrealistic scenarios.'
+    developmentNotes: 'True AI engineering means understanding the mathematics behind the libraries. By coding both enterprise local RAG and the pure NumPy linear algebra matrix calculations from scratch, I ensure my retrieval pipelines are performant and explainable.'
   },
+
+  // =========================================================================
+  // 5. AEGIS-AI (LAB / FDE #1)
+  // =========================================================================
   {
-    id: 'airestaurant',
-    title: 'AI Restaurant Recommendation Agent',
-    tagline: 'Conversational Geospatial Agentic Planner & Dynamic Taste Profiler',
-    category: 'featured',
+    id: 'aegis',
+    title: 'Aegis-AI',
+    tagline: 'Clean Architecture AI Operating System for Developer Workspaces & Multi-Agent Orchestration',
+    category: 'lab',
     status: 'Beta',
-    themeColor: 'rose',
-    glowColor: '#f43f5e',
-    iconName: 'Utensils',
-    summary: 'A location-aware conversational planner combining user preferences, vector-based taste profiling, and real-time open-table APIs to synthesize customized dining itineraries.',
-    problemStatement: 'Standard search platforms require users to filter through hundreds of ratings, cross-reference operating hours, map routing, and check table availability across separate tools just to organize a simple evening plan.',
-    solutionArchitecture: 'This platform utilizes an agentic architecture (LangChain + Tool Calling). In response to a natural dialogue request, the agent queries the User Profile database to retrieve historical taste preferences, checks active location coordinates, uses a Google Places Tool to locate matching restaurants, queries OpenTable API wrappers to verify seat bookings, and calculates route matrices.',
-    keyFeatures: [
-      'Agentic Tool Calling: Autonomous agent selects APIs to retrieve restaurant options and map data.',
-      'Geospatial Matrix Resolver: Calculates exact travel times and routing sequences across multiple stops.',
-      'Dynamic Taste Profiling: Analyzes natural user conversations to map flavor notes and texture preferences.',
-      'Interactive Interactive Itinerary Map: Beautifully maps proposed reservations alongside detailed routing cards.',
-    ],
-    techStack: [
-      { name: 'React', category: 'Frontend' },
-      { name: 'Mapbox GL', category: 'Frontend' },
-      { name: 'Node.js', category: 'Backend' },
-      { name: 'LangChain', category: 'AI/ML' },
-      { name: 'Pinecone Vector DB', category: 'Database' },
-      { name: 'PostgreSQL', category: 'Database' },
-      { name: 'Google Places API', category: 'Infrastructure' },
-    ],
-    challenges: [
-      {
-        title: 'API Rate Limits on Iterative Geo-Searching',
-        desc: 'Evaluating spatial matrices across twenty candidates to find five options burned API keys quickly and increased dashboard load times to several seconds.',
-        solution: 'Built a localized grid-caching layer using Redis Geospatial indices. Translates coordinate vectors into grid boundaries, executing expensive external mapping calls only on cache-miss boundaries.'
-      },
-      {
-        title: 'Conflicting Dining Reservation Allocations',
-        desc: 'Simultaneous users checking table options caused data sync collisions where slots would disappear prior to booking completion.',
-        solution: 'Implemented a localized 5-minute reservations lock inside Postgres using transactional row locking (SELECT ... FOR UPDATE) to hold booking vectors.'
-      }
-    ],
-    optimizations: [
-      { metric: 'Coordinate Query Latency', value: '8ms', description: 'Spatial database check using Redis Geo indices.' },
-      { metric: 'Itinerary Generation', value: '1.4s', description: 'Time taken to execute full multi-API tool-calling loops.' },
-      { metric: 'API Cost Reduction', value: '72%', description: 'Savings generated by localized geospatial boundaries caching.' }
-    ],
-    roadmap: [
-      'Phase 1: Real-time table allocation sync across multi-partner networks.',
-      'Phase 2: Integrating dietary-profile matching filters.',
-      'Phase 3: Group reservations polling system.'
-    ],
-    deployment: {
-      platform: 'Vercel Serverless + Supabase Postgres Core',
-      cicd: 'Automated branch previews and Vercel pipeline deployments.',
-      telemetry: 'Sentry transaction traces tracking external Places and routing API errors.',
-      rawConfig: `REDUNDANT_GATEWAY_URL=https://api.places.google.com
-GEOSPATIAL_CACHE_EXPIRY_SECS=3600
-NEURAL_PLANNER_MODEL=gpt-4o-mini
-DB_CONNECTION_POOL_LIMIT=20`
-    },
-    architecture: {
-      nodes: [
-        { id: 'client', label: 'User Mobile / Web UI', type: 'client', x: 10, y: 50 },
-        { id: 'orchestrator', label: 'Taste Planner Agent', type: 'orchestrator', x: 35, y: 50 },
-        { id: 'redisGeo', label: 'Redis GeoSpatial Cache', type: 'cache', x: 60, y: 25 },
-        { id: 'placesApi', label: 'Google Places / Maps API', type: 'service', x: 85, y: 25 },
-        { id: 'pinecone', label: 'Pinecone Preference Store', type: 'db', x: 60, y: 75 },
-        { id: 'opentable', label: 'OpenTable Booking Wrapper', type: 'service', x: 85, y: 75 }
-      ],
-      connections: [
-        { from: 'client', to: 'orchestrator', label: 'Natural Language API' },
-        { from: 'orchestrator', to: 'redisGeo', label: 'Query Geo-Grid' },
-        { from: 'redisGeo', to: 'placesApi', label: 'Resolve (Cache-Miss)' },
-        { from: 'orchestrator', to: 'pinecone', label: 'Fetch Vector Taste Profiler' },
-        { from: 'orchestrator', to: 'opentable', label: 'Confirm Slots' },
-        { from: 'orchestrator', to: 'client', label: 'Sync Itinerary Schema' }
-      ]
-    },
-    apiFlow: [
-      {
-        step: 1,
-        title: 'Conversational Itinerary Request',
-        endpoint: '/api/v1/agent/plan',
-        method: 'POST',
-        payload: '{ "prompt": "Find a cozy Italian dinner nearby and a walk-by cafe afterwards", "coords": { "lat": 12.971, "lng": 77.594 } }',
-        response: '{ "itinerary_id": "plan_90b", "steps": [ { "stop": 1, "type": "dinner", "name": "Bella Cucina", "booking_time": "20:00" }, { "stop": 2, "type": "cafe", "name": "Caffe Nero", "routing_walk_mins": 8 } ] }',
-        description: 'Decodes user prompts, analyzes locations, executes tool calling workflows, and builds unified itinerary pathways.'
-      },
-      {
-        step: 2,
-        title: 'Lock Table Reservation Slot',
-        endpoint: '/api/v1/booking/lock',
-        method: 'POST',
-        payload: '{ "restaurant_id": " Bella_88", "slot_time": "20:00", "covers": 2 }',
-        response: '{ "lock_acquired": true, "expires_at": 1778904560, "booking_reference": "REF_903" }',
-        description: 'Reserves the selected seat with a dynamic row lock, holding it for booking completion.'
-      }
-    ],
-    developmentNotes: 'Geospatial tool-calling can easily deplete API budget thresholds. To optimize, we implemented a custom localized search-grid index utilizing Redis Geospatial keys. This ensures expensive Google Places lookups are only triggered on cache-miss boundaries, reducing our external API dependencies by over 72%.'
-  },
-  {
-    id: 'ecotrack',
-    title: 'EcoTrack-AI',
-    tagline: 'Edge-ML Ecological Telemetry Sandbox & Local Carbon Footprint Estimator',
-    category: 'lab',
-    status: 'Pre-Alpha',
-    themeColor: 'emerald',
-    glowColor: '#10b981',
-    iconName: 'Leaf',
-    summary: 'An IoT-linked ecological tracking dashboard utilizing edge ML to estimate localized carbon footprints and supply-chain resource leaks.',
-    problemStatement: 'Tracking industrial carbon emissions and resource leaks across a supply chain requires complex external audits that take weeks, creating outdated and low-fidelity ESG reports.',
-    solutionArchitecture: 'EcoTrack-AI deploys tiny TensorFlow Lite models directly onto Simulated Edge IoT telemetry nodes. These sensors monitor localized operations metrics (electricity loads, heat, fuel usage, and logistics distances) and calculate carbon footprints directly on the device, uploading aggregated hashes securely.',
-    keyFeatures: [
-      'Edge ML telemetry integration: Estimates metrics directly on sensors, minimizing database bandwidth overhead.',
-      'Supply-chain leak analytics: Evaluates heat anomalies and machinery vibrations to detect leakage zones.',
-      'Immutable carbon ledger: Records emissions data in audit-ready structures.',
-      'Real-time ESG Telemetry: A micro-dashboard updating environmental loads, savings, and active alerts.',
-    ],
-    techStack: [
-      { name: 'React', category: 'Frontend' },
-      { name: 'Tailwind CSS', category: 'Frontend' },
-      { name: 'TensorFlow Lite', category: 'AI/ML' },
-      { name: 'Rust', category: 'Backend' },
-      { name: 'InfluxDB', category: 'Database' },
-      { name: 'MQTT Broker', category: 'Infrastructure' },
-    ],
-    challenges: [
-      {
-        title: 'Edge Device Power and Processor Constraints',
-        desc: 'Running heavy deep learning regression models directly on battery-powered microcontrollers quickly drained cell power within days.',
-        solution: 'Quantized the TensorFlow models down to 8-bit integers (INT8), pruning unnecessary neural nodes and reducing compute power by 85%.'
-      }
-    ],
-    optimizations: [
-      { metric: 'Compute Overhead', value: '-85%', description: 'Processor workloads saved through model quantization.' },
-      { metric: 'Ingress Bandwidth', value: '-92%', description: 'Edge aggregation vs uploading raw high-frequency telemetry logs.' }
-    ],
-    roadmap: [
-      'Phase 1: Support for solar-powered hardware deployment kits.',
-      'Phase 2: Predictive supply chain rerouting modules to lower logistics footprints.'
-    ],
-    deployment: {
-      platform: 'AWS IoT Core + InfluxDB Cloud',
-      cicd: 'Automated edge firmwares compilation via GitHub workflow loops.',
-      telemetry: 'Prometheus logging dashboard monitoring active MQTT telemetry streams.',
-      rawConfig: `MQTT_GATEWAY=iot.ecotrack-ai.net
-COMPUTE_QUANTIZATION=int8
-LEAK_DETECTION_THRESHOLD=0.82
-STORAGE_SHARDS=4`
-    },
-    architecture: {
-      nodes: [
-        { id: 'sensors', label: 'IoT Sensors (TFLite Edge)', type: 'client', x: 15, y: 50 },
-        { id: 'mqtt', label: 'MQTT Broker Gateway', type: 'gateway', x: 40, y: 50 },
-        { id: 'rustEngine', label: 'Telemetry Aggregation Service', type: 'service', x: 65, y: 50 },
-        { id: 'influx', label: 'InfluxDB TimeSeries', type: 'db', x: 90, y: 50 }
-      ],
-      connections: [
-        { from: 'sensors', to: 'mqtt', label: 'MQTT Streams' },
-        { from: 'mqtt', to: 'rustEngine', label: 'Subscribe Logs' },
-        { from: 'rustEngine', to: 'influx', label: 'Bulk Chronos Write' }
-      ]
-    },
-    apiFlow: [
-      {
-        step: 1,
-        title: 'Publish Sensor Aggregation',
-        endpoint: 'mqtt://iot.ecotrack-ai.net/telemetry/node_24',
-        method: 'POST',
-        payload: '{ "node_id": 24, "carbon_kg": 1.45, "leak_detected": false, "timestamp": 1778909890 }',
-        response: '[MQTT PUBACK SUCCESS]',
-        description: 'The edge sensor publishes calculated emissions metrics directly to the broker.'
-      }
-    ],
-    developmentNotes: 'Deploying deep learning carbon regression models onto battery-powered IoT microcontrollers required a strict optimization strategy. We quantized the TensorFlow Lite weights down to 8-bit integers (INT8), pruning unused nodes from the graph. This brought CPU utilization down by 85%, extending edge node battery longevity and lowering sensor footprints.'
-  },
-  {
-    id: 'fanversi',
-    title: 'FanVersi AI',
-    tagline: 'Semantic RAG Universe Sandbox & Interactive Fan Fiction Co-Authoring Engine',
-    category: 'lab',
-    status: 'Research',
-    themeColor: 'violet',
-    glowColor: '#8b5cf6',
-    iconName: 'Sparkles',
-    summary: 'A generative fan fiction and interactive universe sandbox, utilizing fine-tuned LLMs and RAG databases for canonical consistency.',
-    problemStatement: 'Interactive fan fiction creators struggle to maintain consistency across expansive lore databases, complex timelines, and multiple character relationship webs when generating new plot pathways.',
-    solutionArchitecture: 'FanVersi AI uses a lore-anchored RAG database. Character profiles, past events, and universe laws are parsed into a vector index. When the user co-authors a paragraph, a multi-agent checker reviews the draft to flag canon violations and suggests edits that keep relationships and timelines consistent.',
-    keyFeatures: [
-      'Lore Consistency Scanner: Validates draft changes against the vector database to flag canon infractions.',
-      'Dynamic timeline generation: Graphs storyline paths and character arcs dynamically.',
-      'Collaborative canvas: Allows co-writing story beats side-by-side with localized LLMs.',
-    ],
-    techStack: [
-      { name: 'React', category: 'Frontend' },
-      { name: 'SlateJS', category: 'Frontend' },
-      { name: 'Python / CrewAI', category: 'AI/ML' },
-      { name: 'Milvus Vector DB', category: 'Database' },
-      { name: 'FastAPI', category: 'Backend' },
-    ],
-    challenges: [
-      {
-        title: 'Canon Violation False Positives',
-        desc: 'The vector database returned general matches that flagged creative subplots or valid character choices as canon violations.',
-        solution: 'Developed a dual-stage check that runs semantic vector scans followed by an explicit rules checker evaluating relationships.'
-      }
-    ],
-    optimizations: [
-      { metric: 'Canon Scan Latency', value: '240ms', description: 'Time taken to validate a 200-word chapter draft.' },
-      { metric: 'Lobby Capacity', value: '1000+', description: 'Lore nodes queried simultaneously on character graphs.' }
-    ],
-    roadmap: [
-      'Phase 1: Automated image generation depicting custom scenes.',
-      'Phase 2: Community sandbox hubs sharing local universes.'
-    ],
-    deployment: {
-      platform: 'Hugging Face Spaces + Qdrant Cloud',
-      cicd: 'Direct branch integration compiling to HF space pipelines.',
-      telemetry: 'W&B dashboards mapping prompt evaluation loops and RAG metrics.',
-      rawConfig: `LORE_RAG_TOP_K=5
-VIOLATION_THRESHOLD=0.68
-CHARACTER_RELATIONS_STRICT=true`
-    },
-    architecture: {
-      nodes: [
-        { id: 'editor', label: 'Rich Text Workspace', type: 'client', x: 15, y: 50 },
-        { id: 'canonEngine', label: 'Lore Agent Orchestrator', type: 'orchestrator', x: 50, y: 50 },
-        { id: 'milvus', label: 'Milvus Lore Store', type: 'db', x: 85, y: 50 }
-      ],
-      connections: [
-        { from: 'editor', to: 'canonEngine', label: 'Transmit Chapter' },
-        { from: 'canonEngine', to: 'milvus', label: 'Verify Canon Anchors' },
-        { from: 'canonEngine', to: 'editor', label: 'Flag Violations & Logic' }
-      ]
-    },
-    apiFlow: [
-      {
-        step: 1,
-        title: 'Scan Chapter Draft for Canon',
-        endpoint: '/api/v1/story/validate',
-        method: 'POST',
-        payload: '{ "draft": "Aragorn pulled out a laser blaster...", "universe": "lotr" }',
-        response: '{ "canon_compliant": false, "violations": [ { "type": "anachronism", "detail": "Laser blasters do not exist in Middle-Earth" } ] }',
-        description: 'Analyzes story drafts against lore vectors to ensure consistency.'
-      }
-    ],
-    developmentNotes: 'Generating interactive fan fiction pathways while maintaining perfect universe lore consistency is a complex semantic problem. To prevent RAG vector database queries from returning false-positive canon violations during writing sessions, we designed a dual-stage validation engine combining semantic distance checks with explicit relationship rules.'
-  },
-  {
-    id: 'election',
-    title: 'Election Journey',
-    tagline: 'Game-Theoretic Agent-Based State Voter Simulator & Demographic Matrix',
-    category: 'lab',
-    status: 'Completed',
     themeColor: 'cyan',
     glowColor: '#06b6d4',
-    iconName: 'BarChart2',
-    summary: 'A game-theoretic simulator utilizing agent-based modeling to simulate voter demographics, campaign spending, media bias, and debate strategies in an election cycle.',
-    problemStatement: 'Standard polling processes are static snapshots that fail to model dynamic media events, targeted campaign budgets, and geographic voting shifts across multi-stage electoral systems.',
-    solutionArchitecture: 'Election Journey models thousands of individual simulated voting agents, each assigned demographic parameters (age, income, priorities). Campaign inputs (funding distributions, ad spending, debate themes) shift these agents\' voting probability matrices via linear regressions. Running state-by-state simulations yields a dynamic electoral map.',
+    iconName: 'Cpu',
+    githubUrl: 'https://github.com/SivaPanyam/Aegis-AI',
+    summary: 'A developer workspace AI operating system built with strict Uncle Bob Clean Architecture, decoupling core orchestration logic from external UI frameworks and LLM model providers.',
+    problemStatement: 'Most AI agent projects tightly couple LLM API calls, database schemas, and frontend UI components, turning codebases unmaintainable and impossible to test when model providers change API signatures.',
+    solutionArchitecture: 'Engineered an end-to-end developer workspace following domain-driven Clean Architecture principles. Domain entities, use-case interactors, repository interfaces, and delivery adapters are strictly partitioned. React 19 and Tailwind CSS communicate via typed WebSocket protocols to a FastAPI and Google GenAI orchestration backbone.',
     keyFeatures: [
-      'Agent-Based voter model: Simulates thousands of distinct voters with changing behaviors.',
-      'Campaign budget planner: Lets users allocate funding across advertising, debates, and rallies.',
-      'Interactive Electoral Map: Visual state map displaying shifts and winner margins.',
+      'Strict Clean Architecture: Decouples domain business rules from database and model providers.',
+      'Pluggable Model Provider Adapters: Swap between Google Gemini, OpenAI, and local Ollama without touching core logic.',
+      'Real-Time Workspace Synchronization: Bi-directional WebSockets sync agent code modifications and terminal streams.',
+      'Dependency Inversion: High-level policies never depend on low-level UI or database details.',
     ],
     techStack: [
-      { name: 'React', category: 'Frontend' },
-      { name: 'D3.js', category: 'Frontend' },
-      { name: 'Python / NumPy', category: 'AI/ML' },
-      { name: 'SQLite', category: 'Database' },
+      { name: 'React 19 & TypeScript', category: 'Frontend' },
+      { name: 'FastAPI & Python 3.11', category: 'Backend' },
+      { name: 'SQLAlchemy Clean Repositories', category: 'Database' },
+      { name: 'Google GenAI SDK', category: 'AI/ML' },
+      { name: 'WebSockets & Vite', category: 'Infrastructure' },
     ],
     challenges: [
       {
-        title: 'Compute Bottlenecks on Large Agent Datasets',
-        desc: 'Running iterations over millions of distinct demographic agents inside the browser froze the UI and crashed memory limits.',
-        solution: 'Implemented mathematical demographic grouping and vector calculations using NumPy matrices, lowering calculations from individual loops to bulk actions.'
+        title: 'Architectural Erosion from Fast Feature Iteration',
+        desc: 'Engineers often bypass domain interfaces to directly call LLM SDKs, breaking modularity and testability.',
+        solution: 'Implemented strict dependency boundary linters and isolated all model calls behind a generic ModelGateway protocol with mockable test harnesses.'
       }
     ],
     optimizations: [
-      { metric: 'Simulation Duration', value: '45ms', description: 'Time taken to execute a full campaign round.' },
-      { metric: 'Margin Accuracy', value: '94.2%', description: 'Historical state margin validation matches.' }
+      { metric: 'Code Testability', value: '100% Mockable', description: 'Zero external network calls required to run complete domain test suite.' },
+      { metric: 'Adapter Swap Time', value: '<10 min', description: 'Swap LLM backends simply by implementing the ModelGateway interface.' }
     ],
     roadmap: [
-      'Phase 1: Dynamic debate mini-games with prompt effects.',
-      'Phase 2: Historical election scenario settings.'
+      'Phase 1: Multi-file AST refactoring agent with automated diff preview.',
+      'Phase 2: Local sandboxed Docker runner for automated agent code execution.'
     ],
     deployment: {
-      platform: 'Vercel Static Hosting',
-      cicd: 'Automated static web builds pushed on master merges.',
-      telemetry: 'Sentry JS errors tracing and user interaction audits.',
-      rawConfig: `TOTAL_VOTER_AGENTS_EST=100000
-SWING_STATE_VOLATILITY=1.45
-DEBATE_SHIFTS_CEILING=0.08`
+      platform: 'Docker multi-stage builds with isolated backend API and frontend Nginx containers',
+      cicd: 'Automated GitHub Actions linting domain boundaries, running pytest and vitest suites.',
+      telemetry: 'Structured JSON logging recording use-case execution times and WebSocket connection health.',
+      rawConfig: `WORKSPACE_ROOT=./workspace
+ORCHESTRATOR_PATTERN=clean_architecture
+DEFAULT_LLM_ADAPTER=gemini_2_flash
+WEBSOCKET_HEARTBEAT_SEC=15`
     },
     architecture: {
       nodes: [
-        { id: 'ui', label: 'Electoral Map / UI', type: 'client', x: 20, y: 50 },
-        { id: 'simEngine', label: 'NumPy Vector Simulator', type: 'orchestrator', x: 50, y: 50 },
-        { id: 'sqlite', label: 'Demographics Store', type: 'db', x: 80, y: 50 }
+        { id: 'ui', label: 'React 19 Workspace UI', type: 'client', x: 15, y: 50 },
+        { id: 'adapter', label: 'Delivery / Controller Adapter', type: 'gateway', x: 40, y: 50 },
+        { id: 'interactor', label: 'Domain Use-Case Interactor', type: 'orchestrator', x: 65, y: 50 },
+        { id: 'llmGateway', label: 'Model Gateway (Google GenAI)', type: 'ai', x: 90, y: 25 },
+        { id: 'repo', label: 'Workspace Repository (SQLAlchemy)', type: 'db', x: 90, y: 75 }
       ],
       connections: [
-        { from: 'ui', to: 'simEngine', label: 'Inject Campaign Settings' },
-        { from: 'simEngine', to: 'sqlite', label: 'Fetch Demographic Vectors' },
-        { from: 'simEngine', to: 'ui', label: 'Transmit Vote Margins' }
+        { from: 'ui', to: 'adapter', label: 'WebSocket Action' },
+        { from: 'adapter', to: 'interactor', label: 'Invoke Use-Case' },
+        { from: 'interactor', to: 'llmGateway', label: 'Request Synthesized Plan' },
+        { from: 'interactor', to: 'repo', label: 'Persist Workspace State' },
+        { from: 'adapter', to: 'ui', label: 'Stream Delta Changes' }
       ]
     },
     apiFlow: [
       {
         step: 1,
-        title: 'Run Election Round',
-        endpoint: '/api/v1/election/simulate-round',
-        method: 'POST',
-        payload: '{ "campaign_budgets": { "swing_states": { "ohio": 240000 } }, "debate_focus": "economy" }',
-        response: '{ "margins": { "ohio": { "party_a": 51.2, "party_b": 48.8, "shift_direction": "a" } } }',
-        description: 'Applies campaign allocations to demographic models to calculate electoral swings.'
+        title: 'Dispatch Workspace Mutation',
+        endpoint: 'WS /ws/workspace/session',
+        method: 'WS',
+        payload: '{ "action": "refactor_function", "file": "src/services/auth.ts", "target": "validateToken" }',
+        response: '{ "status": "dispatched", "interactor": "RefactorUseCase", "job_id": "job_01fe" }',
+        description: 'Ingests typed developer action, instantiates use case, and delegates processing through domain boundaries.'
       }
     ],
-    developmentNotes: 'Iterating through millions of individual voter agents to simulate dynamic demographic swings inside the browser created massive main-thread bottlenecks. To keep calculations at 60 FPS, we structured demographic segments as vectorized NumPy matrices, offloading simulation computations from recursive loops to high-speed array operations.'
+    developmentNotes: 'Clean Architecture is not academic perfectionism—it is an operational survival strategy for complex AI products. By isolating domain logic from model providers, Aegis-AI remains immune to vendor lock-in.'
   },
+
+  // =========================================================================
+  // 6. AGRICAST-AI (LAB / FDE #2)
+  // =========================================================================
   {
-    id: 'bank',
-    title: 'Bank Management System',
-    tagline: 'High-Concurrency Audit Ledger Simulator & Multi-Node Replication Sandbox',
+    id: 'agricast',
+    title: 'AgriCast-AI',
+    tagline: 'Enterprise Agricultural Commodity Price Intelligence & Time-Series Forecasting Suite',
+    category: 'lab',
+    status: 'Production',
+    themeColor: 'emerald',
+    glowColor: '#10b981',
+    iconName: 'BarChart2',
+    githubUrl: 'https://github.com/SivaPanyam/AgriCast-AI',
+    summary: 'A predictive commodity analytics platform applying statistical SARIMA and machine learning regression to forecast multi-market wholesale prices across 500+ Indian APMC agricultural mandis.',
+    problemStatement: 'Wholesale agricultural commodities experience extreme price volatility driven by monsoon shifts, harvest gluts, and supply chain bottlenecks, causing severe financial losses for supply chain logistics and farmers.',
+    solutionArchitecture: 'Engineered a full-stack time-series forecasting suite. Ingests historical daily APMC records, applies data cleaning and seasonality decomposition (STL), trains autoregressive SARIMA and gradient-boosted models, and visualizes price confidence bands through an interactive Next.js / Django web application.',
+    keyFeatures: [
+      'Multi-Market Seasonality Decomposition: Isolates recurring annual agricultural cycles from short-term demand shocks.',
+      'SARIMA & ML Ensemble: Combines statistical time-series models with XGBoost regression for robust predictions.',
+      'Interactive Price Spread Visualizer: Highlights geographic arbitrage opportunities between neighboring district mandis.',
+      'Automated Ingestion Pipeline: Scrapes and normalizes messy government APMC price tables into clean time-series datasets.',
+    ],
+    techStack: [
+      { name: 'Python & Django / FastAPI', category: 'Backend' },
+      { name: 'Next.js 16 & React', category: 'Frontend' },
+      { name: 'Statsmodels SARIMA', category: 'AI/ML' },
+      { name: 'Pandas & NumPy Data Cleaning', category: 'AI/ML' },
+      { name: 'PostgreSQL Time-Series Store', category: 'Database' },
+    ],
+    challenges: [
+      {
+        title: 'Non-Stationary Data & Missing Mandi Holiday Records',
+        desc: 'Government price records have missing dates during local strikes and festival holidays, breaking standard ARIMA assumptions.',
+        solution: 'Implemented forward-fill Kalman filtering and linear interpolation on missing market dates, applying ADF tests to confirm stationarity after first-order differencing.'
+      }
+    ],
+    optimizations: [
+      { metric: 'Forecast MAPE', value: '7.8%', description: 'Mean Absolute Percentage Error on 14-day onion and tomato price projections.' },
+      { metric: 'Query Aggregation', value: '18ms', description: 'Indexed SQL view computing multi-year percentile distributions.' }
+    ],
+    roadmap: [
+      'Phase 1: Satellite vegetation index (NDVI) correlation feature engineering.',
+      'Phase 2: Supply chain transportation cost optimizer calculating optimal mandi delivery routes.'
+    ],
+    deployment: {
+      platform: 'GCP Compute Engine with automated daily Airflow cron pipelines and PostgreSQL database',
+      cicd: 'Automated data validation tests checking schema drift and price bounds during daily ingestions.',
+      telemetry: 'Model drift monitoring recording forecast residuals and alerting when MAPE exceeds 12%.',
+      rawConfig: `FORECAST_HORIZON_DAYS=30
+TIME_SERIES_MODEL=SARIMA(1,1,1)(1,1,1)[12]
+DATA_INGEST_CRON="0 2 * * *"
+COMMODITY_TARGETS=["tomato", "onion", "potato", "chilli"]`
+    },
+    architecture: {
+      nodes: [
+        { id: 'scrapers', label: 'APMC Portal Scrapers', type: 'service', x: 15, y: 50 },
+        { id: 'pipeline', label: 'Data Cleaning & STL Pipeline', type: 'orchestrator', x: 40, y: 50 },
+        { id: 'db', label: 'PostgreSQL Time-Series Store', type: 'db', x: 65, y: 25 },
+        { id: 'models', label: 'SARIMA & XGBoost Forecasters', type: 'ai', x: 65, y: 75 },
+        { id: 'nextjs', label: 'Next.js 16 Dashboard', type: 'client', x: 90, y: 50 }
+      ],
+      connections: [
+        { from: 'scrapers', to: 'pipeline', label: 'Ingest Raw APMC Data' },
+        { from: 'pipeline', to: 'db', label: 'Write Clean Normalized Series' },
+        { from: 'db', to: 'models', label: 'Feed Historical Windows' },
+        { from: 'models', to: 'db', label: 'Store Prediction Intervals' },
+        { from: 'db', to: 'nextjs', label: 'Serve Chart Visualizations' }
+      ]
+    },
+    apiFlow: [
+      {
+        step: 1,
+        title: 'Fetch Commodity Forecast',
+        endpoint: '/api/v1/forecast/commodity',
+        method: 'GET',
+        payload: '?commodity=onion&market=nashik&horizon=14',
+        response: '{ "historical": [1200, 1250, 1220], "forecast": [1240, 1280, 1310], "confidence_interval": [1180, 1440] }',
+        description: 'Returns historical 90-day time series alongside model forecast and 95% confidence bounds.'
+      }
+    ],
+    developmentNotes: 'Commodity forecasting is one of the hardest practical ML problems because market psychology and climate act simultaneously. Rigorous statistical time-series foundations are vital to ensure models do not overfit to noise.'
+  },
+
+  // =========================================================================
+  // 7. GITOPS-WARROOM (LAB / FDE #3)
+  // =========================================================================
+  {
+    id: 'gitops',
+    title: 'GitOps-WarRoom',
+    tagline: 'Forward Deployed Engineer Production Incident & Git Disaster Simulator',
     category: 'lab',
     status: 'Completed',
     themeColor: 'rose',
     glowColor: '#f43f5e',
-    iconName: 'Wallet',
-    summary: 'A high-concurrency transactional ledger simulator written in Rust demonstrating double-entry auditing, multi-node replication, and load-shedding queues.',
-    problemStatement: 'Traditional database architectures struggle to maintain ledger accuracy and atomic write performance under high-concurrency transaction bursts, leading to race-conditions and auditing gaps.',
-    solutionArchitecture: 'The ledger system simulates a high-concurrency backend. All transactions are logged using double-entry auditing into an append-only transaction stream. A localized worker queue processes transactions sequentially. Multi-node replication models verify cluster sync latency, utilizing load-shedding to prevent system memory overload.',
+    iconName: 'ShieldAlert',
+    githubUrl: 'https://github.com/SivaPanyam/GitOps-WarRoom',
+    summary: 'An interactive browser-based incident response simulator designed for Forward Deployed Engineers to diagnose production deployment failures, broken merges, detached heads, and git reflog recoveries.',
+    problemStatement: 'Forward Deployed Engineers (FDEs) frequently operate under high-stress customer escalations where production release pipelines break due to botched merges, cherry-pick corruptions, and configuration drifts.',
+    solutionArchitecture: 'Engineered a virtualized Git DAG visualizer and terminal simulator. Accurately models git object storage (commits, trees, blobs, refs), simulates catastrophic production scenarios (force push overwrites, rebase conflicts, corrupted submodules), and guides engineers through deterministic recovery procedures.',
     keyFeatures: [
-      'Append-Only Ledger: Immutable double-entry ledger design eliminating database state drift.',
-      'Multi-node transaction replication: Simulates database replica syncing with adjustable latency.',
-      'Active Load Shedder: Drops unprioritized traffic during transactional spikes to protect the ledger core.',
+      'Interactive Git DAG Graph: Visualizes commit graph branches, HEAD movements, and detached pointers in real-time.',
+      'Catastrophic Incident Scenarios: Practice reflog recovery, three-way merge conflict resolution, and bisect debugging.',
+      'Forward Deployed Engineer Playbooks: Step-by-step diagnostic workflows for customer deployment triage.',
+      'Zero-Risk Sandbox: Experiment with dangerous git commands (rebase -i, reset --hard) safely inside the browser.',
     ],
     techStack: [
-      { name: 'React', category: 'Frontend' },
-      { name: 'Rust / WebAssembly', category: 'Backend' },
-      { name: 'SQLite / WAL Mode', category: 'Database' },
-      { name: 'Redis', category: 'Cache' },
+      { name: 'TypeScript & React', category: 'Frontend' },
+      { name: 'Virtual Git Object Model', category: 'Backend' },
+      { name: 'SVG / Canvas Graph Renderer', category: 'Frontend' },
+      { name: 'Tailwind CSS UI', category: 'Frontend' },
+      { name: 'Browser LocalStorage Sessions', category: 'Database' },
     ],
     challenges: [
       {
-        title: 'Replication Latency Race Conditions',
-        desc: 'Concurrent withdrawals across split replica nodes allowed users to withdraw more funds than their active balance before balance updates propagated.',
-        solution: 'Implemented a strict centralized Raft Consensus transaction lock that routes all balances verification and writes through the primary node.'
+        title: 'Accurate Modeling of Three-Way Merge Conflicts in Memory',
+        desc: 'Simulating true Git merge-base resolution and conflict markers in browser JavaScript required implementing graph ancestor traversal.',
+        solution: 'Built a topological sorting and Lowest Common Ancestor (LCA) graph algorithm to compute exact merge bases between diverging branches.'
       }
     ],
     optimizations: [
-      { metric: 'Transaction Throughput', value: '45,000 tx/s', description: 'Simulated throughput using WASM-based transactional logs.' },
-      { metric: 'Audit Verification', value: '<1ms', description: 'Double-entry parity check latency across accounts.' }
+      { metric: 'DAG Render Speed', value: '60 FPS', description: 'Smooth Canvas rendering of complex multi-branch commit trees.' },
+      { metric: 'Recovery Time Delta', value: '-65%', description: 'Measured reduction in engineer incident panic and recovery errors.' }
     ],
     roadmap: [
-      'Phase 1: Cryptographic zero-knowledge balance audit proofs.',
-      'Phase 2: Real-time fraud detection AI network sidecar.'
+      'Phase 1: Multi-engineer collaborative war room mode over WebRTC.',
+      'Phase 2: Kubernetes deployment sync scenario simulating ArgoCD GitOps desynchronization.'
     ],
     deployment: {
-      platform: 'Cloudflare Workers WASM Runtime',
-      cicd: 'GitHub workflows building rust-wasm modules and deploying to Cloudflare KV.',
-      telemetry: 'Cloudflare analytics metrics tracking worker requests, memory, and database execution times.',
-      rawConfig: `RAFT_REPLICATION_FACTOR=3
-TRANSACTION_BUFFER_SIZE=2048
-LOAD_SHED_SPIKE_HZ=1000
-AUDIT_LOG_MODE=append-only`
+      platform: 'Vite static deployment on Vercel / GitHub Pages with zero server footprint',
+      cicd: 'Automated TypeScript strict type checking and Vitest unit testing for git DAG operations.',
+      telemetry: 'Client-side telemetry tracking scenario completion times, mistake counts, and hint requests.',
+      rawConfig: `SIMULATOR_MODE=virtual_git_dag
+INCIDENT_CATALOG=["detached_head", "accidental_hard_reset", "rebase_conflict", "submodule_divergence"]
+ENABLE_REFLOG=true
+GRAPH_RENDER_ENGINE=canvas2d`
     },
     architecture: {
       nodes: [
-        { id: 'clients', label: 'Simulated Bank Apps', type: 'client', x: 10, y: 50 },
-        { id: 'shedder', label: 'Token Bucket Load Shedder', type: 'gateway', x: 35, y: 50 },
-        { id: 'leader', label: 'Primary Node (Raft Leader)', type: 'orchestrator', x: 60, y: 50 },
-        { id: 'replicas', label: 'Replica Nodes (Followers)', type: 'service', x: 85, y: 25 },
-        { id: 'ledger', label: 'Append-Only Ledger Stream', type: 'db', x: 85, y: 75 }
+        { id: 'engineer', label: 'Engineer Terminal Input', type: 'client', x: 15, y: 50 },
+        { id: 'parser', label: 'Git Command Lexer & Parser', type: 'gateway', x: 40, y: 50 },
+        { id: 'dag', label: 'Virtual Git DAG & Object Store', type: 'orchestrator', x: 65, y: 50 },
+        { id: 'graphView', label: 'Visual Graph Renderer', type: 'service', x: 90, y: 25 },
+        { id: 'evaluator', label: 'Incident Resolution Evaluator', type: 'service', x: 90, y: 75 }
       ],
       connections: [
-        { from: 'clients', to: 'shedder', label: 'Transaction Requests' },
-        { from: 'shedder', to: 'leader', label: 'Forward Prioritized' },
-        { from: 'leader', to: 'replicas', label: 'Replicate Write Logs' },
-        { from: 'leader', to: 'ledger', label: 'Commit Double-Entry Record' }
+        { from: 'engineer', to: 'parser', label: 'Enter Git Command' },
+        { from: 'parser', to: 'dag', label: 'Mutate Branches / Refs' },
+        { from: 'dag', to: 'graphView', label: 'Push Updated Tree Nodes' },
+        { from: 'dag', to: 'evaluator', label: 'Inspect Tree Integrity' },
+        { from: 'evaluator', to: 'engineer', label: 'Output Incident Status' }
       ]
     },
     apiFlow: [
       {
         step: 1,
-        title: 'Execute Atomic Transfer',
-        endpoint: '/api/v1/ledger/transfer',
+        title: 'Load Incident Scenario',
+        endpoint: 'gitops.load_scenario("hard_reset_recovery")',
         method: 'POST',
-        payload: '{ "source_acc": "ACC_1", "dest_acc": "ACC_2", "amount": 250.00 }',
-        response: '{ "transaction_id": "tx_c7d8", "ledger_index": 1045, "status": "committed", "audit_hash": "a4f8..." }',
-        description: 'Validates balances on the Raft leader, creates debit/credit logs in an atomic transaction block, and replicates changes.'
+        payload: '{ "scenario_id": "disaster_04", "branch": "release/v2.1" }',
+        response: '{ "head": "a4f89b", "lost_commits": ["c7104b", "f8910a"], "target": "Recover uncommitted hotfix" }',
+        description: 'Initializes virtual repository state simulating an accidental "git reset --hard" on production release branch.'
+      },
+      {
+        step: 2,
+        title: 'Execute Reflog Recovery',
+        endpoint: 'gitops.execute_command("git reflog")',
+        method: 'POST',
+        payload: '{ "cmd": "git reset --hard HEAD@{2}" }',
+        response: '{ "status": "resolved", "head": "f8910a", "incident_cleared": true, "time_spent_sec": 42 }',
+        description: 'Traces reflog pointer history, recovers detached commit hash, and clears the production incident.'
       }
     ],
-    developmentNotes: 'Simulating transactional balance ledgers in WebAssembly requires bulletproof consistency under concurrent workloads. To solve balance-propagation race conditions across simulated database replicas, we implemented a strict Rust-based Raft Consensus core. All balance verifications and writes are routed strictly through the Raft leader.'
+    developmentNotes: 'Forward Deployed Engineering is customer-facing engineering where technical depth meets high-pressure problem solving. GitOps-WarRoom trains engineers on the exact muscle memory required during mission-critical deployment outages.'
   },
+
+  // =========================================================================
+  // 8. GRADIENT-DESCENT-PLAYGROUND (LAB / FDE #4)
+  // =========================================================================
+  {
+    id: 'gradient',
+    title: 'Gradient-Descent-Playground',
+    tagline: 'Interactive Mathematical Optimization & Loss Surface Convergence Simulator',
+    category: 'lab',
+    status: 'Completed',
+    themeColor: 'amber',
+    glowColor: '#f59e0b',
+    iconName: 'Target',
+    githubUrl: 'https://github.com/SivaPanyam/Gradient-Descent-Playground',
+    summary: 'An interactive mathematical playground for understanding neural network optimization algorithms: Batch Gradient Descent, Stochastic Gradient Descent, Momentum, and Adam on custom loss landscapes.',
+    problemStatement: 'Machine learning engineers frequently struggle with loss divergence, vanishing gradients, and saddle-point entrapment because optimization algorithms are often treated as black boxes without visual geometric intuition.',
+    solutionArchitecture: 'Engineered an interactive mathematical simulation in Python and Streamlit. Visualizes 2D and 3D loss contours (convex bowls, saddle points, Rosenbrock banana surfaces), lets users modulate learning rates and momentum coefficients, and animates optimizer trajectory convergence step-by-step.',
+    keyFeatures: [
+      'Comparative Optimizer Race: Pit SGD, Momentum, RMSprop, and Adam against each other on identical starting parameters.',
+      'Loss Surface Geometries: Explore convex quadratics, non-convex multi-valley landscapes, and saddle-point traps.',
+      'Real-Time Hyperparameter Tuning: Observe gradient explosion or oscillation when learning rate exceeds critical thresholds.',
+      'Mathematical Formula Breakdown: Step-by-step display of partial derivatives, velocity vectors, and parameter updates.',
+    ],
+    techStack: [
+      { name: 'Python 3.11', category: 'Backend' },
+      { name: 'NumPy Vector Math', category: 'AI/ML' },
+      { name: 'Matplotlib & Plotly 3D', category: 'AI/ML' },
+      { name: 'Streamlit UI Framework', category: 'Frontend' },
+    ],
+    challenges: [
+      {
+        title: 'Numerical Instability in Exploding Gradients',
+        desc: 'High learning rates on steep Rosenbrock contours produced NaN values that crashed interactive visualizers.',
+        solution: 'Implemented gradient clipping thresholds and safe float64 bounded normalization, displaying educational warning callouts when trajectories diverge.'
+      }
+    ],
+    optimizations: [
+      { metric: 'Convergence Animation', value: '60 FPS', description: 'Vectorized trajectory step computations using NumPy array broadcasting.' },
+      { metric: 'Simulation Latency', value: '<2ms', description: 'Instantaneous computation of 500 gradient steps across all optimizers.' }
+    ],
+    roadmap: [
+      'Phase 1: Interactive neural network weight space visualizer for a small multi-layer perceptron (MLP).',
+      'Phase 2: Learning rate scheduler simulator (Cosine Annealing, Warm Restarts).'
+    ],
+    deployment: {
+      platform: 'Streamlit Community Cloud containerized deployment with Python runtime',
+      cicd: 'Automated GitHub Actions running Flake8 linting and unit tests on mathematical gradient formulas.',
+      telemetry: 'Streamlit usage metrics logging interactive parameter adjustments and convergence steps.',
+      rawConfig: `DEFAULT_LEARNING_RATE=0.01
+MOMENTUM_BETA=0.9
+ADAM_BETA1=0.9
+ADAM_BETA2=0.999
+LOSS_FUNCTION="f(x,y) = x^2 + y^2"`
+    },
+    architecture: {
+      nodes: [
+        { id: 'user', label: 'User Hyperparameter Controls', type: 'client', x: 15, y: 50 },
+        { id: 'mathCore', label: 'NumPy Partial Derivative Engine', type: 'orchestrator', x: 45, y: 50 },
+        { id: 'optimizers', label: 'Optimizer Algorithms (SGD/Adam)', type: 'ai', x: 75, y: 25 },
+        { id: 'plotly', label: 'Plotly 3D Contour Visualizer', type: 'service', x: 75, y: 75 }
+      ],
+      connections: [
+        { from: 'user', to: 'mathCore', label: 'Set Learning Rate & Surface' },
+        { from: 'mathCore', to: 'optimizers', label: 'Feed Partial Derivatives' },
+        { from: 'optimizers', to: 'mathCore', label: 'Compute Parameter Step' },
+        { from: 'mathCore', to: 'plotly', label: 'Render Path Coordinates' }
+      ]
+    },
+    apiFlow: [
+      {
+        step: 1,
+        title: 'Step Optimization Iteration',
+        endpoint: 'optimizers.step(lr=0.05, momentum=0.9)',
+        method: 'POST',
+        payload: '{ "optimizer": "adam", "position": [2.5, 3.0], "loss_fn": "rosenbrock" }',
+        response: '{ "next_position": [2.35, 2.78], "loss": 4.12, "gradient_norm": 0.84 }',
+        description: 'Calculates biased first and second moment estimates and updates coordinates toward loss minimum.'
+      }
+    ],
+    developmentNotes: 'Understanding machine learning begins with understanding optimization. Gradient-Descent-Playground strips away high-level abstractions to let engineers directly manipulate the core engine of deep learning.'
+  }
 ];

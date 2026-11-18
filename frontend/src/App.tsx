@@ -26,40 +26,40 @@ const ProjectModal = lazy(() => import('./components/ProjectModal'));
 
 const innovationTimeline = [
   {
-    projectId: 'ecotrack',
+    projectId: 'agricast',
     date: 'Q3 2024',
-    title: 'EcoTrack-AI // Telemetry Ingestion',
-    category: '⚡ 48H Hackathon Prototype',
-    desc: 'Deployed quantized INT8 TensorFlow Lite models directly onto edge IoT nodes. Achieved 85% CPU power reductions for time-series carbon audits.',
-    tech: ['TFLite', 'Rust', 'MQTT', 'InfluxDB'],
+    title: 'AgriCast-AI // Commodity Price Predictor',
+    category: '📊 Enterprise ML Time-Series',
+    desc: 'Engineered multi-market APMC wholesale price forecasts using SARIMA and gradient-boosted regression with 7.8% MAPE across 500+ Indian Mandis.',
+    tech: ['SARIMA', 'Python', 'FastAPI', 'Next.js 16'],
     color: 'emerald'
   },
   {
-    projectId: 'fanversi',
+    projectId: 'aegis',
     date: 'Q4 2024',
-    title: 'FanVersi AI // Semantic Lore Engine',
-    category: '🧪 Creative NLP Research',
-    desc: 'Engineered a lore-anchored CrewAI co-authoring sandbox. Combined semantic Milvus vector lookups with strict character relationship checking rules.',
-    tech: ['CrewAI', 'SlateJS', 'Milvus', 'FastAPI'],
-    color: 'violet'
-  },
-  {
-    projectId: 'election',
-    date: 'Q1 2025',
-    title: 'Election Journey // Demographic Grid',
-    category: '🎲 Game-Theoretic Simulation',
-    desc: 'Simulated swing-state voters by mapping demographic matrices to probability shifts. Optimized massive arrays by offloading loops to NumPy vectors.',
-    tech: ['NumPy', 'D3.js', 'React', 'SQLite'],
+    title: 'Aegis-AI // Clean Architecture AI OS',
+    category: '⚡ Multi-Agent Orchestrator',
+    desc: 'Architected developer workspace AI operating system adhering to strict Clean Architecture, isolating business logic from external LLM providers.',
+    tech: ['React 19', 'FastAPI', 'Google GenAI', 'WebSockets'],
     color: 'cyan'
   },
   {
-    projectId: 'bank',
-    date: 'Q2 2025',
-    title: 'Bank Management System // Raft Consensus',
-    category: '💼 Distributed Ledger Sandbox',
-    desc: 'Built a double-entry transaction auditor in Rust. Modeled split-replica withdrawals securely using Raft Leader WAL replication.',
-    tech: ['Rust-WASM', 'Raft WAL', 'SQLite', 'Redis'],
+    projectId: 'gitops',
+    date: 'Q1 2025',
+    title: 'GitOps-WarRoom // FDE Disaster Sandbox',
+    category: '🛡️ Forward Deployed Incident Sim',
+    desc: 'Simulated mission-critical production Git corruptions, detached HEADs, and rebase conflicts for Forward Deployed Engineers.',
+    tech: ['TypeScript', 'Git DAG Engine', 'Canvas', 'Vitest'],
     color: 'rose'
+  },
+  {
+    projectId: 'gradient',
+    date: 'Q2 2025',
+    title: 'Gradient-Descent // Loss Surface Lab',
+    category: '📐 Mathematical Optimization Lab',
+    desc: 'Built interactive loss landscape optimizer comparing SGD, Momentum, and Adam trajectories on non-convex surfaces.',
+    tech: ['NumPy', 'Streamlit', 'Plotly 3D', 'Python'],
+    color: 'amber'
   }
 ];
 

@@ -3,7 +3,7 @@ import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import { 
   X, Cpu, Terminal, GitBranch, Play, FileText, ChevronRight, 
-  HelpCircle, CheckSquare, Layers, Copy, Check 
+  HelpCircle, CheckSquare, Layers, Copy, Check, ExternalLink 
 } from 'lucide-react';
 import type { ProjectData } from '../utils/projectData';
 import ArchitectureVisualizer from './ArchitectureVisualizer';
@@ -215,13 +215,28 @@ export default function ProjectModal({ project, onClose }: ModalProps) {
             </p>
           </div>
 
-          <button 
-            onClick={onClose}
-            aria-label="Close modal"
-            className="p-2 border border-zinc-800 hover:border-zinc-500 rounded-lg text-zinc-500 hover:text-white bg-zinc-900/40 hover:bg-zinc-950 transition-all cursor-pointer group"
-          >
-            <X className="w-5 h-5 group-hover:rotate-90 transition-transform duration-300" />
-          </button>
+          <div className="flex items-center gap-2">
+            {project.githubUrl && (
+              <a
+                href={project.githubUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Open GitHub repository"
+                className="p-2 border border-zinc-800 hover:border-zinc-500 rounded-lg text-zinc-400 hover:text-white bg-zinc-900/40 hover:bg-zinc-950 transition-all cursor-pointer flex items-center gap-1.5 font-mono text-[11px]"
+              >
+                <GitBranch className="w-4 h-4 text-zinc-400" />
+                <span className="hidden sm:inline">GitHub</span>
+                <ExternalLink className="w-3 h-3 text-zinc-500" />
+              </a>
+            )}
+            <button 
+              onClick={onClose}
+              aria-label="Close modal"
+              className="p-2 border border-zinc-800 hover:border-zinc-500 rounded-lg text-zinc-500 hover:text-white bg-zinc-900/40 hover:bg-zinc-950 transition-all cursor-pointer group"
+            >
+              <X className="w-5 h-5 group-hover:rotate-90 transition-transform duration-300" />
+            </button>
+          </div>
         </header>
 
         {/* Dynamic Mission Tabs Navigator */}
@@ -376,37 +391,41 @@ export default function ProjectModal({ project, onClose }: ModalProps) {
                       />
                       
                       {/* Content resolver depending on project ID */}
-                      {project.id === 'tuneaura' && (
-                        <div className="space-y-4 w-full max-w-md relative z-10 animate-fade-in">
-                          <div className="text-[10px] text-amber-400 font-bold uppercase tracking-widest">[BIOMETRIC ACOUSTICS OSCILLOSCOPE]</div>
-                          <div className="flex justify-center items-end gap-1.5 h-16">
-                            {[0.3, 0.7, 0.45, 0.9, 0.6, 0.85, 0.4, 0.75, 0.5, 0.95, 0.35, 0.65].map((val, i) => (
-                              <motion.div 
-                                key={i}
-                                animate={{ height: [`${val * 100}%`, `${(val > 0.5 ? val - 0.2 : val + 0.2) * 100}%`, `${val * 100}%`] }}
-                                transition={{ repeat: Infinity, duration: 1.5 + i * 0.15, ease: 'easeInOut' }}
-                                className="w-1.5 bg-amber-500/35 rounded-t"
-                              />
-                            ))}
+                      {project.id === 'agentbench' && (
+                        <div className="space-y-4 w-full max-w-md relative z-10 animate-fade-in font-mono">
+                          <div className="text-[10px] text-amber-400 font-bold uppercase tracking-widest">[AGENT RECOVERY HARNESS MATRIX]</div>
+                          <div className="grid grid-cols-3 gap-2 text-[9px] text-left">
+                            <div className="p-2 border border-zinc-900 bg-zinc-950/80 rounded">
+                              <div className="text-zinc-500">BASELINE</div>
+                              <div className="text-red-400 font-bold">14.2% PASS</div>
+                            </div>
+                            <div className="p-2 border border-amber-500/40 bg-amber-500/10 rounded">
+                              <div className="text-amber-300">RECOVERY</div>
+                              <div className="text-amber-400 font-bold">86.7% PASS</div>
+                            </div>
+                            <div className="p-2 border border-emerald-500/40 bg-emerald-500/10 rounded">
+                              <div className="text-emerald-300">DELTA</div>
+                              <div className="text-emerald-400 font-bold">+72.5%</div>
+                            </div>
                           </div>
-                          <div className="text-[9px] text-zinc-500">DYNAMIC SYNAPSE PATTERN: ALPHA WAVES (10.5Hz) ACTIVE</div>
+                          <div className="text-[9px] text-zinc-500">BOUNDED RETRY CYCLES: 2 LIMIT ENFORCED</div>
                         </div>
                       )}
                       
-                      {project.id === 'studybuddy' && (
-                        <div className="space-y-3 w-full max-w-md relative z-10 animate-fade-in">
-                          <div className="text-[10px] text-emerald-400 font-bold uppercase tracking-widest">[MULTI-MODAL VECTOR MEMORY SEGMENTS]</div>
+                      {project.id === 'voicekisan' && (
+                        <div className="space-y-3 w-full max-w-md relative z-10 animate-fade-in font-mono">
+                          <div className="text-[10px] text-emerald-400 font-bold uppercase tracking-widest">[INDIC MULTIMODAL SPEECH SYNAPSE]</div>
                           <div className="border border-emerald-950/60 bg-emerald-950/10 p-3 rounded-lg text-left text-[9px] text-zinc-400 space-y-1.5">
-                            <div className="flex justify-between text-zinc-600 font-mono text-[8px]">
-                              <span>CHUNK_ID: #8F9E_CS101</span>
-                              <span>COSINE_SIMILARITY: 0.942</span>
+                            <div className="flex justify-between text-zinc-600 text-[8px]">
+                              <span>LOCALE: te-IN (TELUGU)</span>
+                              <span>STT LATENCY: 280ms</span>
                             </div>
-                            <p className="line-clamp-2 text-zinc-300 font-sans leading-relaxed">
-                              "The SuperMemo SM-2 spaced repetition algorithm calculates the interval between reviews based on a user's target response quality factor..."
+                            <p className="line-clamp-2 text-zinc-300 font-sans leading-relaxed italic">
+                              "కర్నూలు మార్కెట్లో టమాటా ధర ఎంత ఉంది? (Kurnool Mandi Tomato Price Query)"
                             </p>
                             <div className="h-1 bg-zinc-900 rounded-full overflow-hidden">
                               <motion.div 
-                                animate={{ width: ['0%', '94%', '94%'] }}
+                                animate={{ width: ['0%', '96%', '96%'] }}
                                 transition={{ duration: 2, ease: 'easeOut' }}
                                 className="h-full bg-emerald-500" 
                               />
@@ -415,62 +434,39 @@ export default function ProjectModal({ project, onClose }: ModalProps) {
                         </div>
                       )}
                       
-                      {project.id === 'kubeassist' && (
-                        <div className="space-y-4 w-full max-w-sm relative z-10 animate-fade-in text-[10px]">
-                          <div className="text-[10px] text-cyan-400 font-bold uppercase tracking-widest mb-1">[LOCAL-LLM TELEMETRY POD ORBIT]</div>
-                          <div className="grid grid-cols-4 gap-2">
-                            {['api', 'auth', 'db', 'cache', 'proxy', 'worker', 'cron', 'queue'].map((pod, i) => (
-                              <div key={pod} className="p-2 border border-zinc-900 bg-zinc-950/80 rounded flex flex-col items-center gap-1.5">
-                                <motion.span 
-                                  animate={{ opacity: [0.4, 1, 0.4] }}
-                                  transition={{ repeat: Infinity, duration: 1.5 + i * 0.25, ease: 'easeInOut' }}
-                                  className={`w-1.5 h-1.5 rounded-full ${i === 3 ? 'bg-red-500 shadow-[0_0_8px_#ef4444]' : 'bg-cyan-400 shadow-[0_0_8px_#22d3ee]'}`}
-                                />
-                                <span className="text-[8px] text-zinc-500 font-bold uppercase font-mono">{pod}</span>
-                              </div>
-                            ))}
+                      {project.id === 'recallos' && (
+                        <div className="space-y-3 w-full max-w-sm relative z-10 animate-fade-in font-mono text-[10px]">
+                          <div className="text-[10px] text-cyan-400 font-bold uppercase tracking-widest mb-1">[LOCAL HYBRID RRF SEARCH RANKING]</div>
+                          <div className="border border-zinc-900 bg-zinc-950/80 p-3 rounded-lg text-left space-y-1 text-[9px]">
+                            <div className="flex justify-between text-zinc-500">
+                              <span>FTS5 BM25 SCORE:</span>
+                              <span className="text-cyan-400 font-bold">0.962</span>
+                            </div>
+                            <div className="flex justify-between text-zinc-500">
+                              <span>FAISS DENSE COSINE:</span>
+                              <span className="text-violet-400 font-bold">0.978</span>
+                            </div>
+                            <div className="flex justify-between text-zinc-500 border-t border-zinc-900 pt-1">
+                              <span>FUSED RECIPROCAL RANK:</span>
+                              <span className="text-emerald-400 font-bold">0.970</span>
+                            </div>
                           </div>
-                          <div className="text-[8px] text-red-400 uppercase font-mono tracking-tighter">Event Detected: auth-service-23a (Exit 137 OOMKilled)</div>
                         </div>
                       )}
                       
-                      {project.id === 'rivalrise' && (
-                        <div className="space-y-4 w-full max-w-sm relative z-10 animate-fade-in text-[9px]">
-                          <div className="text-[10px] text-violet-400 font-bold uppercase tracking-widest mb-1">[GAME-THEORETIC NASH STRATEGY MATRIX]</div>
-                          <div className="grid grid-cols-3 gap-1.5 border border-zinc-900/60 p-2 bg-zinc-950/40 rounded-lg font-mono">
-                            <div className="text-zinc-600">Equilibrium</div>
-                            <div className="text-zinc-500 font-bold">Move A</div>
-                            <div className="text-zinc-500 font-bold">Move B</div>
-                            <div className="text-zinc-500 font-bold">User Strategy</div>
-                            <div className="bg-violet-950/20 border border-violet-900/50 text-violet-400 p-1.5 rounded font-bold">Nash: (12, -4)</div>
-                            <div className="bg-zinc-900/30 border border-zinc-900/20 text-zinc-500 p-1.5 rounded">Option: (4, 8)</div>
-                            <div className="text-zinc-500 font-bold">Competitor</div>
-                            <div className="bg-zinc-900/30 border border-zinc-900/20 text-zinc-500 p-1.5 rounded">Option: (-2, 10)</div>
-                            <div className="bg-zinc-900/30 border border-zinc-900/20 text-zinc-500 p-1.5 rounded">Option: (0, 0)</div>
-                          </div>
-                          <div className="text-[8px] text-zinc-500">SIMULATION STEP: COMPETING FORCE COEFFICIENTS COMPUTED</div>
-                        </div>
-                      )}
-                      
-                      {project.id === 'airestaurant' && (
-                        <div className="space-y-3 w-full max-w-xs relative z-10 animate-fade-in">
-                          <div className="text-[10px] text-rose-400 font-bold uppercase tracking-widest mb-1">[GEOSPATIAL ROUTING SYNAPSE]</div>
-                          <div className="relative border border-zinc-900 bg-zinc-950/60 p-3 rounded-lg flex flex-col gap-2 font-mono text-[9px] text-left">
-                            <div className="flex items-center gap-2">
-                              <span className="w-1.5 h-1.5 bg-rose-500 rounded-full shadow-[0_0_8px_#f43f5e]" />
-                              <span className="text-zinc-300">Stop 1: Bella Cucina (Italian) // 20:00</span>
-                            </div>
-                            <div className="h-4 border-l border-dashed border-zinc-800 ml-[2.5px]" />
-                            <div className="flex items-center gap-2">
-                              <span className="w-1.5 h-1.5 bg-zinc-700 rounded-full" />
-                              <span className="text-zinc-500">Stop 2: Caffe Nero (Dessert) // 8 min walk</span>
-                            </div>
+                      {project.id === 'localrag' && (
+                        <div className="space-y-3 w-full max-w-sm relative z-10 animate-fade-in text-[9px] font-mono">
+                          <div className="text-[10px] text-violet-400 font-bold uppercase tracking-widest mb-1">[NUMPY HIGH-DIMENSIONAL VECTOR SPACE]</div>
+                          <div className="p-3 border border-zinc-900 bg-zinc-950/80 rounded-lg text-left space-y-1">
+                            <div className="text-zinc-500">EMBEDDING MODEL: BAAI/bge-small-en-v1.5 (384-D)</div>
+                            <div className="text-white font-bold">COSINE SIMILARITY: 0.942</div>
+                            <div className="text-emerald-400 text-[8px] uppercase">Status: 100% Offline Air-Gapped Inference</div>
                           </div>
                         </div>
                       )}
                       
                       {/* Fallback mock blueprint wireframe */}
-                      {project.id !== 'tuneaura' && project.id !== 'studybuddy' && project.id !== 'kubeassist' && project.id !== 'rivalrise' && project.id !== 'airestaurant' && (
+                      {project.id !== 'agentbench' && project.id !== 'voicekisan' && project.id !== 'recallos' && project.id !== 'localrag' && (
                         <div className="space-y-2 relative z-10 animate-fade-in text-[10px]">
                           <Cpu className={`w-8 h-8 ${style.text} mx-auto mb-1 animate-spin`} style={{ animationDuration: '6s' }} />
                           <div className="text-white font-bold uppercase tracking-widest">{project.title} Interface Blueprint</div>

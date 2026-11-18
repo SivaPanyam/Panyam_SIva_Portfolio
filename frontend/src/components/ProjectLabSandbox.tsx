@@ -1,716 +1,558 @@
 // frontend/src/components/ProjectLabSandbox.tsx
-import { useState, useEffect, useRef } from 'react';
-import { motion } from 'framer-motion';
+import { useState } from 'react';
 import { 
-  Play, Pause, Sliders, CheckCircle2, 
-  Terminal, ShieldAlert, BookOpen, BarChart2, DollarSign, Database, UserCheck 
+  Play, Pause, CheckCircle2, 
+  Terminal, ShieldAlert, Cpu, Leaf, Database, BarChart2, Target, RotateCcw
 } from 'lucide-react';
 
 interface SandboxProps {
   projectId: string;
-  themeColor: string; // 'amber' | 'emerald' | 'cyan' | 'violet' | 'rose'
+  themeColor?: string; // 'amber' | 'emerald' | 'cyan' | 'violet' | 'rose'
 }
 
-export default function ProjectLabSandbox({ projectId, themeColor }: SandboxProps) {
-  // We will build distinct, active states for each of the sandboxes
-  
+export default function ProjectLabSandbox({ projectId }: SandboxProps) {
   // ==========================================
-  // 1. TUNEAURA SANDBOX STATE
+  // 1. AGENTBENCH-LITE SANDBOX (FAULT INJECTION & RECOVERY)
   // ==========================================
-  const [synthPlaying, setSynthPlaying] = useState(false);
-  const [binauralHz, setBinauralHz] = useState(10); // Alpha waves
-  const [volume, setVolume] = useState(0.4);
-  const audioCtxRef = useRef<AudioContext | null>(null);
-  const osc1Ref = useRef<OscillatorNode | null>(null);
-  const osc2Ref = useRef<OscillatorNode | null>(null);
-  const gainNodeRef = useRef<GainNode | null>(null);
-  const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const animFrameRef = useRef<number | null>(null);
-
-  // Canvas wave rendering effect
-  useEffect(() => {
-    if (!canvasRef.current) return;
-    const canvas = canvasRef.current;
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-
-    let offset = 0;
-    const draw = () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.strokeStyle = themeColor === 'amber' ? '#fbbf24' : '#10b981';
-      ctx.lineWidth = 2.5;
-      ctx.beginPath();
-
-      const amplitude = synthPlaying ? 25 * volume : 4;
-      const waveSpeed = synthPlaying ? binauralHz * 0.05 : 0.05;
-
-      for (let x = 0; x < canvas.width; x++) {
-        // Multi-frequency wave formula
-        const y = canvas.height / 2 + 
-          Math.sin(x * 0.015 + offset) * amplitude + 
-          Math.cos(x * 0.035 - offset * 1.5) * (amplitude * 0.3);
-        if (x === 0) ctx.moveTo(x, y);
-        else ctx.lineTo(x, y);
-      }
-      ctx.stroke();
-
-      // Draw active particles if playing
-      if (synthPlaying) {
-        ctx.fillStyle = themeColor === 'amber' ? 'rgba(251, 191, 36, 0.15)' : 'rgba(16, 185, 129, 0.15)';
-        for (let i = 0; i < 5; i++) {
-          const px = (offset * 120 + i * 90) % canvas.width;
-          const py = canvas.height / 2 + Math.sin(px * 0.015 + offset) * amplitude;
-          ctx.beginPath();
-          ctx.arc(px, py, 4, 0, Math.PI * 2);
-          ctx.fill();
-        }
-      }
-
-      offset += waveSpeed;
-      animFrameRef.current = requestAnimationFrame(draw);
-    };
-
-    draw();
-    return () => {
-      if (animFrameRef.current) cancelAnimationFrame(animFrameRef.current);
-    };
-  }, [synthPlaying, binauralHz, volume, themeColor]);
-
-  // Audio Context synthesis
-  const toggleSynth = () => {
-    if (synthPlaying) {
-      // Stop oscillator nodes
-      try {
-        if (osc1Ref.current) osc1Ref.current.stop();
-        if (osc2Ref.current) osc2Ref.current.stop();
-      } catch (e) {}
-      if (audioCtxRef.current) {
-        audioCtxRef.current.close();
-      }
-      setSynthPlaying(false);
-    } else {
-      // Start browser Web Audio synthesis
-      try {
-        const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
-        const ctx = new AudioContextClass();
-        audioCtxRef.current = ctx;
-
-        // Gain controller
-        const gain = ctx.createGain();
-        gain.gain.setValueAtTime(volume * 0.5, ctx.currentTime);
-        gain.connect(ctx.destination);
-        gainNodeRef.current = gain;
-
-        // Base focus frequency (150Hz) and shifted frequency (150Hz + binaural offset)
-        const osc1 = ctx.createOscillator();
-        osc1.type = 'sine';
-        osc1.frequency.setValueAtTime(140, ctx.currentTime);
-        
-        const osc2 = ctx.createOscillator();
-        osc2.type = 'sine';
-        osc2.frequency.setValueAtTime(140 + binauralHz, ctx.currentTime);
-
-        // Merge stereo separation using panners if supported, or direct mix
-        const merger = ctx.createChannelMerger(2);
-        osc1.connect(merger, 0, 0);
-        osc2.connect(merger, 0, 1);
-        merger.connect(gain);
-
-        osc1.start();
-        osc2.start();
-
-        osc1Ref.current = osc1;
-        osc2Ref.current = osc2;
-        setSynthPlaying(true);
-      } catch (e) {
-        console.error('Web Audio API not supported or blocked:', e);
-        // Fallback to fake play
-        setSynthPlaying(true);
-      }
-    }
-  };
-
-  useEffect(() => {
-    // Dynamic synth modulation
-    if (synthPlaying && gainNodeRef.current && osc2Ref.current && audioCtxRef.current) {
-      const ct = audioCtxRef.current.currentTime;
-      gainNodeRef.current.gain.setValueAtTime(volume * 0.25, ct);
-      osc2Ref.current.frequency.setValueAtTime(140 + binauralHz, ct);
-    }
-  }, [binauralHz, volume, synthPlaying]);
-
-  useEffect(() => {
-    // Teardown audio nodes on unmount
-    return () => {
-      try {
-        if (osc1Ref.current) osc1Ref.current.stop();
-        if (osc2Ref.current) osc2Ref.current.stop();
-      } catch (e) {}
-      if (audioCtxRef.current) {
-        audioCtxRef.current.close();
-      }
-    };
-  }, []);
-
-  // ==========================================
-  // 2. STUDYBUDDY SANDBOX STATE
-  // ==========================================
-  const initialCards = [
-    { q: 'What is the core difference between dense and sparse vectors in RAG systems?', a: 'Dense vectors capture deep semantic meanings and synonyms (e.g. OpenAI embeddings), while sparse vectors match exact keywords and lexical frequencies (e.g. BM25 indexes). Combined, they form Hybrid Search.' },
-    { q: 'Explain the purpose of the SuperMemo SM-2 Interval Equation.', a: 'It calculates optimal spacings for reviewing items based on recall quality. The interval rises exponentially for high ratings (quality 4-5) to secure retention while minimizing study repetition counts.' },
-    { q: 'How does WebRTC coordinate connection signaling without dedicated servers?', a: 'It uses temporary signaling hooks (like Socket.io or WebSockets) to exchange SDP offer/answer tokens and ICE network candidate pathways. Once connected, data syncs strictly peer-to-peer.' }
-  ];
-  const [currentCardIdx, setCurrentCardIdx] = useState(0);
-  const [flipped, setFlipped] = useState(false);
-  const [smParams, setSmParams] = useState({ interval: 1, repetitions: 0, ef: 2.5 });
-
-  const handleSMAnswer = (score: number) => {
-    // SuperMemo-2 scheduling math formulas
-    let newRepetitions = 0;
-    let newInterval = 1;
-    let newEf = smParams.ef + (0.1 - (5 - score) * (0.08 + (5 - score) * 0.02));
-    if (newEf < 1.3) newEf = 1.3;
-
-    if (score >= 3) {
-      if (smParams.repetitions === 0) {
-        newInterval = 1;
-      } else if (smParams.repetitions === 1) {
-        newInterval = 6;
-      } else {
-        newInterval = Math.round(smParams.interval * newEf);
-      }
-      newRepetitions = smParams.repetitions + 1;
-    } else {
-      newRepetitions = 0;
-      newInterval = 1;
-    }
-
-    setSmParams({ interval: newInterval, repetitions: newRepetitions, ef: Number(newEf.toFixed(2)) });
-    setFlipped(false);
-    // Cycle to next card
-    setCurrentCardIdx((prev) => (prev + 1) % initialCards.length);
-  };
-
-  // ==========================================
-  // 3. KUBEASSIST SANDBOX STATE
-  // ==========================================
-  const [k8sTerminalLogs, setK8sTerminalLogs] = useState<string[]>([
-    'KUBEASSIST_CLI // AGENT ONLINE // namespace: default',
-    'STATUS: Container auth-service-x23 has crashed in namespace default.',
-    'REASON: CrashLoopBackOff // Exit Code: 137 (OOMKilled)',
-    'Press "Troubleshoot Container" to initiate localized model diagnostics.'
+  const [agentStrategy, setAgentStrategy] = useState<'baseline' | 'recovery'>('recovery');
+  const [agentRunning, setAgentRunning] = useState(false);
+  const [agentStep, setAgentStep] = useState(0);
+  const [agentLogs, setAgentLogs] = useState<string[]>([
+    '[INIT] Benchmark task #4: Query customer profile & verify status',
+    '[READY] Click "Run Benchmark Test" to observe execution loop.'
   ]);
-  const [k8sRunning, setK8sRunning] = useState(false);
-  const [correctedYaml, setCorrectedYaml] = useState('');
 
-  const troubleshootK8s = () => {
-    if (k8sRunning) return;
-    setK8sRunning(true);
-    setK8sTerminalLogs([
-      '[DAEMON] Hooking container auth-service-x23 stderr file buffers...',
-      '[TELEMETRY] Scanning memory boundaries logs...',
-      '[TELEMETRY] Java Heap limit set: -Xmx800m. Container allocation: memory.limit=512Mi.',
-      '[DIAGNOSTIC] EXTREME OUT-OF-MEMORY LEAK DETECTED.',
-      '[OLLAMA] Prompting localized Llama-3 model sidecar...',
-      '[OLLAMA] Parsing structural manifest error files...',
-      '[SUCCESS] Model solved discrepancy. Correcting YAML spec variables...'
-    ]);
+  const runAgentTest = () => {
+    if (agentRunning) return;
+    setAgentRunning(true);
+    setAgentStep(0);
+    setAgentLogs(['[INIT] Executing task with strategy: ' + agentStrategy.toUpperCase()]);
 
-    setTimeout(() => {
-      setK8sTerminalLogs(prev => [
-        ...prev,
-        '[LINT] Manifest output validated. Spec limits matched with security policy.',
-        '[COMPLETED] Deployment YAML prepared. Apply changes using panel tools.'
-      ]);
-      setCorrectedYaml(`apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: auth-service-x23
-spec:
-  template:
-    spec:
-      containers:
-      - name: auth-node
-        image: auth-service:v2.1
-        resources:
-          requests:
-            memory: "512Mi"
-            cpu: "200m"
-          limits:
-            memory: "1024Mi" # Corrected limit (Java-Heap safe)
-            cpu: "500m"`);
-      setK8sRunning(false);
-    }, 2000);
-  };
+    const steps = agentStrategy === 'baseline' 
+      ? [
+          '[STEP 1] Model requests action: lookup_customer(id="USR_4920")',
+          '[FAULT] Runtime exception injected: tool "lookup_customer" parameter mismatch (expected int, got str)',
+          '[ERROR] Baseline agent has no structured error recovery handler.',
+          '[FAILED] Task terminated in step 2 with terminal status: FAILED (0% recovery rate)'
+        ]
+      : [
+          '[STEP 1] Model requests action: lookup_customer(id="USR_4920")',
+          '[FAULT] Runtime exception injected: parameter schema validation failed.',
+          '[BOUNDED RECOVERY] Error frame injected back to model: {"error": "validation_error", "retries_left": 1}',
+          '[STEP 2] Model self-corrects: lookup_customer(id=4920)',
+          '[SUCCESS] Tool executed successfully. Customer verified.',
+          '[COMPLETED] Task resolved under bounded limit in 2 steps (100% recovery rate)'
+        ];
 
-  // ==========================================
-  // 4. RIVALRISE SANDBOX STATE
-  // ==========================================
-  const [wargameMove, setWargameMove] = useState('lower_pricing');
-  const [wargameLogs, setWargameLogs] = useState<string[]>([]);
-  const [isWargaming, setIsWargaming] = useState(false);
-
-  const triggerWargame = () => {
-    setIsWargaming(true);
-    setWargameLogs(['[SYSTEM] Loading Rival profiles from vector directories...']);
-    
-    setTimeout(() => {
-      setWargameLogs(p => [...p, `[MOVE] User chosen action: ${wargameMove.toUpperCase()}`]);
-    }, 400);
-
-    setTimeout(() => {
-      setWargameLogs(p => [...p, '[AGENT-A] Modeling Response: Price elasticity is high. Auto-pricing triggers competitive match (-12%).']);
-    }, 900);
-
-    setTimeout(() => {
-      setWargameLogs(p => [...p, '[AGENT-B] Modeling Response: Shifts strategy to brand retention. Dispatches AdWords ad blitz targeted at users.']);
-    }, 1400);
-
-    setTimeout(() => {
-      setWargameLogs(p => [...p, '[WARGAME] Solved Equilibrium: Market stabilization achieved. Margin impact: User (-4%), Competitors (-9%). Nash value solved.']);
-      setIsWargaming(false);
-    }, 2000);
-  };
-
-  // ==========================================
-  // 5. RESTAURANT AGENT SANDBOX STATE
-  // ==========================================
-  const [tasteNotes, setTasteNotes] = useState<string[]>(['Spicy']);
-  const [suggestedRoute, setSuggestedRoute] = useState<{ name: string; match: string; address: string; routeMins: number }[]>([]);
-  
-  const toggleTaste = (note: string) => {
-    if (tasteNotes.includes(note)) {
-      setTasteNotes(tasteNotes.filter(t => t !== note));
-    } else {
-      setTasteNotes([...tasteNotes, note]);
-    }
-  };
-
-  const generateItinerary = () => {
-    if (tasteNotes.length === 0) return;
-    const db: Record<string, { name: string; match: string; address: string; routeMins: number }[]> = {
-      'Spicy': [
-        { name: 'Sichuan Pavilion', match: '96% Match (Spicy, Numbling Sichuan Pepper)', address: '12 Brigade Road, Bangalore', routeMins: 12 },
-        { name: 'Chili Dragon Cafe', match: '88% Match (Spicy, Volcano Noodles)', address: '24 MG Road, Bangalore', routeMins: 8 }
-      ],
-      'Umami': [
-        { name: 'Izakaya Tenshin', match: '98% Match (Umami, Miso Glazed Pork)', address: '18 Indiranagar, Bangalore', routeMins: 15 },
-        { name: 'Dashi Ramen House', match: '92% Match (Umami, Double Shoyu Broth)', address: '45 Koramangala, Bangalore', routeMins: 10 }
-      ],
-      'Tangy': [
-        { name: 'Citrus Bistro', match: '91% Match (Citrus, Lemon Sorbet and Tarts)', address: '5 Lavelle Road, Bangalore', routeMins: 20 },
-        { name: 'Tamarind Fusion', match: '87% Match (Tangy, Tamarind reduction)', address: '3 Jayanagar, Bangalore', routeMins: 14 }
-      ]
-    };
-    
-    // Merge results
-    let merged: typeof suggestedRoute = [];
-    tasteNotes.forEach(note => {
-      if (db[note]) merged = [...merged, ...db[note]];
+    steps.forEach((msg, idx) => {
+      setTimeout(() => {
+        setAgentLogs(prev => [...prev, msg]);
+        setAgentStep(idx + 1);
+        if (idx === steps.length - 1) {
+          setAgentRunning(false);
+        }
+      }, (idx + 1) * 750);
     });
-    setSuggestedRoute(merged.slice(0, 3));
   };
 
   // ==========================================
-  // 6. ECOTRACK SANDBOX STATE
+  // 2. VOICEKISAN SANDBOX (MULTIMODAL DIALECT PIPELINE)
   // ==========================================
-  const [distanceMiles, setDistanceMiles] = useState(150);
-  const [factoryKwh, setFactoryKwh] = useState(400);
-  const totalCarbonKg = (distanceMiles * 0.411 + factoryKwh * 0.92).toFixed(1);
+  const [selectedCrop, setSelectedCrop] = useState('tomato');
+  const [selectedDistrict, setSelectedDistrict] = useState('Kurnool');
+  const [isProcessingVoice, setIsProcessingVoice] = useState(false);
+  const [voiceTranscript, setVoiceTranscript] = useState('కర్నూలు మార్కెట్లో టమాటా ధర ఎంత ఉంది?');
+  const [mandiOutput, setMandiOutput] = useState<{ price: number; trend: string; confidence: number }>({
+    price: 1850,
+    trend: '+8.4% (Next 7 days)',
+    confidence: 94
+  });
 
-  // ==========================================
-  // 7. FANVERSI SANDBOX STATE
-  // ==========================================
-  const [storyDraft, setStoryDraft] = useState('Aragorn reached for his laser blaster to destroy the cybernetic orcs in Rivendell.');
-  const [loreInfractions, setLoreInfractions] = useState<{ word: string; category: string; description: string }[]>([]);
-  const [scannedLore, setScannedLore] = useState(false);
-
-  const scanLore = () => {
-    setScannedLore(true);
-    const infractions = [];
-    if (storyDraft.toLowerCase().includes('laser') || storyDraft.toLowerCase().includes('blaster')) {
-      infractions.push({ word: 'laser blaster', category: 'Technology Anachronism', description: 'Laser systems and plasma weaponry violate Middle-Earth Third Age technology levels.' });
-    }
-    if (storyDraft.toLowerCase().includes('cybernetic')) {
-      infractions.push({ word: 'cybernetic', category: 'Lore Concept Mismatch', description: 'Cybernetics and robot upgrades contradict canonical Tolkien fantasy biology rules.' });
-    }
-    setLoreInfractions(infractions);
-  };
-
-  // ==========================================
-  // 8. ELECTION SIMULATOR STATE
-  // ==========================================
-  const [stateSwing, setStateSwing] = useState({ PA: 49.2, OH: 47.8, WI: 50.5 });
-  const [campaignFocus, setCampaignFocus] = useState('economy');
-  const [isCampaigning, setIsCampaigning] = useState(false);
-
-  const runCampaign = () => {
-    setIsCampaigning(true);
+  const triggerVoiceQuery = () => {
+    setIsProcessingVoice(true);
     setTimeout(() => {
-      if (campaignFocus === 'economy') {
-        setStateSwing({
-          PA: Number((stateSwing.PA + 1.2).toFixed(1)),
-          OH: Number((stateSwing.OH + 2.1).toFixed(1)),
-          WI: Number((stateSwing.WI + 0.5).toFixed(1)),
-        });
-      } else if (campaignFocus === 'healthcare') {
-        setStateSwing({
-          PA: Number((stateSwing.PA + 1.8).toFixed(1)),
-          OH: Number((stateSwing.OH - 0.4).toFixed(1)),
-          WI: Number((stateSwing.WI + 1.4).toFixed(1)),
-        });
-      } else {
-        setStateSwing({
-          PA: Number((stateSwing.PA - 0.5).toFixed(1)),
-          OH: Number((stateSwing.OH + 1.8).toFixed(1)),
-          WI: Number((stateSwing.WI - 0.2).toFixed(1)),
-        });
-      }
-      setIsCampaigning(false);
+      const basePrices: Record<string, number> = {
+        tomato: 1850,
+        onion: 2400,
+        chilli: 16500,
+        potato: 1420
+      };
+      setVoiceTranscript(`కర్నూలు మార్కెట్లో ${selectedCrop} ధర ఎంత ఉంది?`);
+      setMandiOutput({
+        price: basePrices[selectedCrop] || 2000,
+        trend: '+6.2% expected based on regional rainfall',
+        confidence: 96
+      });
+      setIsProcessingVoice(false);
     }, 1000);
   };
 
-// ==========================================
-  // 9. BANK SYSTEM LEDGER SANDBOX STATE (CHAOS CONTROLS)
   // ==========================================
-  interface RaftClusterNode {
-    id: string;
-    role: 'Leader' | 'Follower' | 'Crashed';
-    term: number;
-    latency: number;
-  }
-
-  const [raftNodes, setRaftNodes] = useState<RaftClusterNode[]>([
-    { id: 'Node-1', role: 'Leader', term: 4, latency: 12 },
-    { id: 'Node-2', role: 'Follower', term: 4, latency: 18 },
-    { id: 'Node-3', role: 'Follower', term: 4, latency: 15 }
+  // 3. RECALL-OS (HYBRID SEMANTIC SEARCH RETRIEVAL)
+  // ==========================================
+  const [searchQuery, setSearchQuery] = useState('EPERM operation not permitted');
+  const [searchResults, setSearchResults] = useState([
+    { id: 'MEM_901a', title: 'Windows OneDrive EPERM lock resolution', bm25: 0.94, cosine: 0.98, rrf: 0.96 },
+    { id: 'MEM_842b', title: 'Vite node_modules .vite-temp permission patch', bm25: 0.89, cosine: 0.92, rrf: 0.91 },
+    { id: 'MEM_714c', title: 'PowerShell script execution policy unlock', bm25: 0.72, cosine: 0.84, rrf: 0.78 }
   ]);
-  const [balanceA, setBalanceA] = useState(1500);
-  const [balanceB, setBalanceB] = useState(300);
-  const [ledgerLogs, setLedgerLogs] = useState<string[]>([
-    '[INIT] Raft cluster initialized with 3 nodes. Quorum requirement = 2.',
-    '[NODES] Node-1 elected Leader (Term 4). Followers: Node-2, Node-3.',
-    '[LEDGER] Initial Balances: Account_A = $1500, Account_B = $300'
-  ]);
-  const [transAmt, setTransAmt] = useState(150);
-  const [isTransacting, setIsTransacting] = useState(false);
-  const [isElectionRunning, setIsElectionRunning] = useState(false);
 
-  const toggleNodeCrash = (nodeId: string) => {
-    setRaftNodes(prev => {
-      const target = prev.find(n => n.id === nodeId);
-      if (!target) return prev;
+  const runHybridSearch = (q: string) => {
+    setSearchQuery(q);
+    if (!q.trim()) return;
+    setSearchResults([
+      { id: 'MEM_901a', title: `Resolved: ${q} root cause & workaround`, bm25: 0.95, cosine: 0.97, rrf: 0.96 },
+      { id: 'MEM_842b', title: `Architecture spec: local hybrid storage index`, bm25: 0.88, cosine: 0.91, rrf: 0.90 },
+      { id: 'MEM_714c', title: `CLI daemon memory compaction notes`, bm25: 0.68, cosine: 0.81, rrf: 0.75 }
+    ]);
+  };
 
-      if (target.role === 'Crashed') {
-        setLedgerLogs(l => [...l, `[CHAOS] 🔄 Heartbeat recovered on ${nodeId}! Rejoining cluster as Follower.`]);
-        return prev.map(n => n.id === nodeId ? { ...n, role: 'Follower' } : n);
-      } else {
-        const wasLeader = target.role === 'Leader';
-        setLedgerLogs(l => [
-          ...l, 
-          `[CHAOS-KILL] 💥 Injected network partition / kill on ${nodeId}! Node is UNRESPONSIVE.`
-        ]);
+  // ==========================================
+  // 4. LOCAL-RAG / MINI-SEMANTIC-SEARCH (COSINE SIMILARITY ENGINE)
+  // ==========================================
+  const [vA, setVA] = useState<[number, number, number]>([0.8, 0.6, 0.0]);
+  const [vB, setVB] = useState<[number, number, number]>([0.6, 0.8, 0.0]);
 
-        const updated = prev.map(n => n.id === nodeId ? { ...n, role: 'Crashed' as const } : n);
+  const computeCosine = (a: [number, number, number], b: [number, number, number]) => {
+    const dot = a[0]*b[0] + a[1]*b[1] + a[2]*b[2];
+    const normA = Math.sqrt(a[0]*a[0] + a[1]*a[1] + a[2]*a[2]) || 1;
+    const normB = Math.sqrt(b[0]*b[0] + b[1]*b[1] + b[2]*b[2]) || 1;
+    return dot / (normA * normB);
+  };
+  const cosineScore = computeCosine(vA, vB);
 
-        if (wasLeader) {
-          triggerLeaderElection(updated);
-        }
-        return updated;
-      }
+  // ==========================================
+  // 5. AEGIS-AI (CLEAN ARCHITECTURE BOUNDARY CHECK)
+  // ==========================================
+  const [activeLayer, setActiveLayer] = useState<'entity' | 'usecase' | 'adapter' | 'framework'>('usecase');
+
+  // ==========================================
+  // 6. AGRICAST-AI (TIME-SERIES FORECAST INSPECTOR)
+  // ==========================================
+  const [forecastHorizon, setForecastHorizon] = useState<7 | 14 | 30>(14);
+
+  // ==========================================
+  // 7. GITOPS-WARROOM (VIRTUAL GIT DAG INCIDENT)
+  // ==========================================
+  const [resolvedIncident, setResolvedIncident] = useState(false);
+
+  // ==========================================
+  // 8. GRADIENT-DESCENT-PLAYGROUND (LOSS SURFACE OPTIMIZER)
+  // ==========================================
+  const [learningRate, setLearningRate] = useState(0.1);
+  const [optimizerType, setOptimizerType] = useState<'sgd' | 'momentum' | 'adam'>('adam');
+  const [gdStep, setGdStep] = useState(0);
+  const [currentCoord, setCurrentCoord] = useState<[number, number]>([2.5, 2.5]);
+  const currentLoss = (currentCoord[0] ** 2 + currentCoord[1] ** 2).toFixed(4);
+
+  const stepOptimizer = () => {
+    setGdStep(prev => prev + 1);
+    setCurrentCoord(([x, y]) => {
+      const gradX = 2 * x;
+      const gradY = 2 * y;
+      const rate = optimizerType === 'adam' ? learningRate * 1.5 : optimizerType === 'momentum' ? learningRate * 1.2 : learningRate;
+      const nextX = Math.max(-3, Math.min(3, x - gradX * rate));
+      const nextY = Math.max(-3, Math.min(3, y - gradY * rate));
+      return [nextX, nextY];
     });
   };
 
-  const triggerLeaderElection = (nodesState: RaftClusterNode[]) => {
-    const liveFollowers = nodesState.filter(n => n.role === 'Follower');
-    if (liveFollowers.length === 0) {
-      setLedgerLogs(l => [...l, `[CRITICAL] All nodes offline. Quorum lost! Transactions halted.`]);
-      return;
-    }
-
-    setIsElectionRunning(true);
-    setLedgerLogs(l => [
-      ...l, 
-      `[HEARTBEAT TIMEOUT] Leader missing! Follower election timer triggered.`,
-      `[ELECTION] ${liveFollowers[0].id} transitioning to Candidate (Term 5)... Requesting votes.`
-    ]);
-
-    setTimeout(() => {
-      const liveCount = liveFollowers.length;
-      if (liveCount >= 2) {
-        setRaftNodes(current => current.map(n => {
-          if (n.id === liveFollowers[0].id) {
-            return { ...n, role: 'Leader', term: 5 };
-          }
-          return n;
-        }));
-        setLedgerLogs(l => [
-          ...l, 
-          `[QUORUM GRANTED] ${liveFollowers[0].id} received ${liveCount}/3 votes.`,
-          `[SUCCESS] 👑 ${liveFollowers[0].id} elected new LEADER (Term 5)! WAL replication active.`
-        ]);
-      } else {
-        setLedgerLogs(l => [
-          ...l, 
-          `[SPLIT BRAIN PREVENTED] Only ${liveCount} live node. Quorum requires >= 2. Read-only mode active.`
-        ]);
-      }
-      setIsElectionRunning(false);
-    }, 1100);
-  };
-
-  const triggerTransaction = () => {
-    const leader = raftNodes.find(n => n.role === 'Leader');
-    const aliveCount = raftNodes.filter(n => n.role !== 'Crashed').length;
-
-    if (!leader) {
-      setLedgerLogs(p => [...p, '[ABORTED] No Leader online! Revive a node to allow automatic election.']);
-      return;
-    }
-
-    if (aliveCount < 2) {
-      setLedgerLogs(p => [...p, '[ABORTED] Quorum lost (needs >= 2 nodes). Writes locked to prevent split-brain.']);
-      return;
-    }
-
-    if (balanceA < transAmt) {
-      setLedgerLogs(p => [...p, `[REJECTED] Insufficient funds: Acc_A ($${balanceA}) < Transfer ($${transAmt}).`]);
-      return;
-    }
-
-    if (isTransacting) return;
-    setIsTransacting(true);
-
-    setLedgerLogs(p => [...p, `[INIT] Transfer $${transAmt} from Account_A -> Account_B via ${leader.id}`]);
-
-    setTimeout(() => {
-      setLedgerLogs(p => [...p, `[LOCK] ${leader.id} acquired distributed WAL mutex lock.`]);
-    }, 250);
-
-    setTimeout(() => {
-      setLedgerLogs(p => [...p, `[REPLICATE] WAL entry replicated to active follower quorum.`]);
-    }, 550);
-
-    setTimeout(() => {
-      setBalanceA(prev => prev - transAmt);
-      setBalanceB(prev => prev + transAmt);
-      setLedgerLogs(p => [
-        ...p,
-        `[AUDIT] Commit double-entry stream: [ACC_A: -$${transAmt}] | [ACC_B: +$${transAmt}].`,
-        `[SUCCESS] Quorum achieved! Account_A: $${balanceA - transAmt}, Account_B: $${balanceB + transAmt}.`
-      ]);
-      setIsTransacting(false);
-    }, 950);
+  const resetOptimizer = () => {
+    setGdStep(0);
+    setCurrentCoord([2.5, 2.5]);
   };
 
   return (
-    <div className="w-full bg-zinc-950/80 border border-zinc-900 rounded-xl p-6 relative backdrop-blur-md">
-      
-      {/* Background ambient lighting overlay */}
-      <div className={`absolute top-0 right-0 w-36 h-36 bg-${themeColor}-500/5 rounded-full filter blur-2xl pointer-events-none`} />
-
-      {/* 1. TUNEAURA SANDBOX */}
-      {projectId === 'tuneaura' && (
+    <div className="space-y-6">
+      {/* 1. AGENTBENCH-LITE SANDBOX */}
+      {projectId === 'agentbench' && (
         <div className="flex flex-col gap-5">
           <div className="flex justify-between items-center border-b border-zinc-900 pb-3">
             <h4 className="text-sm font-bold text-white uppercase flex items-center gap-2">
-              <Sliders className="w-4 h-4 text-amber-400" /> Web Audio Synthesizer Interface
+              <Cpu className="w-4 h-4 text-amber-400" /> Agent Reliability & Bounded Recovery Simulator
             </h4>
-            <span className="text-[10px] text-amber-400 bg-amber-500/10 border border-amber-500/20 px-2 py-0.5 rounded uppercase">
-              Procedural Synthesis
+            <span className="text-[10px] text-amber-400 bg-amber-500/10 border border-amber-500/20 px-2 py-0.5 rounded uppercase font-mono">
+              Fault Injection Testbed
             </span>
           </div>
 
           <div className="grid md:grid-cols-2 gap-6">
             <div className="space-y-4">
               <div className="space-y-2">
-                <div className="flex justify-between text-xs font-mono">
-                  <span className="text-zinc-500">Binaural Frequency Offset</span>
-                  <span className="text-amber-400 font-bold">{binauralHz} Hz (Alpha Focus)</span>
+                <label className="text-xs font-mono text-zinc-400 block">Select Agent Strategy</label>
+                <div className="grid grid-cols-2 gap-2">
+                  <button
+                    onClick={() => setAgentStrategy('baseline')}
+                    className={`py-2 px-3 border text-xs font-mono rounded-lg transition-all ${
+                      agentStrategy === 'baseline'
+                        ? 'border-red-500 bg-red-500/10 text-red-400 font-bold'
+                        : 'border-zinc-800 bg-zinc-900/40 text-zinc-400'
+                    }`}
+                  >
+                    Baseline (No Recovery)
+                  </button>
+                  <button
+                    onClick={() => setAgentStrategy('recovery')}
+                    className={`py-2 px-3 border text-xs font-mono rounded-lg transition-all ${
+                      agentStrategy === 'recovery'
+                        ? 'border-amber-500 bg-amber-500/10 text-amber-400 font-bold'
+                        : 'border-zinc-800 bg-zinc-900/40 text-zinc-400'
+                    }`}
+                  >
+                    Bounded Self-Correction
+                  </button>
                 </div>
-                <input 
-                  type="range" min="4" max="25" value={binauralHz} 
-                  onChange={(e) => setBinauralHz(Number(e.target.value))}
-                  className="w-full accent-amber-500 bg-zinc-900 h-1 rounded-lg cursor-pointer"
+              </div>
+
+              <div className="p-3 border border-zinc-900 bg-zinc-950/80 rounded-lg text-xs font-mono space-y-2">
+                <div className="flex justify-between text-zinc-500 text-[10px]">
+                  <span>MAX STEPS: 10</span>
+                  <span>RETRIES BUDGET: 2</span>
+                </div>
+                <div className="text-zinc-400">
+                  Target: <span className="text-white font-bold">Query Customer Profile</span> with intentional parameter type injection.
+                </div>
+              </div>
+
+              <button
+                onClick={runAgentTest}
+                disabled={agentRunning}
+                className="w-full py-3 border border-amber-500/40 bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 font-mono font-bold text-xs uppercase tracking-wider rounded-lg transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+              >
+                {agentRunning ? <Pause className="w-4 h-4 animate-spin" /> : <Play className="w-4 h-4" />}
+                {agentRunning ? 'Simulating Agent Loop...' : 'Run Benchmark Test'}
+              </button>
+            </div>
+
+            <div className="border border-zinc-900 bg-black/90 p-4 rounded-xl flex flex-col justify-between font-mono text-[10px] min-h-[220px]">
+              <div className="text-zinc-500 uppercase tracking-wider border-b border-zinc-900 pb-2 mb-2 flex justify-between">
+                <span>Execution Trace Stream</span>
+                <span className="text-amber-400">Step {agentStep}/4</span>
+              </div>
+              <div className="space-y-1.5 overflow-y-auto max-h-[160px] text-left">
+                {agentLogs.map((log, i) => (
+                  <div key={i} className={
+                    log.includes('[SUCCESS]') || log.includes('[COMPLETED]') ? 'text-emerald-400' :
+                    log.includes('[ERROR]') || log.includes('[FAILED]') ? 'text-red-400' :
+                    log.includes('[FAULT]') ? 'text-amber-400 font-bold' :
+                    log.includes('[BOUNDED') ? 'text-cyan-400' : 'text-zinc-400'
+                  }>
+                    {log}
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 2. VOICEKISAN SANDBOX */}
+      {projectId === 'voicekisan' && (
+        <div className="flex flex-col gap-5">
+          <div className="flex justify-between items-center border-b border-zinc-900 pb-3">
+            <h4 className="text-sm font-bold text-white uppercase flex items-center gap-2">
+              <Leaf className="w-4 h-4 text-emerald-400" /> Multimodal Indic Voice & Mandi Forecasting
+            </h4>
+            <span className="text-[10px] text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded uppercase font-mono">
+              Telugu / Hindi STT Pipeline
+            </span>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-6">
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <label className="text-xs font-mono text-zinc-400 block">Select Commodity & District</label>
+                <div className="grid grid-cols-2 gap-2">
+                  <select 
+                    value={selectedCrop} 
+                    onChange={(e) => setSelectedCrop(e.target.value)}
+                    className="p-2 border border-zinc-800 bg-zinc-900 text-xs text-white rounded font-mono"
+                  >
+                    <option value="tomato">Tomato (టమాటా)</option>
+                    <option value="onion">Onion (ఉల్లిపాయ)</option>
+                    <option value="chilli">Chilli (మిరపకాయ)</option>
+                    <option value="potato">Potato (బంగాళాదుంప)</option>
+                  </select>
+                  <select 
+                    value={selectedDistrict} 
+                    onChange={(e) => setSelectedDistrict(e.target.value)}
+                    className="p-2 border border-zinc-800 bg-zinc-900 text-xs text-white rounded font-mono"
+                  >
+                    <option value="Kurnool">Kurnool APMC</option>
+                    <option value="Nashik">Nashik APMC</option>
+                    <option value="Kolar">Kolar APMC</option>
+                  </select>
+                </div>
+              </div>
+
+              <button
+                onClick={triggerVoiceQuery}
+                disabled={isProcessingVoice}
+                className="w-full py-3 border border-emerald-500/40 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 font-mono font-bold text-xs uppercase tracking-wider rounded-lg transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+              >
+                <Play className="w-4 h-4" />
+                {isProcessingVoice ? 'Transcribing & Fetching...' : 'Simulate Voice Input (Telugu)'}
+              </button>
+            </div>
+
+            <div className="border border-zinc-900 bg-zinc-950/80 p-4 rounded-xl font-mono text-xs space-y-3">
+              <div className="text-[10px] text-zinc-500 uppercase tracking-widest border-b border-zinc-900 pb-1">
+                Gnani STT Transcription
+              </div>
+              <p className="text-emerald-400 italic font-sans text-sm">"{voiceTranscript}"</p>
+              <div className="border-t border-zinc-900 pt-2 space-y-1.5 text-[11px]">
+                <div className="flex justify-between">
+                  <span className="text-zinc-500">Live Wholesale Modal Price:</span>
+                  <span className="text-white font-bold">₹{mandiOutput.price} / Quintal</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-zinc-500">SARIMA 7-Day Trend:</span>
+                  <span className="text-emerald-400 font-bold">{mandiOutput.trend}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-zinc-500">Model Grounding Confidence:</span>
+                  <span className="text-zinc-300">{mandiOutput.confidence}%</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 3. RECALL-OS SANDBOX */}
+      {projectId === 'recallos' && (
+        <div className="flex flex-col gap-5">
+          <div className="flex justify-between items-center border-b border-zinc-900 pb-3">
+            <h4 className="text-sm font-bold text-white uppercase flex items-center gap-2">
+              <Database className="w-4 h-4 text-cyan-400" /> Local-First Hybrid Retrieval (BM25 + Cosine)
+            </h4>
+            <span className="text-[10px] text-cyan-400 bg-cyan-500/10 border border-cyan-500/20 px-2 py-0.5 rounded uppercase font-mono">
+              Zero-Cloud Privacy
+            </span>
+          </div>
+
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <label className="text-xs font-mono text-zinc-400 block">Interactive Query Simulator</label>
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => runHybridSearch(e.target.value)}
+                  placeholder="Enter bug symptom or keyword..."
+                  className="flex-1 p-2.5 border border-zinc-800 bg-zinc-900 text-xs text-white rounded font-mono focus:border-cyan-500 outline-none"
                 />
+              </div>
+            </div>
+
+            <div className="border border-zinc-900 rounded-xl overflow-hidden">
+              <table className="w-full text-left font-mono text-xs">
+                <thead className="bg-zinc-950 text-zinc-500 text-[10px] border-b border-zinc-900">
+                  <tr>
+                    <th className="p-3">Memory Node</th>
+                    <th className="p-3">BM25</th>
+                    <th className="p-3">Dense Vector</th>
+                    <th className="p-3">RRF Score</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-zinc-900">
+                  {searchResults.map((res) => (
+                    <tr key={res.id} className="hover:bg-zinc-900/30">
+                      <td className="p-3">
+                        <div className="text-white font-bold">{res.title}</div>
+                        <div className="text-[10px] text-zinc-500">{res.id}</div>
+                      </td>
+                      <td className="p-3 text-cyan-400">{res.bm25}</td>
+                      <td className="p-3 text-violet-400">{res.cosine}</td>
+                      <td className="p-3 text-emerald-400 font-bold">{res.rrf}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 4. LOCAL-RAG & MINI-SEMANTIC-SEARCH */}
+      {projectId === 'localrag' && (
+        <div className="flex flex-col gap-5">
+          <div className="flex justify-between items-center border-b border-zinc-900 pb-3">
+            <h4 className="text-sm font-bold text-white uppercase flex items-center gap-2">
+              <Terminal className="w-4 h-4 text-violet-400" /> First-Principles NumPy Vector Cosine Engine
+            </h4>
+            <span className="text-[10px] text-violet-400 bg-violet-500/10 border border-violet-500/20 px-2 py-0.5 rounded uppercase font-mono">
+              Dot Product / L2 Norm
+            </span>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-6">
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <label className="text-xs font-mono text-zinc-400 block">Vector A (Query) Dimension Modulation</label>
+                <div className="flex gap-2">
+                  {[0, 1, 2].map((idx) => (
+                    <div key={idx} className="flex-1 space-y-1">
+                      <div className="text-[10px] text-zinc-500 font-mono">Dim {idx + 1}</div>
+                      <input
+                        type="range" min="0" max="1" step="0.1" value={vA[idx]}
+                        onChange={(e) => {
+                          const next: [number, number, number] = [...vA];
+                          next[idx] = parseFloat(e.target.value);
+                          setVA(next);
+                        }}
+                        className="w-full accent-violet-500"
+                      />
+                      <div className="text-xs font-mono text-white text-center">{vA[idx]}</div>
+                    </div>
+                  ))}
+                </div>
               </div>
 
               <div className="space-y-2">
-                <div className="flex justify-between text-xs font-mono">
-                  <span className="text-zinc-500">Master Level volume</span>
-                  <span className="text-amber-400 font-bold">{Math.round(volume * 100)}%</span>
+                <label className="text-xs font-mono text-zinc-400 block">Vector B (Document) Dimension Modulation</label>
+                <div className="flex gap-2">
+                  {[0, 1, 2].map((idx) => (
+                    <div key={idx} className="flex-1 space-y-1">
+                      <div className="text-[10px] text-zinc-500 font-mono">Dim {idx + 1}</div>
+                      <input
+                        type="range" min="0" max="1" step="0.1" value={vB[idx]}
+                        onChange={(e) => {
+                          const next: [number, number, number] = [...vB];
+                          next[idx] = parseFloat(e.target.value);
+                          setVB(next);
+                        }}
+                        className="w-full accent-violet-500"
+                      />
+                      <div className="text-xs font-mono text-white text-center">{vB[idx]}</div>
+                    </div>
+                  ))}
                 </div>
-                <input 
-                  type="range" min="0" max="1" step="0.05" value={volume} 
-                  onChange={(e) => setVolume(Number(e.target.value))}
-                  className="w-full accent-amber-500 bg-zinc-900 h-1 rounded-lg cursor-pointer"
-                />
               </div>
+            </div>
 
+            <div className="border border-zinc-900 bg-zinc-950 p-4 rounded-xl flex flex-col justify-center items-center text-center font-mono">
+              <div className="text-xs text-zinc-500 uppercase tracking-widest mb-2">Computed Cosine Similarity</div>
+              <div className="text-4xl font-black text-violet-400 mb-2">
+                {cosineScore.toFixed(4)}
+              </div>
+              <div className="text-xs text-zinc-400 max-w-xs">
+                {cosineScore > 0.85 ? 'High semantic grounding match (Eligible for RAG prompt injection)' :
+                 cosineScore > 0.60 ? 'Moderate semantic correlation' : 'Low semantic correlation (Filtered out by threshold)'}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 5. AEGIS-AI SANDBOX */}
+      {projectId === 'aegis' && (
+        <div className="flex flex-col gap-5">
+          <div className="flex justify-between items-center border-b border-zinc-900 pb-3">
+            <h4 className="text-sm font-bold text-white uppercase flex items-center gap-2">
+              <Cpu className="w-4 h-4 text-cyan-400" /> Clean Architecture Dependency Inspector
+            </h4>
+            <span className="text-[10px] text-cyan-400 bg-cyan-500/10 border border-cyan-500/20 px-2 py-0.5 rounded uppercase font-mono">
+              Strict Layer Inversion
+            </span>
+          </div>
+
+          <div className="grid md:grid-cols-4 gap-2 font-mono text-xs">
+            {[
+              { id: 'entity', label: '1. Domain Entities', desc: 'Core business types & enterprise invariants' },
+              { id: 'usecase', label: '2. Use-Case Interactors', desc: 'Application orchestrations & model interfaces' },
+              { id: 'adapter', label: '3. Interface Adapters', desc: 'Controllers, presenters, & gateway mocks' },
+              { id: 'framework', label: '4. Frameworks & Drivers', desc: 'React 19, FastAPI, Google GenAI SDK' }
+            ].map((layer) => (
               <button
-                onClick={toggleSynth}
-                className={`w-full py-3 border font-mono font-bold text-xs uppercase tracking-wider rounded-lg transition-all cursor-pointer flex items-center justify-center gap-2 ${
-                  synthPlaying 
-                    ? 'border-amber-500 bg-amber-500/10 text-amber-400 hover:bg-amber-500/20' 
-                    : 'border-zinc-800 bg-zinc-900/40 text-zinc-400 hover:border-zinc-700 hover:text-white'
+                key={layer.id}
+                onClick={() => setActiveLayer(layer.id as any)}
+                className={`p-3 border rounded-lg text-left transition-all ${
+                  activeLayer === layer.id 
+                    ? 'border-cyan-500 bg-cyan-500/10 text-cyan-300' 
+                    : 'border-zinc-900 bg-zinc-950/60 text-zinc-500 hover:text-zinc-300'
                 }`}
               >
-                {synthPlaying ? (
-                  <>
-                    <Pause className="w-4 h-4 fill-current" /> Stop Synthesis Session
-                  </>
-                ) : (
-                  <>
-                    <Play className="w-4 h-4 fill-current" /> Begin Focus Synthesis
-                  </>
-                )}
+                <div className="font-bold text-white mb-1">{layer.label}</div>
+                <div className="text-[10px] leading-tight">{layer.desc}</div>
               </button>
-            </div>
+            ))}
+          </div>
 
-            <div className="flex flex-col border border-zinc-900 rounded-lg p-4 bg-black/90">
-              <span className="text-[10px] text-zinc-500 font-mono uppercase mb-2">Procedural Frequency Waveform</span>
-              <canvas ref={canvasRef} width="350" height="110" className="w-full h-[110px] rounded bg-zinc-950" />
-              <span className="text-[8px] text-zinc-600 font-mono mt-2 text-right">
-                Active OSC Output: Sine(140Hz) + Sine(140Hz + {binauralHz}Hz) representing Combined Focus state
-              </span>
+          <div className="border border-zinc-900 bg-zinc-950/80 p-4 rounded-xl font-mono text-xs text-zinc-400 space-y-2">
+            <div className="text-white font-bold uppercase tracking-wider text-[11px]">
+              Dependency Rule Check: Inner layers know NOTHING about outer layers.
             </div>
+            <p>
+              When Google GenAI or OpenAI updates their SDK signature, only <span className="text-cyan-400 font-bold">Layer 4 (ModelGateway Adapter)</span> is touched. The entire test suite and domain rules remain completely untouched and green.
+            </p>
           </div>
         </div>
       )}
 
-      {/* 2. STUDYBUDDY SANDBOX */}
-      {projectId === 'studybuddy' && (
-        <div className="flex flex-col gap-4">
+      {/* 6. AGRICAST-AI SANDBOX */}
+      {projectId === 'agricast' && (
+        <div className="flex flex-col gap-5">
           <div className="flex justify-between items-center border-b border-zinc-900 pb-3">
             <h4 className="text-sm font-bold text-white uppercase flex items-center gap-2">
-              <BookOpen className="w-4 h-4 text-emerald-400" /> SuperMemo SM-2 Interval Sandbox
+              <BarChart2 className="w-4 h-4 text-emerald-400" /> APMC Time-Series Forecasting Horizon
             </h4>
-            <span className="text-[10px] text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded uppercase">
-              RAG Quiz Core
+            <span className="text-[10px] text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded uppercase font-mono">
+              SARIMA Seasonality
             </span>
           </div>
 
-          <div className="grid md:grid-cols-5 gap-6">
-            {/* Flashcard container */}
-            <div className="md:col-span-3 flex flex-col gap-3">
-              <div className="min-h-[170px] bg-black/80 border border-zinc-800 rounded-xl p-5 flex flex-col justify-between relative overflow-hidden">
-                <div className="space-y-2">
-                  <span className="text-[8px] tracking-wider uppercase text-zinc-600 font-bold">RAG FLASHCARD 0{currentCardIdx + 1}</span>
-                  <p className="text-xs text-white font-sans font-medium leading-relaxed">
-                    {initialCards[currentCardIdx].q}
-                  </p>
-                  
-                  {flipped && (
-                    <motion.div 
-                      initial={{ opacity: 0, y: 5 }} 
-                      animate={{ opacity: 1, y: 0 }} 
-                      className="text-xs text-zinc-400 pt-3 border-t border-zinc-900 font-sans leading-relaxed mt-4"
-                    >
-                      {initialCards[currentCardIdx].a}
-                    </motion.div>
-                  )}
-                </div>
-
-                {!flipped ? (
-                  <button 
-                    onClick={() => setFlipped(true)}
-                    className="w-full py-2 bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 hover:border-zinc-700 text-[10px] font-bold text-white uppercase rounded-lg cursor-pointer"
-                  >
-                    Reveal Vectorized Answer
-                  </button>
-                ) : (
-                  <div className="flex gap-2 justify-between mt-4">
-                    <button onClick={() => handleSMAnswer(1)} className="flex-1 py-1.5 bg-red-950/20 border border-red-900/40 hover:bg-red-900/10 text-[9px] font-bold text-red-400 rounded uppercase cursor-pointer">Fail</button>
-                    <button onClick={() => handleSMAnswer(3)} className="flex-1 py-1.5 bg-yellow-950/20 border border-yellow-900/40 hover:bg-yellow-900/10 text-[9px] font-bold text-yellow-400 rounded uppercase cursor-pointer">Hard</button>
-                    <button onClick={() => handleSMAnswer(5)} className="flex-1 py-1.5 bg-emerald-950/20 border border-emerald-900/40 hover:bg-emerald-900/10 text-[9px] font-bold text-emerald-400 rounded uppercase cursor-pointer">Easy</button>
-                  </div>
-                )}
-              </div>
-            </div>
-
-            {/* Algorithm stats panel */}
-            <div className="md:col-span-2 bg-zinc-950 border border-zinc-900 rounded-xl p-4 flex flex-col justify-between font-mono text-[10px]">
-              <div>
-                <span className="text-[9px] text-zinc-500 uppercase tracking-widest block border-b border-zinc-900 pb-1.5 mb-3">SM-2 Spacing Factors</span>
-                <div className="space-y-2">
-                  <div className="flex justify-between">
-                    <span className="text-zinc-600">Calculated Interval:</span>
-                    <span className="text-emerald-400 font-bold">{smParams.interval} days</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-zinc-600">Repetitions Score:</span>
-                    <span className="text-emerald-400 font-bold">{smParams.repetitions}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-zinc-600">Easiness Factor (EF):</span>
-                    <span className="text-emerald-400 font-bold">{smParams.ef}</span>
-                  </div>
-                </div>
-              </div>
-
-              <div className="text-[8px] text-zinc-600 leading-relaxed border-t border-zinc-900 pt-2.5 font-sans">
-                Every rating choice dynamically modifies the Easiness Factor and computes card scheduling to prevent memory decay.
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* 3. KUBEASSIST SANDBOX */}
-      {projectId === 'kubeassist' && (
-        <div className="flex flex-col gap-4 font-mono text-xs text-zinc-400">
-          <div className="flex justify-between items-center border-b border-zinc-900 pb-3">
-            <h4 className="text-sm font-bold text-white uppercase flex items-center gap-2">
-              <Terminal className="w-4 h-4 text-cyan-400" /> Dynamic K8s Linter & Terminal Sidecar
-            </h4>
-            <span className="text-[10px] text-cyan-400 bg-cyan-500/10 border border-cyan-500/20 px-2 py-0.5 rounded uppercase">
-              Container Telemetry
-            </span>
-          </div>
-
-          <div className="grid md:grid-cols-2 gap-4 min-h-[220px]">
-            {/* Command terminal logs */}
-            <div className="flex flex-col bg-black/90 border border-zinc-900 rounded-lg p-4 justify-between h-[220px]">
-              <div className="space-y-1 overflow-y-auto max-h-[140px] custom-scrollbar text-[9px] leading-relaxed">
-                {k8sTerminalLogs.map((log, i) => {
-                  let color = 'text-zinc-500';
-                  if (log.includes('REASON:')) color = 'text-red-400 font-bold';
-                  else if (log.includes('STATUS:')) color = 'text-yellow-400';
-                  else if (log.startsWith('[OLLAMA]')) color = 'text-purple-400';
-                  else if (log.includes('[SUCCESS]')) color = 'text-green-400 font-bold';
-                  else if (log.startsWith('[COMPLETED]')) color = 'text-cyan-400 font-bold';
-                  return <div key={i} className={color}>{log}</div>;
-                })}
-              </div>
-
+          <div className="flex gap-2">
+            {[7, 14, 30].map((h) => (
               <button
-                onClick={troubleshootK8s}
-                disabled={k8sRunning}
-                className="w-full py-2 bg-cyan-950/20 hover:bg-cyan-950/40 border border-cyan-500/30 text-[10px] font-bold text-cyan-400 rounded uppercase cursor-pointer"
+                key={h}
+                onClick={() => setForecastHorizon(h as any)}
+                className={`py-2 px-4 border rounded font-mono text-xs ${
+                  forecastHorizon === h ? 'border-emerald-500 bg-emerald-500/10 text-emerald-400 font-bold' : 'border-zinc-800 text-zinc-500'
+                }`}
               >
-                {k8sRunning ? 'Processing Diagnostics...' : 'Troubleshoot Container'}
+                {h}-Day Forecast
               </button>
-            </div>
+            ))}
+          </div>
 
-            {/* Yaml correction viewer */}
-            <div className="flex flex-col bg-zinc-950 border border-zinc-900 rounded-lg p-4 justify-between h-[220px]">
-              <div>
-                <span className="text-[9px] text-zinc-500 uppercase block mb-2 border-b border-zinc-900 pb-1">Automated YAML Patch</span>
-                {correctedYaml ? (
-                  <pre className="text-[8px] text-green-400 font-mono overflow-y-auto max-h-[140px] custom-scrollbar leading-tight bg-black/50 p-2.5 rounded border border-zinc-900">
-                    {correctedYaml}
-                  </pre>
-                ) : (
-                  <div className="h-[120px] flex items-center justify-center border border-dashed border-zinc-900 text-[9px] text-zinc-600 text-center px-4">
-                    Diagnostics not executed yet. Click Troubleshoot on the terminal.
-                  </div>
-                )}
-              </div>
-              
-              {correctedYaml && (
-                <div className="flex items-center gap-1.5 text-[8px] text-green-400 bg-green-500/5 px-2.5 py-1.5 border border-green-500/20 rounded">
-                  <CheckCircle2 className="w-3.5 h-3.5" />
-                  <span>Dry-Run Kube-Linter passes. Ready to deploy.</span>
+          <div className="border border-zinc-900 bg-black/90 p-6 rounded-xl flex flex-col items-center justify-center font-mono">
+            <div className="text-[10px] text-zinc-500 uppercase tracking-widest mb-3">Model Residual Error (MAPE)</div>
+            <div className="text-3xl font-black text-emerald-400 mb-1">7.8% MAPE</div>
+            <div className="text-xs text-zinc-400">95% Confidence Band: ₹1,680 - ₹1,990 / Quintal</div>
+          </div>
+        </div>
+      )}
+
+      {/* 7. GITOPS-WARROOM SANDBOX */}
+      {projectId === 'gitops' && (
+        <div className="flex flex-col gap-5">
+          <div className="flex justify-between items-center border-b border-zinc-900 pb-3">
+            <h4 className="text-sm font-bold text-white uppercase flex items-center gap-2">
+              <ShieldAlert className="w-4 h-4 text-rose-400" /> Forward Deployed Engineer Incident Triage
+            </h4>
+            <span className="text-[10px] text-rose-400 bg-rose-500/10 border border-rose-500/20 px-2 py-0.5 rounded uppercase font-mono">
+              Production Git Disaster
+            </span>
+          </div>
+
+          <div className="border border-zinc-900 bg-zinc-950 p-4 rounded-xl space-y-3 font-mono text-xs">
+            <div className="text-rose-400 font-bold uppercase tracking-wider">
+              [CRITICAL OUTAGE] Production Hotfix Overwritten by Accidental Reset
+            </div>
+            <p className="text-zinc-400">
+              Customer deployment pipeline failed at 02:00 UTC. HEAD was forcefully reset to 3 commits prior.
+            </p>
+            <div className="flex gap-3">
+              <button
+                onClick={() => setResolvedIncident(true)}
+                className="py-2.5 px-4 bg-rose-500/10 border border-rose-500/30 hover:border-rose-500 text-rose-400 font-bold rounded cursor-pointer"
+              >
+                Execute: git reflog && git reset --hard HEAD@&#123;1&#125;
+              </button>
+              {resolvedIncident && (
+                <div className="flex items-center gap-2 text-emerald-400 font-bold text-xs animate-fade-in">
+                  <CheckCircle2 className="w-4 h-4" /> Commit recovered! Production pipeline green.
                 </div>
               )}
             </div>
@@ -718,455 +560,73 @@ spec:
         </div>
       )}
 
-      {/* 4. RIVALRISE SANDBOX */}
-      {projectId === 'rivalrise' && (
-        <div className="flex flex-col gap-4 font-mono text-xs">
+      {/* 8. GRADIENT-DESCENT-PLAYGROUND SANDBOX */}
+      {projectId === 'gradient' && (
+        <div className="flex flex-col gap-5">
           <div className="flex justify-between items-center border-b border-zinc-900 pb-3">
             <h4 className="text-sm font-bold text-white uppercase flex items-center gap-2">
-              <ShieldAlert className="w-4 h-4 text-violet-400" /> Swarm Wargaming Matrix
+              <Target className="w-4 h-4 text-amber-400" /> Loss Surface Convergence Simulator
             </h4>
-            <span className="text-[10px] text-violet-400 bg-violet-500/10 border border-violet-500/20 px-2 py-0.5 rounded uppercase">
-              Nash Equilibrium Solver
-            </span>
-          </div>
-
-          <div className="grid md:grid-cols-5 gap-6">
-            <div className="md:col-span-2 space-y-4">
-              <div className="space-y-1.5">
-                <label className="text-[10px] text-zinc-500 uppercase block">Inject Market Decision</label>
-                <select 
-                  value={wargameMove} 
-                  onChange={(e) => setWargameMove(e.target.value)}
-                  className="w-full bg-black border border-zinc-800 rounded p-2.5 text-zinc-300 text-xs focus:border-violet-500"
-                >
-                  <option value="lower_pricing">Lower SaaS prices by 15%</option>
-                  <option value="merge_analytics">Aquire regional analytics provider</option>
-                  <option value="open_source">Open source database engine core</option>
-                </select>
-              </div>
-
-              <button
-                onClick={triggerWargame}
-                disabled={isWargaming}
-                className="w-full py-2.5 bg-violet-950/20 hover:bg-violet-950/40 border border-violet-500/30 text-[10px] font-bold text-violet-400 rounded uppercase cursor-pointer"
-              >
-                {isWargaming ? 'Executing game loops...' : 'Simulate Competitor Swarm'}
-              </button>
-            </div>
-
-            <div className="md:col-span-3 flex flex-col bg-black/90 border border-zinc-900 rounded-lg p-4 justify-between min-h-[170px]">
-              <div className="space-y-2">
-                <span className="text-[8px] text-zinc-500 uppercase block">Active Swarm Decisions Timeline</span>
-                <div className="space-y-1.5 max-h-[110px] overflow-y-auto custom-scrollbar text-[9px] leading-relaxed">
-                  {wargameLogs.length > 0 ? (
-                    wargameLogs.map((log, i) => {
-                      let color = 'text-zinc-400';
-                      if (log.startsWith('[MOVE]')) color = 'text-white font-bold';
-                      else if (log.startsWith('[AGENT-A]')) color = 'text-cyan-400';
-                      else if (log.startsWith('[AGENT-B]')) color = 'text-amber-400';
-                      else if (log.startsWith('[WARGAME]')) color = 'text-green-400 font-bold text-glow-green';
-                      return <div key={i} className={color}>{log}</div>;
-                    })
-                  ) : (
-                    <div className="text-zinc-600 text-center py-6">Awaiting simulation trigger parameters.</div>
-                  )}
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* 5. RESTAURANT AGENT SANDBOX */}
-      {projectId === 'airestaurant' && (
-        <div className="flex flex-col gap-4 font-mono text-xs">
-          <div className="flex justify-between items-center border-b border-zinc-900 pb-3">
-            <h4 className="text-sm font-bold text-white uppercase flex items-center gap-2">
-              <Sliders className="w-4 h-4 text-rose-400" /> Taste Vector Alignment Itinerary Builder
-            </h4>
-            <span className="text-[10px] text-rose-400 bg-rose-500/10 border border-rose-500/20 px-2 py-0.5 rounded uppercase">
-              Location Agent
-            </span>
-          </div>
-
-          <div className="grid md:grid-cols-5 gap-6">
-            <div className="md:col-span-2 space-y-4">
-              <div>
-                <span className="text-[9px] text-zinc-500 uppercase block mb-2">Vector Flavor Alignment Tags</span>
-                <div className="flex flex-wrap gap-2">
-                  {['Spicy', 'Umami', 'Tangy'].map((note) => {
-                    const active = tasteNotes.includes(note);
-                    return (
-                      <button
-                        key={note}
-                        onClick={() => toggleTaste(note)}
-                        className={`px-3 py-1.5 border rounded text-[10px] font-bold cursor-pointer uppercase transition-all ${
-                          active
-                            ? 'bg-rose-500/25 border-rose-500 text-rose-400'
-                            : 'bg-zinc-900 border-zinc-800 text-zinc-500 hover:border-zinc-700 hover:text-zinc-300'
-                        }`}
-                      >
-                        {note}
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-
-              <button
-                onClick={generateItinerary}
-                className="w-full py-2 bg-rose-950/20 hover:bg-rose-950/40 border border-rose-500/30 text-[10px] font-bold text-rose-400 rounded uppercase cursor-pointer"
-              >
-                Synthesize Itinerary Route
-              </button>
-            </div>
-
-            <div className="md:col-span-3 flex flex-col bg-black/95 border border-zinc-900 rounded-lg p-4 min-h-[160px] justify-between">
-              <span className="text-[8px] text-zinc-500 uppercase block mb-1">Generated Route Stops</span>
-              <div className="space-y-2 flex-1 max-h-[110px] overflow-y-auto custom-scrollbar pt-2">
-                {suggestedRoute.length > 0 ? (
-                  suggestedRoute.map((stop, idx) => (
-                    <div key={idx} className="p-2 border border-zinc-900 bg-zinc-950 rounded flex justify-between items-center text-[10px]">
-                      <div>
-                        <div className="text-white font-bold">{idx + 1}. {stop.name}</div>
-                        <div className="text-[9px] text-zinc-500">{stop.address}</div>
-                      </div>
-                      <div className="text-right shrink-0">
-                        <span className="text-rose-400 font-bold block">{stop.match}</span>
-                        <span className="text-[8px] text-zinc-600 block">Drive: {stop.routeMins} mins</span>
-                      </div>
-                    </div>
-                  ))
-                ) : (
-                  <div className="text-zinc-600 text-center py-6">Select flavor alignment notes and build itinerary.</div>
-                )}
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* 6. ECOTRACK SANDBOX */}
-      {projectId === 'ecotrack' && (
-        <div className="flex flex-col gap-4 font-mono text-xs">
-          <div className="flex justify-between items-center border-b border-zinc-900 pb-3">
-            <h4 className="text-sm font-bold text-white uppercase flex items-center gap-2">
-              <BarChart2 className="w-4 h-4 text-emerald-400" /> Edge carbon calculation dashboard
-            </h4>
-            <span className="text-[10px] text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded uppercase">
-              TFLite Edge Core
+            <span className="text-[10px] text-amber-400 bg-amber-500/10 border border-amber-500/20 px-2 py-0.5 rounded uppercase font-mono">
+              SGD / Momentum / Adam
             </span>
           </div>
 
           <div className="grid md:grid-cols-2 gap-6">
             <div className="space-y-4">
               <div className="space-y-2">
-                <div className="flex justify-between">
-                  <span className="text-zinc-500">Logistics distances (Truck miles)</span>
-                  <span className="text-emerald-400 font-bold">{distanceMiles} miles</span>
-                </div>
-                <input 
-                  type="range" min="10" max="500" value={distanceMiles}
-                  onChange={(e) => setDistanceMiles(Number(e.target.value))}
-                  className="w-full accent-emerald-500 bg-zinc-900 h-1 rounded-lg"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <div className="flex justify-between">
-                  <span className="text-zinc-500">Factory operations load (kWh)</span>
-                  <span className="text-emerald-400 font-bold">{factoryKwh} kWh</span>
-                </div>
-                <input 
-                  type="range" min="50" max="1000" value={factoryKwh}
-                  onChange={(e) => setFactoryKwh(Number(e.target.value))}
-                  className="w-full accent-emerald-500 bg-zinc-900 h-1 rounded-lg"
-                />
-              </div>
-            </div>
-
-            <div className="bg-black/90 border border-zinc-900 rounded-xl p-5 flex flex-col justify-between items-center text-center">
-              <div>
-                <span className="text-[9px] text-zinc-500 uppercase block mb-1">AGGREGATED EMISSIONS OFFSET</span>
-                <div className="text-3xl font-black text-white">{totalCarbonKg} <span className="text-xs text-zinc-500">CO2 kg</span></div>
-              </div>
-              
-              <div className="mt-3 flex items-center gap-2 text-[9px] text-green-400 bg-green-500/5 px-3 py-1.5 border border-green-500/10 rounded">
-                <UserCheck className="w-3.5 h-3.5" />
-                <span>Edge metrics hashed and compiled successfully.</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* 7. FANVERSI SANDBOX */}
-      {projectId === 'fanversi' && (
-        <div className="flex flex-col gap-4 font-mono text-xs">
-          <div className="flex justify-between items-center border-b border-zinc-900 pb-3">
-            <h4 className="text-sm font-bold text-white uppercase flex items-center gap-2">
-              <Database className="w-4 h-4 text-violet-400" /> Lore consistency vector scanner
-            </h4>
-            <span className="text-[10px] text-violet-400 bg-violet-500/10 border border-violet-500/20 px-2 py-0.5 rounded uppercase">
-              RAG Validation
-            </span>
-          </div>
-
-          <div className="grid md:grid-cols-5 gap-6">
-            <div className="md:col-span-3 space-y-3">
-              <span className="text-[9px] text-zinc-500 uppercase block">Chapter Draft Text Workspace</span>
-              <textarea 
-                value={storyDraft}
-                onChange={(e) => setStoryDraft(e.target.value)}
-                className="w-full h-[120px] bg-black border border-zinc-800 rounded p-3 text-zinc-300 text-xs focus:border-violet-500 custom-scrollbar focus:outline-none"
-              />
-              <button
-                onClick={scanLore}
-                className="w-full py-2 bg-violet-950/20 hover:bg-violet-950/40 border border-violet-500/30 text-[10px] font-bold text-violet-400 rounded uppercase cursor-pointer"
-              >
-                Scan Lore Canon Consistency
-              </button>
-            </div>
-
-            <div className="md:col-span-2 bg-zinc-950 border border-zinc-900 rounded-xl p-4 flex flex-col justify-between">
-              <div>
-                <span className="text-[9px] text-zinc-500 uppercase block mb-3 border-b border-zinc-900 pb-1">Canon Infraction Warnings</span>
-                <div className="space-y-3">
-                  {scannedLore ? (
-                    loreInfractions.length > 0 ? (
-                      loreInfractions.map((warn, i) => (
-                        <div key={i} className="text-[9px] border border-red-500/20 bg-red-500/5 p-2 rounded">
-                          <div className="text-red-400 font-bold uppercase">{warn.category}</div>
-                          <div className="text-zinc-500 italic mt-0.5">Found: "{warn.word}"</div>
-                          <p className="text-zinc-400 mt-1 font-sans leading-tight">{warn.description}</p>
-                        </div>
-                      ))
-                    ) : (
-                      <div className="text-[10px] text-green-400 bg-green-500/5 border border-green-500/20 rounded p-2.5 flex items-center gap-1.5">
-                        <CheckCircle2 className="w-4 h-4 shrink-0" />
-                        <span>Lore consistency intact! 100% compliant.</span>
-                      </div>
-                    )
-                  ) : (
-                    <div className="text-[9px] text-zinc-600 text-center py-6">Awaiting canon validation scan...</div>
-                  )}
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* 8. ELECTION SIMULATOR SANDBOX */}
-      {projectId === 'election' && (
-        <div className="flex flex-col gap-4 font-mono text-xs">
-          <div className="flex justify-between items-center border-b border-zinc-900 pb-3">
-            <h4 className="text-sm font-bold text-white uppercase flex items-center gap-2">
-              <BarChart2 className="w-4 h-4 text-cyan-400" /> Electoral Demographic State Simulator
-            </h4>
-            <span className="text-[10px] text-cyan-400 bg-cyan-500/10 border border-cyan-500/20 px-2 py-0.5 rounded uppercase">
-              Agent-Based Matrix
-            </span>
-          </div>
-
-          <div className="grid md:grid-cols-5 gap-6">
-            <div className="md:col-span-2 space-y-4">
-              <div>
-                <span className="text-[9px] text-zinc-500 uppercase block mb-2">Campaign focal message</span>
-                <div className="flex flex-col gap-2">
-                  {[
-                    { id: 'economy', label: 'Pro-Growth Tax Adjustments' },
-                    { id: 'healthcare', label: 'Universal Health Care Credits' }
-                  ].map((focus) => (
+                <label className="text-xs font-mono text-zinc-400 block">Optimizer Algorithm</label>
+                <div className="grid grid-cols-3 gap-2">
+                  {(['sgd', 'momentum', 'adam'] as const).map((opt) => (
                     <button
-                      key={focus.id}
-                      onClick={() => setCampaignFocus(focus.id)}
-                      className={`p-2.5 border text-left rounded text-[10px] font-bold cursor-pointer uppercase transition-all ${
-                        campaignFocus === focus.id
-                          ? 'bg-cyan-500/25 border-cyan-500 text-cyan-400'
-                          : 'bg-zinc-900 border-zinc-800 text-zinc-500 hover:border-zinc-700 hover:text-zinc-300'
+                      key={opt}
+                      onClick={() => { setOptimizerType(opt); resetOptimizer(); }}
+                      className={`py-2 border text-xs font-mono rounded uppercase ${
+                        optimizerType === opt ? 'border-amber-500 bg-amber-500/10 text-amber-400 font-bold' : 'border-zinc-800 text-zinc-500'
                       }`}
                     >
-                      {focus.label}
+                      {opt}
                     </button>
                   ))}
                 </div>
               </div>
 
-              <button
-                onClick={runCampaign}
-                disabled={isCampaigning}
-                className="w-full py-2 bg-cyan-950/20 hover:bg-cyan-950/40 border border-cyan-500/30 text-[10px] font-bold text-cyan-400 rounded uppercase cursor-pointer"
-              >
-                {isCampaigning ? 'Running campaign simulations...' : 'Launch Campaign Drive'}
-              </button>
-            </div>
-
-            <div className="md:col-span-3 bg-black/90 border border-zinc-900 rounded-lg p-4 min-h-[160px] flex flex-col justify-between">
-              <span className="text-[8px] text-zinc-500 uppercase block mb-3">State Vote Margin Swings</span>
-              <div className="space-y-3 pt-1 flex-1">
-                {Object.entries(stateSwing).map(([state, val]) => {
-                  const percentVal = Math.min(Math.max(val, 40), 60);
-                  const delta = (val - 50).toFixed(1);
-                  const isLead = val >= 50;
-
-                  return (
-                    <div key={state} className="space-y-1 text-[10px]">
-                      <div className="flex justify-between font-bold">
-                        <span className="text-white">{state} Swing state</span>
-                        <span className={isLead ? 'text-cyan-400' : 'text-rose-400'}>
-                          {isLead ? `Lead +${delta}%` : `Deficit ${delta}%`} ({val}%)
-                        </span>
-                      </div>
-                      <div className="w-full bg-zinc-900 h-2 rounded-full overflow-hidden relative">
-                        <div 
-                          className={`h-full transition-all duration-500 ${isLead ? 'bg-cyan-500' : 'bg-rose-500'}`}
-                          style={{ width: `${percentVal}%` }}
-                        />
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-            {/* 9. BANK SYSTEM LEDGER SANDBOX WITH CHAOS CONTROLS */}
-      {projectId === 'bank' && (
-        <div className="flex flex-col gap-4 font-mono text-xs">
-          <div className="flex justify-between items-center border-b border-zinc-900 pb-3">
-            <h4 className="text-sm font-bold text-white uppercase flex items-center gap-2">
-              <DollarSign className="w-4 h-4 text-rose-400" /> Raft Ledger & Chaos Engineering Simulator
-            </h4>
-            <div className="flex items-center gap-2">
-              <span className="text-[10px] text-amber-400 bg-amber-500/10 border border-amber-500/20 px-2 py-0.5 rounded uppercase">
-                Quorum: 2/3 Nodes
-              </span>
-              <span className="text-[10px] text-rose-400 bg-rose-500/10 border border-rose-500/20 px-2 py-0.5 rounded uppercase">
-                Raft WAL Consensus
-              </span>
-            </div>
-          </div>
-
-          {/* Interactive Cluster Nodes Chaos Bar */}
-          <div className="p-3 bg-zinc-950/90 border border-zinc-800 rounded-lg space-y-2">
-            <div className="flex justify-between items-center">
-              <span className="text-[10px] text-zinc-400 font-bold uppercase tracking-wider">
-                ⚡ Interactive Cluster Node Health (Click to Inject Fault / Revive)
-              </span>
-              <span className="text-[9px] text-zinc-500">
-                {isElectionRunning ? '⚠️ ELECTION IN PROGRESS' : 'CLUSTER HEALTHY'}
-              </span>
-            </div>
-
-            <div className="grid grid-cols-3 gap-3">
-              {raftNodes.map((node) => {
-                const isLeader = node.role === 'Leader';
-                const isCrashed = node.role === 'Crashed';
-
-                return (
-                  <button
-                    key={node.id}
-                    onClick={() => toggleNodeCrash(node.id)}
-                    className={`p-2.5 rounded-lg border text-left transition-all cursor-pointer relative overflow-hidden ${
-                      isCrashed
-                        ? 'bg-red-950/20 border-red-500/40 text-red-400 hover:bg-red-950/40'
-                        : isLeader
-                        ? 'bg-amber-950/20 border-amber-500/60 text-amber-300 shadow-[0_0_12px_rgba(245,158,11,0.15)]'
-                        : 'bg-zinc-900/60 border-zinc-800 text-zinc-300 hover:border-zinc-700'
-                    }`}
-                  >
-                    <div className="flex items-center justify-between mb-1">
-                      <span className="font-bold text-xs">{node.id}</span>
-                      <span className={`text-[9px] px-1.5 py-0.5 rounded font-bold uppercase ${
-                        isCrashed
-                          ? 'bg-red-500/20 text-red-400'
-                          : isLeader
-                          ? 'bg-amber-500/20 text-amber-300 animate-pulse'
-                          : 'bg-green-500/10 text-green-400'
-                      }`}>
-                        {node.role}
-                      </span>
-                    </div>
-
-                    <div className="text-[9px] text-zinc-500 flex justify-between">
-                      <span>Term: {node.term}</span>
-                      <span>{isCrashed ? 'OFFLINE' : `${node.latency}ms ping`}</span>
-                    </div>
-
-                    <div className="mt-2 text-[8px] uppercase tracking-wider text-center py-0.5 rounded bg-black/40 border border-white/5">
-                      {isCrashed ? '🟢 Click to Revive' : '💥 Click to Kill Node'}
-                    </div>
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-
-          <div className="grid md:grid-cols-5 gap-6">
-            <div className="md:col-span-2 space-y-4">
-              {/* Balances Display */}
-              <div className="grid grid-cols-2 gap-2 bg-zinc-900/40 border border-zinc-850 p-2.5 rounded-lg text-center">
-                <div className="p-2 bg-black/60 rounded border border-zinc-800">
-                  <span className="text-[9px] text-zinc-500 uppercase block">Account_A</span>
-                  <span className="text-sm font-bold text-emerald-400">${balanceA}</span>
+              <div className="space-y-2">
+                <div className="flex justify-between text-xs font-mono">
+                  <span className="text-zinc-500">Learning Rate (alpha)</span>
+                  <span className="text-amber-400 font-bold">{learningRate}</span>
                 </div>
-                <div className="p-2 bg-black/60 rounded border border-zinc-800">
-                  <span className="text-[9px] text-zinc-500 uppercase block">Account_B</span>
-                  <span className="text-sm font-bold text-cyan-400">${balanceB}</span>
-                </div>
-              </div>
-
-              <div className="space-y-1.5">
-                <span className="text-[9px] text-zinc-500 uppercase block">Transfer Amount</span>
-                <input 
-                  type="number" 
-                  value={transAmt}
-                  onChange={(e) => setTransAmt(Math.max(Number(e.target.value), 1))}
-                  className="w-full bg-black border border-zinc-800 rounded p-2 text-zinc-300 text-xs focus:border-rose-500 focus:outline-none"
+                <input
+                  type="range" min="0.01" max="0.3" step="0.01" value={learningRate}
+                  onChange={(e) => setLearningRate(parseFloat(e.target.value))}
+                  className="w-full accent-amber-500"
                 />
               </div>
 
-              <button
-                onClick={triggerTransaction}
-                disabled={isTransacting || isElectionRunning}
-                className="w-full py-2 bg-rose-950/30 hover:bg-rose-950/50 border border-rose-500/40 text-[10px] font-bold text-rose-300 rounded uppercase cursor-pointer disabled:opacity-40 transition-all"
-              >
-                {isTransacting ? 'Replicating WAL Consensus...' : 'Execute Transaction ($' + transAmt + ')'}
-              </button>
+              <div className="flex gap-3">
+                <button
+                  onClick={stepOptimizer}
+                  className="flex-1 py-2.5 bg-amber-500/10 border border-amber-500/30 text-amber-400 font-mono font-bold text-xs uppercase rounded flex items-center justify-center gap-2 cursor-pointer"
+                >
+                  <Play className="w-4 h-4" /> Step Iteration
+                </button>
+                <button
+                  onClick={resetOptimizer}
+                  className="p-2.5 border border-zinc-800 text-zinc-400 hover:text-white rounded cursor-pointer"
+                >
+                  <RotateCcw className="w-4 h-4" />
+                </button>
+              </div>
             </div>
 
-            <div className="md:col-span-3 bg-black/95 border border-zinc-900 rounded-lg p-4 min-h-[190px] flex flex-col justify-between">
-              <div className="space-y-2">
-                <div className="flex justify-between items-center border-b border-zinc-900 pb-1">
-                  <span className="text-[8px] text-zinc-500 uppercase block">Consensus WAL Audit Log Stream</span>
-                  <button 
-                    onClick={() => setLedgerLogs(['[INIT] Logs cleared by operator.'])}
-                    className="text-[8px] text-zinc-600 hover:text-zinc-400 uppercase"
-                  >
-                    Clear Logs
-                  </button>
-                </div>
-                <div className="space-y-1 max-h-[140px] overflow-y-auto custom-scrollbar text-[9px] leading-relaxed">
-                  {ledgerLogs.map((log, i) => {
-                    let color = 'text-zinc-400';
-                    if (log.startsWith('[INIT]')) color = 'text-white font-bold';
-                    else if (log.startsWith('[CHAOS-KILL]')) color = 'text-red-400 font-bold';
-                    else if (log.startsWith('[CHAOS]')) color = 'text-emerald-400';
-                    else if (log.startsWith('[ELECTION]')) color = 'text-amber-400';
-                    else if (log.startsWith('[SUCCESS]')) color = 'text-green-400 font-bold';
-                    else if (log.startsWith('[ABORTED]') || log.startsWith('[CRITICAL]')) color = 'text-rose-400 font-semibold';
-                    return <div key={i} className={color}>{log}</div>;
-                  })}
-                </div>
-              </div>
+            <div className="border border-zinc-900 bg-black/90 p-4 rounded-xl font-mono text-xs flex flex-col justify-center items-center text-center">
+              <div className="text-[10px] text-zinc-500 uppercase tracking-widest mb-1">Iteration Step {gdStep}</div>
+              <div className="text-3xl font-black text-amber-400 mb-1">Loss: {currentLoss}</div>
+              <div className="text-zinc-500 text-[10px]">Coordinates: ({currentCoord[0].toFixed(3)}, {currentCoord[1].toFixed(3)})</div>
             </div>
           </div>
         </div>
       )}
-
-</div>
+    </div>
   );
 }

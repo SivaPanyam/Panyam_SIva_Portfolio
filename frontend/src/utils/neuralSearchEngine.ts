@@ -27,109 +27,90 @@ export const KNOWLEDGE_INDEX: KnowledgeDocument[] = [
   {
     id: 'bio-overview',
     category: 'biography',
-    title: 'Biography & Architectural Identity',
-    tags: ['who', 'about', 'bio', 'profile', 'background', 'intro', 'siva', 'panyam', 'engineer', 'architect'],
-    content: 'Siva Panyam is a Full-Stack & AI Systems Engineer based in Bangalore, Karnataka, India. He specializes in bridging sophisticated generative AI algorithms with high-performance, real-time web architectures. Core competencies include distributed systems, WebGL 3D graphics, React 19, multi-agent frameworks, and local neural network quantization.',
-    directAnswer: 'I am **JARVIS**, the neural interface for **Siva Panyam**.\n\nSiva is a Full-Stack & AI Systems Engineer based in Bangalore, India. He builds high-performance distributed web applications, interactive 3D spatial user interfaces, and resilient multi-agent AI systems.',
+    title: 'Biography & Engineering Identity',
+    tags: ['who', 'about', 'bio', 'profile', 'background', 'intro', 'siva', 'panyam', 'engineer', 'architect', 'ai', 'ml', 'fde'],
+    content: 'Siva Panyam is an AI Engineer, ML Systems Engineer, and Forward Deployed Engineer based in Bangalore, Karnataka, India. He builds production-grade tool-calling agent harnesses, multimodal voice intelligence systems, offline RAG pipelines, and resilient distributed architectures.',
+    directAnswer: 'I am the neural interface for **Siva Panyam**.\n\nSiva is an **AI Engineer / ML Engineer / Forward Deployed Engineer** based in Bangalore, India. He specializes in reliable tool-using agents (AgentBench-Lite), multimodal Indic voice systems (VoiceKisan), local-first vector memory (Recall-OS, Local-RAG), and mission-critical production systems.',
     vfsReference: 'VFS:~/bio.md'
   },
   {
     id: 'skills-overview',
     category: 'skills',
     title: 'Verified Technical Stack & Telemetry',
-    tags: ['skill', 'skills', 'stack', 'tech', 'technologies', 'languages', 'frameworks', 'tools', 'frontend', 'backend', 'devops', 'databases'],
-    content: 'Frontend: React 19, TypeScript, Three.js, WebGL, Tailwind CSS v4, Framer Motion, Zustand, Vite. Backend: Node.js, Express, Go, Rust fundamentals, WebSockets, Raft WAL consensus. AI and Vector: Agentic RAG, Milvus, Pinecone, CrewAI swarms, TensorFlow Lite INT8 quantization. Infrastructure: Docker, GitHub Actions CI/CD, Cloud Run, InfluxDB, Redis, SQLite.',
-    directAnswer: "Siva's verified technical telemetry:\n\n• **Frontend Architecture**: React 19, TypeScript, Three.js / WebGL, Tailwind CSS v4, Framer Motion, Zustand\n• **Backend & Distributed**: Node.js, Express, Go/Rust fundamentals, WebSocket, Raft consensus WAL\n• **AI & Vector Systems**: Agentic RAG, Milvus & Pinecone vector search, CrewAI multi-agent swarms, INT8 TFLite quantization\n• **Infra & Storage**: Docker, GitHub Actions, Cloud Run, InfluxDB, Redis, SQLite",
+    tags: ['skill', 'skills', 'stack', 'tech', 'technologies', 'languages', 'frameworks', 'tools', 'frontend', 'backend', 'ai', 'ml', 'fde'],
+    content: 'AI/ML: Python, PyTorch, FastEmbed, Ollama, ChromaDB, FAISS, SARIMA, NumPy vector algebra, Gnani STT, Clean Architecture. Backend: FastAPI, Django, SQLite FTS5, PostgreSQL, Redis, Docker, WebSockets. Frontend: React 19, TypeScript, Three.js WebGL, Tailwind CSS v4, Framer Motion.',
+    directAnswer: "Siva's verified technical capabilities:\n\n• **AI/ML & Agent Systems**: AgentBench-Lite fault injection, Local-RAG, FastEmbed, Ollama (Llama 3.2), ChromaDB, FAISS, SARIMA forecasting, NumPy linear algebra\n• **Speech & Multimodal**: Gnani Prisma STT, Sarvam AI / Evon 30B, ElevenLabs Indic-TTS\n• **Backend & Distributed Systems**: FastAPI, Django, SQLite FTS5, PostgreSQL, Redis, Clean Architecture, Git DAG incident simulation\n• **Frontend & Visualizations**: React 19, TypeScript, Three.js WebGL, Tailwind CSS v4, Framer Motion, Plotly 3D",
     vfsReference: 'VFS:~/skills/telemetry.json'
   },
   {
-    id: 'project-neuralos',
+    id: 'project-agentbench',
     category: 'projects',
-    title: 'NeuralOS Desktop & Spatial Terminal',
-    tags: ['neuralos', 'desktop', 'terminal', 'shell', 'os', 'threejs', 'quake', 'webgl', 'matrix'],
-    content: 'NeuralOS is a browser-native developer console with an interactive virtual UNIX shell (VFS), WebGL particle lattice reacting to cursor physics, developer HUD with real-time framerate/memory telemetry, and a zero-API client-side neural assistant.',
-    directAnswer: '**NeuralOS (Developer Console)**: Browser-native operating environment built with React 19, Three.js, and Tailwind CSS v4. Features a Quake-style drop-down terminal with virtual UNIX filesystem navigation, real-time WebGL particle physics, and a zero-API deterministic neural search core.',
-    vfsReference: 'VFS:~/projects/neuralos.md'
+    title: 'AgentBench-Lite: Agent Reliability Test Harness',
+    tags: ['agentbench', 'agent', 'benchmark', 'reliability', 'recovery', 'fault', 'loop', 'tool', 'pytest', 'python'],
+    content: 'AgentBench-Lite evaluates LLM tool-calling failure modes, infinite loops, and recovery strategies across multi-step execution graphs. Injects runtime parameter faults and enforces bounded self-correction.',
+    directAnswer: '**AgentBench-Lite** (AI Agent Reliability & Bounded Recovery):\n\n• **Repository**: [github.com/SivaPanyam/AgentBench-Lite](https://github.com/SivaPanyam/AgentBench-Lite)\n• **Core Impact**: Benchmarks baseline vs recovery agent strategies, proving a +42.5% task completion recovery delta under synthetic tool runtime faults.\n• **Tech Stack**: Python 3.11, Dataclasses, Pytest, Structured JSON Telemetry.',
+    vfsReference: 'VFS:~/projects/agentbench.md'
   },
   {
-    id: 'project-fanversi',
+    id: 'project-voicekisan',
     category: 'projects',
-    title: 'FanVersi AI Multi-Agent Lore Engine',
-    tags: ['fanversi', 'crewai', 'milvus', 'agent', 'agents', 'nlp', 'lore', 'vector', 'co-authoring'],
-    content: 'FanVersi AI is a multi-agent co-authoring engine featuring CrewAI orchestrations and semantic vector lookups with Milvus. Enforces strict world-building continuity and character relationships dynamically during collaborative story generation.',
-    directAnswer: '**FanVersi AI (Semantic Lore Engine)**: Creative NLP co-authoring platform utilizing CrewAI multi-agent swarms and Milvus vector search. Maintains story continuity and checks relationship graphs dynamically across 50,000+ words.',
-    vfsReference: 'VFS:~/projects/fanversi.md'
+    title: 'VoiceKisan: Multimodal Indic Agri Voice Agent',
+    tags: ['voicekisan', 'voice', 'kisan', 'stt', 'indic', 'telugu', 'mandi', 'apmc', 'sarima', 'fastapi', 'gnani'],
+    content: 'VoiceKisan is a multimodal voice-first agricultural platform for Indian farmers, converting spoken Telugu/Hindi into Mandi wholesale commodity prices and 7-day predictive SARIMA forecasts.',
+    directAnswer: '**VoiceKisan** (Multimodal Indic Voice Agent for Agri-Intelligence):\n\n• **Repository**: [github.com/SivaPanyam/VoiceKisan](https://github.com/SivaPanyam/VoiceKisan)\n• **Core Impact**: Delivers sub-1.1s perceived latency for regional voice queries using Gnani Prisma STT, Sarvam AI / Evon 30B LLM, and live APMC Mandi price caching.\n• **Tech Stack**: Python, FastAPI, Gnani STT, SARIMA, Redis, Docker.',
+    vfsReference: 'VFS:~/projects/voicekisan.md'
   },
   {
-    id: 'project-ecotrack',
+    id: 'project-recallos',
     category: 'projects',
-    title: 'EcoTrack-AI Edge Telemetry Pipeline',
-    tags: ['ecotrack', 'iot', 'edge', 'tflite', 'quantization', 'int8', 'carbon', 'sensor', 'mqtt', 'influxdb'],
-    content: 'EcoTrack-AI is an edge IoT telemetry pipeline executing INT8 quantized TensorFlow Lite models directly on embedded edge nodes. Achieved 85% CPU power efficiency reduction for real-time industrial carbon emission audits.',
-    directAnswer: '**EcoTrack-AI (Edge IoT Pipeline)**: Industrial telemetry framework deploying INT8 quantized TensorFlow Lite models to edge micro-controllers, achieving an 85% reduction in CPU power draw for live carbon emission audits.',
-    vfsReference: 'VFS:~/projects/ecotrack.md'
+    title: 'Recall-OS: Local-First Engineering Memory Graph',
+    tags: ['recallos', 'recall', 'memory', 'sqlite', 'fts5', 'faiss', 'local', 'privacy', 'graph', 'fastapi'],
+    content: 'Recall-OS is a zero-cloud engineering decision graph and knowledge engine that captures technical bugs, resolutions, and system architectures using SQLite FTS5 and local FAISS vector embeddings.',
+    directAnswer: '**Recall-OS** (Local-First Engineering Decision Engine):\n\n• **Repository**: [github.com/SivaPanyam/Recall-OS](https://github.com/SivaPanyam/Recall-OS)\n• **Core Impact**: 100% private, zero-cloud execution with <85MB idle RAM footprint and 4.2ms hybrid search (BM25 lexical + dense cosine similarity).\n• **Tech Stack**: Python, FastAPI, SQLite FTS5, ONNX Runtime, FAISS, React GUI.',
+    vfsReference: 'VFS:~/projects/recallos.md'
   },
   {
-    id: 'project-raft-bank',
+    id: 'project-localrag',
     category: 'projects',
-    title: 'Bank Distributed Ledger Sandbox',
-    tags: ['bank', 'ledger', 'raft', 'consensus', 'wal', 'rust', 'wasm', 'distributed', 'split', 'withdrawal'],
-    content: 'Bank Distributed Ledger Sandbox is a double-entry transaction auditor in Rust-WASM modeling split withdrawals and network partitions securely using Raft Leader Write-Ahead Logging (WAL) replication.',
-    directAnswer: '**Bank Distributed Ledger Sandbox**: Double-entry transaction engine authored in Rust-WASM. Accurately simulates distributed network partitions and split withdrawals using Raft Leader Write-Ahead Logging (WAL) state replication.',
-    vfsReference: 'VFS:~/projects/raft-bank.md'
+    title: 'Local-RAG & Mini Semantic Search',
+    tags: ['localrag', 'rag', 'offline', 'ollama', 'fastembed', 'chroma', 'numpy', 'cosine', 'vector', 'search'],
+    content: 'Local-RAG is a zero-API air-gapped retrieval pipeline paired with Mini-Semantic-Search, a pure NumPy vector space search engine implementing cosine similarity and dot products from first principles.',
+    directAnswer: '**Local-RAG & Mini Semantic Search** (Offline RAG & NumPy Cosine Engine):\n\n• **Repository**: [github.com/SivaPanyam/Local-RAG](https://github.com/SivaPanyam/Local-RAG)\n• **Core Impact**: Air-gapped local document QA running Ollama Llama 3.2 3B and FastEmbed with zero API token costs, backed by first-principles NumPy linear algebra.\n• **Tech Stack**: Python, NumPy, FastEmbed (BAAI BGE-small), Ollama, ChromaDB.',
+    vfsReference: 'VFS:~/projects/localrag.md'
   },
   {
-    id: 'experience-timeline',
-    category: 'experience',
-    title: 'Career Milestones & Engineering Leadership',
-    tags: ['experience', 'career', 'job', 'work', 'history', 'companies', 'timeline', 'roles', 'synthesis', 'datasync'],
-    content: 'Lead AI Architect at AI Synthesis Labs (2023–Present): Architected scalable RAG retrieval pipelines, reduced hallucination rates by 42%, and led 6 engineers. Senior Full Stack Engineer at DataSync Corp (2021–2023): Scaled WebSocket microservices to 2M+ daily events. R&D Associate at Bangalore Engineering Sandbox (2019–2021): Edge AI quantization and distributed consensus.',
-    directAnswer: "Siva's verified engineering leadership timeline:\n\n• **AI Synthesis Labs** (Lead AI Architect, 2023–Present): Architected enterprise RAG retrieval systems, cut hallucination by 42%, and led team of 6 engineers.\n• **DataSync Corp** (Senior Full Stack Engineer, 2021–2023): Designed distributed WebSocket microservices handling 2M+ daily events.\n• **Bangalore Engineering Sandbox** (R&D Associate, 2019–2021): Researched INT8 quantization & distributed consensus protocols.",
-    vfsReference: 'VFS:~/experience/timeline.json'
+    id: 'project-aegis',
+    category: 'projects',
+    title: 'Aegis-AI: Clean Architecture AI OS',
+    tags: ['aegis', 'architecture', 'clean', 'workspace', 'gemini', 'multiagent', 'react', 'fastapi'],
+    content: 'Aegis-AI is a developer workspace operating system adhering to strict Uncle Bob Clean Architecture, isolating business entities from external LLM SDKs and UI frameworks.',
+    directAnswer: '**Aegis-AI** (Clean Architecture AI OS & Multi-Agent Workspace):\n\n• **Repository**: [github.com/SivaPanyam/Aegis-AI](https://github.com/SivaPanyam/Aegis-AI)\n• **Tech Stack**: React 19, TypeScript, FastAPI, SQLAlchemy, Google GenAI SDK.',
+    vfsReference: 'VFS:~/projects/aegis.md'
+  },
+  {
+    id: 'project-gitops',
+    category: 'projects',
+    title: 'GitOps-WarRoom: Production Incident Simulator',
+    tags: ['gitops', 'incident', 'fde', 'forward', 'deployed', 'git', 'reflog', 'disaster', 'simulation'],
+    content: 'GitOps-WarRoom is an incident response simulator designed for Forward Deployed Engineers to diagnose production deployment outages, broken merges, and git reflog recoveries.',
+    directAnswer: '**GitOps-WarRoom** (Forward Deployed Engineer Incident Simulator):\n\n• **Repository**: [github.com/SivaPanyam/GitOps-WarRoom](https://github.com/SivaPanyam/GitOps-WarRoom)\n• **Core Impact**: Interactive Git DAG engine and terminal training engineers on production reflog recovery and conflict resolution.\n• **Tech Stack**: TypeScript, React, Canvas Graph Renderer, Vitest.',
+    vfsReference: 'VFS:~/projects/gitops.md'
   },
   {
     id: 'contact-hiring',
     category: 'contact',
-    title: 'Recruiter Handshake & Availability',
+    title: 'Engineering Handshake & Availability',
     tags: ['hire', 'hiring', 'available', 'job', 'interview', 'contact', 'email', 'linkedin', 'github', 'reach', 'salary', 'remote'],
-    content: 'Candidate Status: Available. Roles: Full-Stack Engineer, Frontend Architect, AI Systems Engineer. Remote worldwide or Hybrid in Bangalore, India. Direct email: contact@sivapanyam.dev. LinkedIn: linkedin.com/in/sivapanyam. GitHub: github.com/sivapanyam.',
-    directAnswer: "**Candidate Status: AVAILABLE & EXPLORING OPPORTUNITIES**\n\n• **Target Roles**: Full-Stack Engineer / Frontend Architect / AI Systems Engineer\n• **Arrangement**: Remote (Worldwide) or Hybrid (Bangalore, India)\n• **Direct Email**: [contact@sivapanyam.dev](mailto:contact@sivapanyam.dev)\n• **GitHub**: [github.com/SivaPanyam](https://github.com/SivaPanyam)\n• **LinkedIn**: [linkedin.com/in/sivapanyam](https://linkedin.com/in/sivapanyam)",
+    content: 'Candidate Status: Available. Target Roles: AI Engineer, Machine Learning Engineer, Forward Deployed Engineer (FDE). Location: Bangalore, India (Hybrid) or Remote Worldwide. Direct email: contact@sivapanyam.dev.',
+    directAnswer: "**Candidate Status: AVAILABLE & EXPLORING OPPORTUNITIES**\n\n• **Target Roles**: AI Engineer / ML Engineer / Forward Deployed Engineer (FDE)\n• **Location**: Bangalore, Karnataka, India (Hybrid) or Remote Worldwide\n• **Direct Email**: [contact@sivapanyam.dev](mailto:contact@sivapanyam.dev)\n• **GitHub**: [github.com/SivaPanyam](https://github.com/SivaPanyam)\n• **LinkedIn**: [linkedin.com/in/sivapanyam](https://linkedin.com/in/sivapanyam)",
     vfsReference: 'VFS:~/contact.sh'
-  },
-  {
-    id: 'resume-payload',
-    category: 'biography',
-    title: 'Resume & Curriculum Vitae Payload',
-    tags: ['resume', 'cv', 'pdf', 'download', 'curriculum', 'vitae', 'credentials'],
-    content: 'Official verified CV payload is available for direct download. Contains full academic credentials, verified patent applications, published research, and complete corporate engineering references.',
-    directAnswer: "You can download Siva's verified CV payload directly from the header navigation or at [sivapanyam.dev/assets/cv_payload.pdf](https://sivapanyam.dev/assets/cv_payload.pdf).\n\nWould you like an overview of his recent projects or tech stack?",
-    vfsReference: 'VFS:~/resume.pdf'
   }
 ];
 
-/**
- * Tokenizes text and strips common stop words for high-precision retrieval.
- */
-function tokenize(text: string): string[] {
-  const stopWords = new Set([
-    'a', 'an', 'the', 'in', 'on', 'at', 'for', 'to', 'of', 'and', 'or', 'is', 'are', 'was', 'were',
-    'what', 'whats', 'who', 'whos', 'how', 'tell', 'me', 'can', 'you', 'give', 'does', 'he', 'his', 'i', 'do'
-  ]);
-
-  return text
-    .toLowerCase()
-    .replace(/[^a-z0-9\s-_]/g, ' ')
-    .split(/\s+/)
-    .filter(token => token.length > 1 && !stopWords.has(token));
-}
-
-/**
- * Executes a deterministic BM25-inspired term frequency and tag boost search.
- * Computes scores based on title, tag, and content occurrences.
- */
-export function queryKnowledgeIndex(rawQuery: string): RetrievalResult {
-  const startTime = performance.now();
-  const queryTokens = tokenize(rawQuery);
+export function queryKnowledgeIndex(query: string): RetrievalResult {
+  const t0 = performance.now();
+  const clean = query.toLowerCase().trim();
+  const queryTokens = clean.split(/\s+/).filter(t => t.length > 1);
 
   if (queryTokens.length === 0) {
     const defaultDoc = KNOWLEDGE_INDEX[0];
@@ -137,102 +118,54 @@ export function queryKnowledgeIndex(rawQuery: string): RetrievalResult {
       doc: defaultDoc,
       score: 1.0,
       matchedTerms: ['bio'],
-      intent: 'BIOGRAPHY_RETRIEVAL',
-      latencyMs: Math.round(performance.now() - startTime + 1),
+      intent: 'general_identity',
+      latencyMs: Number((performance.now() - t0).toFixed(2)),
       vfsReference: defaultDoc.vfsReference
     };
   }
 
   let bestDoc = KNOWLEDGE_INDEX[0];
-  let maxScore = -1;
-  let bestMatches: string[] = [];
+  let highestScore = -1;
+  let bestMatchedTerms: string[] = [];
 
   for (const doc of KNOWLEDGE_INDEX) {
     let score = 0;
-    const matches: string[] = [];
-
-    const titleTokens = tokenize(doc.title);
-    const contentTokens = tokenize(doc.content);
-    const docTags = new Set(doc.tags.map(t => t.toLowerCase()));
+    const matched: string[] = [];
+    const textCorpus = (doc.title + ' ' + doc.content + ' ' + doc.tags.join(' ')).toLowerCase();
 
     for (const token of queryTokens) {
-      // Direct tag match: highest relevance boost
-      if (docTags.has(token)) {
-        score += 8.0;
-        matches.push(token);
-        continue;
-      }
-
-      // Substring match in tags (e.g. "project" matches "projects")
-      for (const tag of docTags) {
-        if (tag.includes(token) || token.includes(tag)) {
-          score += 4.5;
-          matches.push(token);
-          break;
-        }
-      }
-
-      // Title occurrence
-      if (titleTokens.includes(token)) {
-        score += 3.0;
-        matches.push(token);
-      }
-
-      // Content occurrence
-      const contentOccurrences = contentTokens.filter(t => t === token).length;
-      if (contentOccurrences > 0) {
-        score += Math.min(contentOccurrences * 1.0, 3.0);
-        matches.push(token);
+      if (doc.tags.some(tag => tag.toLowerCase() === token)) {
+        score += 3.5;
+        matched.push(token);
+      } else if (doc.title.toLowerCase().includes(token)) {
+        score += 2.5;
+        matched.push(token);
+      } else if (textCorpus.includes(token)) {
+        score += 1.0;
+        matched.push(token);
       }
     }
 
-    if (score > maxScore) {
-      maxScore = score;
+    if (score > highestScore) {
+      highestScore = score;
       bestDoc = doc;
-      bestMatches = Array.from(new Set(matches));
+      bestMatchedTerms = matched;
     }
   }
 
-  const elapsed = Math.round(performance.now() - startTime + 2);
+  const normalizedScore = highestScore > 0 ? Math.min(highestScore / (queryTokens.length * 3.5), 1.0) : 0.25;
 
-  // If score is 0, fallback to general overview
-  if (maxScore <= 0) {
-    const fallbackDoc: KnowledgeDocument = {
-      id: 'general-fallback',
-      category: 'philosophy',
-      title: 'General Portfolio Query Relay',
-      tags: ['fallback'],
-      content: 'General engineering portfolio inquiry.',
-      directAnswer: `I parsed your inquiry: "${rawQuery}".\n\nWhile my local neural index didn't find an exact parameter match, Siva specializes in:\n• **Full-Stack Web Architectures**: React 19, TypeScript, Three.js WebGL\n• **Applied AI Systems**: Multi-agent swarms, RAG semantic search, quantized edge models\n• **Distributed Systems**: Microservices, Raft consensus WAL\n\nAsk about his specific projects (NeuralOS, FanVersi AI, EcoTrack), or contact him directly at **contact@sivapanyam.dev**!`,
-      vfsReference: 'VFS:~/bio.md'
-    };
-
-    return {
-      doc: fallbackDoc,
-      score: 0.1,
-      matchedTerms: ['general'],
-      intent: 'GENERAL_KNOWLEDGE_FALLBACK',
-      latencyMs: elapsed,
-      vfsReference: fallbackDoc.vfsReference
-    };
-  }
-
-  const intentMap: Record<string, string> = {
-    biography: 'BIOGRAPHY_RETRIEVAL',
-    skills: 'SKILLS_INVENTORY_QUERY',
-    projects: 'PROJECTS_INSPECTION',
-    experience: 'CAREER_TIMELINE_TRACE',
-    contact: 'RECRUITER_AVAILABILITY_AUDIT',
-    architecture: 'SYSTEMS_ARCHITECTURE_QUERY',
-    philosophy: 'ENGINEERING_PHILOSOPHY_QUERY'
-  };
+  let intent = 'project_technical_telemetry';
+  if (['who', 'about', 'bio', 'siva'].some(k => clean.includes(k))) intent = 'identity_biography';
+  else if (['skill', 'stack', 'tech'].some(k => clean.includes(k))) intent = 'skill_matrix_telemetry';
+  else if (['hire', 'contact', 'email', 'job'].some(k => clean.includes(k))) intent = 'recruitment_handshake';
 
   return {
     doc: bestDoc,
-    score: Number((maxScore / (queryTokens.length * 8.0)).toFixed(2)),
-    matchedTerms: bestMatches,
-    intent: intentMap[bestDoc.category] || 'DYNAMIC_INDEX_LOOKUP',
-    latencyMs: elapsed,
+    score: Number(normalizedScore.toFixed(3)),
+    matchedTerms: bestMatchedTerms,
+    intent,
+    latencyMs: Number((performance.now() - t0).toFixed(2)),
     vfsReference: bestDoc.vfsReference
   };
 }

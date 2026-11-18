@@ -158,7 +158,7 @@ ${res.doc.directAnswer}
         return `cd: not a directory: ${targetDir}`;
       }
 
-      ctx.setCurrentPath(target.path);
+      ctx.setCurrentPath(target.fullPath);
       return '';
     }
   },
@@ -321,7 +321,7 @@ ${featured}
 EXPERIMENTAL LAB:
 ${lab}
 
-[TIP] Type "cat projects/neuralos.md" or "inspect tuneaura" to query deep telemetry!
+[TIP] Type "cat projects/agentbench.md" or "inspect agentbench" to query deep telemetry!
 `;
     }
   },
@@ -333,7 +333,7 @@ ${lab}
     usage: 'inspect <project_id>',
     execute: async (args) => {
       if (args.length === 0) {
-        return `usage: inspect <project_id> (e.g. "inspect tuneaura" or "inspect fanversi")`;
+        return `usage: inspect <project_id> (e.g. "inspect agentbench" or "inspect voicekisan")`;
       }
       const id = args[0].toLowerCase();
       const project = portfolioProjects.find(p => p.id.toLowerCase() === id || p.title.toLowerCase().includes(id));

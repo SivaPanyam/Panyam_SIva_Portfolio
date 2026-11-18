@@ -95,10 +95,10 @@ export default function ProjectCard({ project, onClick }: CardProps) {
   
   const getLabBadgeText = (id: string) => {
     switch (id) {
-      case 'ecotrack': return '⚡ PROTOTYPE BUILD // 48H HACKATHON';
-      case 'fanversi': return '🧪 R&D RESEARCH // CANON SOLVER';
-      case 'election': return '🎲 GAME SIMULATION // MATRIX MATH';
-      case 'bank': return '💼 CONCURRENCY LEDGER // REPLICA CORE';
+      case 'aegis': return '⚡ CLEAN ARCHITECTURE // MULTI-AGENT OS';
+      case 'agricast': return '📊 TIME-SERIES ML // 500+ MANDIS';
+      case 'gitops': return '🛡️ FDE WAR ROOM // PRODUCTION INCIDENT';
+      case 'gradient': return '📐 LOSS SURFACE // OPTIMIZER LAB';
       default: return '🧪 EXPERIMENTAL BUILD';
     }
   };
