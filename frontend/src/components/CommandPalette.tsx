@@ -180,10 +180,10 @@ export default function CommandPalette({ onSelectProject }: PaletteProps) {
     {
       id: 'cmd-resume',
       title: 'Link: Open Verified Resume (PDF)',
-      subtitle: 'Fetch secure resume payload document in a new tab.',
+      subtitle: 'Fetch official verified resume payload in a new tab.',
       category: 'Commands',
       action: () => {
-        window.open('https://sivapanyam.dev/assets/cv_payload.pdf', '_blank');
+        window.open('/Panyam_Siva_Resume.pdf', '_blank');
         toggleCommandPalette();
       }
     },

@@ -283,17 +283,32 @@ Core philosophy: "Build simple code structures to solve extremely complex data-f
     description: 'Fetches the structured CV profile including education and milestones.',
     execute: async () => {
       return `
-CURRICULUM VITAE // SIVA PANYAM // AI Engineer & Full Stack Architect
+CURRICULUM VITAE // SIVA PANYAM // AI Engineer & Software Trainee Engineer
 ===================================================
-Based in Bangalore, India | contact@sivapanyam.dev
+Location: Bengaluru, Karnataka | Contact: sivapanyam1@gmail.com
+Phone: +91 9742999635 | GitHub: github.com/SivaPanyam | LinkedIn: linkedin.com/in/panyam-siva
+
+SUMMARY:
+Penultimate-year B.E. Computer Science and Engineering student (graduating 2027) 
+experienced in architecting and shipping production-grade Python AI systems, hybrid RAG 
+pipelines, and multi-agent workflows on Google Cloud.
+
+CURRENT ROLE:
+* Software Trainee Engineer @ XCEL Corp (Sep 2026 – Present, Bengaluru)
+  - Enterprise REST API integrations, strict JSON schemas, edge-case failure testing.
+  - Root-cause debugging for production defects and automated regression testing.
+
+INTERNSHIP:
+* AI & Machine Learning Intern @ Edunet Foundation – AICTE & IBM SkillsBuild (Jan 2026 – Feb 2026)
+  - Shipped Study Buddy using React, Vite, Supabase PostgreSQL, and Gemini APIs.
+  - Benchmarked prompt strategies, structured model outputs, and academic data pipelines.
 
 EDUCATION:
-* Bachelor of Technology (B.Tech) in Computer Science (2020 - 2024)
-  - Cumulative Grade / CGPA: 9.24 / 10.0
-  - Coursework: Distributed Systems, Machine Learning, Database WAL Tuning
+* B.E. Computer Science and Engineering – T. John Institute of Technology, Bengaluru
+  - 2023 – 2027 (Expected) | CGPA: 8.6 / 10.0
 
 Download official verified resume payload:
-  URL: https://sivapanyam.dev/assets/cv_payload.pdf
+  URL: /Panyam_Siva_Resume.pdf
 `;
     }
   },
@@ -445,21 +460,23 @@ ACCESS GRANTED: ROOT OVERRIDE GRANTED TO RECRUITER / TECH LEAD.
   ======================================================
   🎉 CONGRATULATIONS! YOU HAVE INITIATED SIVA'S RECRUITMENT PIPELINE!
   ======================================================
-  Candidate: Siva Panyam (B.Tech CS, CGPA: 9.24)
-  Target Roles: AI Engineer | ML Engineer | Forward Deployed Engineer
+  Candidate: Siva Panyam (B.E. Computer Science, CGPA: 8.6/10)
+  Target Roles: AI Engineer | ML Systems Engineer | Forward Deployed Engineer
   Notice Period: Immediate / Flexible
-  Location: Bangalore, India or Remote Worldwide
-  Direct Transmissions: sivapanyam1@gmail.com
+  Location: Bengaluru, India or Remote Worldwide
+  Direct Transmissions: sivapanyam1@gmail.com | +91 9742999635
   Key Strengths:
-    • Bounded Self-Correcting Agent Architectures (AgentBench-Lite: +42.5% recovery)
-    • Multimodal Indic Voice & Agri Intelligence (VoiceKisan: <1.1s latency)
-    • Zero-Cloud Vector Retrieval & Cosine Engines (Local-RAG, Recall-OS)
-    • Forward Deployed Disaster Simulation & Clean Architecture (GitOps-WarRoom, Aegis-AI)
+    • Bounded Self-Correcting Agent Architectures (AgentBench Lite)
+    • Mastra Sentinel (Autonomous AI SRE Platform, 5 specialized agents)
+    • Multi-Agent Assistant Team (Google ADK, MCP tools, AlloyDB, Cloud Run)
+    • Study Buddy (Google Gemini AI, React 19, Supabase PostgreSQL)
+    • Enterprise REST APIs & Microservices (XCEL Corp)
 
   ACTION ITEMS:
-  1. Dispatch invitation to: sivapanyam1@gmail.com
-  2. Connect on LinkedIn: https://www.linkedin.com/in/siva-panyam-587268290/
-  3. Review verified GitHub repos: https://github.com/SivaPanyam
+  1. Download Resume: /Panyam_Siva_Resume.pdf
+  2. Dispatch email to: sivapanyam1@gmail.com
+  3. Connect on LinkedIn: https://www.linkedin.com/in/panyam-siva
+  4. Review verified GitHub repos: https://github.com/SivaPanyam
 
   Clearance code: #SIVA-ROOT-2026-HIRED
   ======================================================

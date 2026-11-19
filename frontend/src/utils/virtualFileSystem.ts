@@ -42,10 +42,10 @@ Engineering Milestones:
       type: 'file',
       size: '142KB',
       permissions: '-rwxr-xr-x',
-      content: `[BINARY PAYLOAD: resume.pdf]
+      content: `[BINARY PAYLOAD: Panyam_Siva_Resume.pdf]
 Official CV document is verified and ready for extraction.
 To download directly to your local workstation:
--> Visit URL: https://sivapanyam.dev/assets/cv_payload.pdf
+-> Visit URL: /Panyam_Siva_Resume.pdf
 Or type "contact" to establish a direct interview scheduling link.`
     },
 

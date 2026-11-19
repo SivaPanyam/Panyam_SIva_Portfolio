@@ -132,80 +132,78 @@ export const experienceTimeline: ExperienceItem[] = [
     role: 'Software Trainee Engineer',
     company: 'XCEL Corp',
     location: 'Bengaluru, India',
-    period: 'August 2026 - Present',
+    period: 'Sep 2026 – Present',
     category: 'professional',
     themeColor: 'cyan',
     glowColor: '#06b6d4',
     highlights: [
-      'Contributing to enterprise software development lifecycle (SDLC), engineering full-stack modules and robust backend services.',
-      'Constructing scalable API integrations, microservices, and database interaction layers focusing on performance and reliability.',
-      'Collaborating with senior architects on production deployments, continuous automated testing, and developer tooling infrastructure.'
+      'Develop and validate enterprise REST API integrations by defining JSON payloads, enforcing strict API contracts, and testing edge-case failure scenarios.',
+      'Lead root-cause debugging for production defects by reproducing failures, tracing end-to-end request logs, and verifying fixes through automated regression testing.',
+      'Partner with engineering teams to standardize error handling, resilience patterns, and technical integration documentation.'
     ],
-    technicalExposure: ['Python', 'FastAPI', 'JavaScript/TypeScript', 'SQL', 'Docker', 'Git CI/CD', 'REST APIs'],
+    technicalExposure: ['Python', 'FastAPI', 'REST APIs', 'PostgreSQL', 'Docker', 'Automated Regression Testing', 'Error Resilience'],
     metrics: [
       { label: 'Role Status', value: 'Active / Current' },
-      { label: 'Deployment Uptime', value: '99.9%' }
+      { label: 'Contract Integrity', value: '100% Strict' }
     ]
   },
   {
     id: 'ibm-skillsbuild-aicte',
-    role: 'AI Engineer Intern',
-    company: 'IBM SkillsBuild & AICTE (Edunet Foundation)',
-    location: 'Remote / India',
-    period: '2026',
+    role: 'AI & Machine Learning Intern',
+    company: 'Edunet Foundation – AICTE & IBM SkillsBuild',
+    location: 'Remote, India',
+    period: 'Jan 2026 – Feb 2026',
     category: 'internship',
     themeColor: 'violet',
     glowColor: '#8b5cf6',
     highlights: [
-      'Completed an intensive AI Engineering Virtual Internship under the joint initiative by IBM SkillsBuild, AICTE, and Edunet Foundation.',
-      'Architected and built Study Buddy (AICTE-Batch-7-Study_Buddy), an AI-powered personalized learning platform with automated exam preparation pipelines.',
-      'Integrated Google Generative AI (Gemini) for dynamic study plan generation, automated spaced-repetition flashcard creation, and PDF/Word document note extraction.',
-      'Implemented full-stack architecture with React 19, Vite, Tailwind CSS, and Supabase PostgreSQL with strict Row Level Security (RLS) data persistence.'
+      'Built data preparation and cleaning pipelines in Python to structure multi-subject academic datasets for repeatable machine-learning and LLM workflows.',
+      'Shipped Study Buddy (AICTE-Batch-7-Study_Buddy) using React, Vite, Supabase PostgreSQL, and Gemini APIs to deliver personalized study plans, flashcards, and adaptive quizzes.',
+      'Benchmarked prompt strategies and integrated structured model outputs into production frontend workflows with latency and accuracy validation.'
     ],
-    technicalExposure: ['Google Gemini AI', 'Supabase (PostgreSQL)', 'React 19', 'Vite', 'Tailwind CSS v4', 'PDF.js / Mammoth', 'Context API'],
+    technicalExposure: ['Google Gemini AI', 'Supabase (PostgreSQL)', 'React 19', 'Vite', 'Tailwind CSS v4', 'Python', 'PDF.js / Mammoth'],
     metrics: [
       { label: 'Capstone Project', value: 'Study Buddy' },
-      { label: 'AI Study Tools', value: '8+ Features' }
+      { label: 'Data Pipelines', value: 'Multi-Subject' }
     ]
   },
   {
-    id: 'intern',
-    role: 'Innovation & Design Thinking Intern',
-    company: 'FutureTech Labs',
-    location: 'Bangalore, India',
-    period: '2021 - 2022',
-    category: 'internship',
+    id: 'agentbassador-lead',
+    role: 'Agentbassador – Bengaluru Chapter',
+    company: 'AI House (Developer Outreach & Technical Discovery)',
+    location: 'Bengaluru, India',
+    period: '2026 – Present',
+    category: 'workshop',
     themeColor: 'amber',
     glowColor: '#f59e0b',
     highlights: [
-      'Conducted rapid prototyping sandboxes evaluating AI accessibility systems and human-centered design principles.',
-      'Facilitated collaborative design sprints, user empathy workshops, and journey mapping exercises to align teams.',
-      'Constructed high-fidelity mockups, interactive wireframes, and responsive dashboard layouts for cloud operators.'
+      'Lead technical discovery sessions, live architecture walkthroughs, and hands-on agentic AI workshops for developers and engineering teams across Bengaluru.',
+      'Synthesize community and builder feedback on multi-agent tooling, integration bottlenecks, and evaluation practices into actionable technical insights.'
     ],
-    technicalExposure: ['Design Sprints', 'Wireframing', 'Figma', 'User Empathy Maps', 'Rapid Prototyping'],
+    technicalExposure: ['Agentic AI', 'Multi-Agent Architectures', 'Google ADK', 'Mastra', 'MCP Standards', 'Technical Discovery'],
     metrics: [
-      { label: 'Sprints Delivered', value: '12+' },
-      { label: 'User Parity Score', value: '94%' }
+      { label: 'Chapter', value: 'Bengaluru' },
+      { label: 'Community Focus', value: 'Agentic AI' }
     ]
   },
   {
     id: 'hackathons-workshops',
-    role: 'Specialist Hackathons & Workshops',
-    company: 'R&D Rapid Builds',
-    location: 'Developer Ecosystem',
-    period: '2020 - 2025',
+    role: 'Specialist Hackathons & Distributed Systems R&D',
+    company: 'Developer Ecosystem & Academic R&D',
+    location: 'Bengaluru, India',
+    period: '2023 – 2026',
     category: 'hackathon',
     themeColor: 'rose',
     glowColor: '#f43f5e',
     highlights: [
-      'Bangalore Smart Hackathon Winner: Engineered EcoTrack-AI edge ML IoT telemetry sandboxes in under 48 hours.',
-      'Pioneered NLP R&D Sprints: Built FanVersi AI lore verification checkers utilizing Milvus vector databases.',
-      'Designed and conducted interactive workshops focusing on distributed systems consensus, Raft WAL logs, and double-entry ledgers.'
+      'B.E. Computer Science and Engineering @ T. John Institute of Technology, Bengaluru (2023–2027, CGPA: 8.6/10).',
+      'Pioneered autonomous AI SRE systems (Mastra Sentinel) with 5 specialized incident-response agents over operational SOPs with Qdrant vector retrieval.',
+      'Engineered hierarchical multi-agent orchestrator in Google ADK delegating tasks across planning, database querying, and multimodal extraction with AlloyDB state persistence.'
     ],
-    technicalExposure: ['Raft Consensus', 'NumPy Matrix Math', 'Milvus RAG', 'TensorFlow Lite', 'MQTT Broking'],
+    technicalExposure: ['Google ADK', 'Mastra', 'Qdrant', 'AlloyDB', 'FastAPI', 'Docker', 'pytest', 'Cloud Run'],
     metrics: [
-      { label: 'Hackathons Run', value: '6' },
-      { label: 'Total Sprints Completed', value: '15+' }
+      { label: 'Academic CGPA', value: '8.6 / 10' },
+      { label: 'Expected Grad', value: '2027' }
     ]
   }
 ];
@@ -224,58 +222,58 @@ export interface CertificationItem {
 
 export const certificationsList: CertificationItem[] = [
   {
-    id: 'azure-fundamentals',
-    name: 'Microsoft Certified: Azure Fundamentals',
-    issuer: 'Microsoft',
-    date: 'June 2024',
-    credentialId: 'AZF-9023847-SECURE',
-    verificationUrl: 'https://learn.microsoft.com/en-us/users/sivapanyam',
+    id: 'gcp-foundations',
+    name: 'Google Cloud Computing Foundations',
+    issuer: 'Google Cloud',
+    date: '2026',
+    credentialId: 'GCP-FND-7482910-VERIFIED',
+    verificationUrl: 'https://www.cloudskillsboost.google',
     themeColor: 'cyan',
     glowColor: '#06b6d4',
-    skillsExposure: ['Cloud Computing', 'Azure Services', 'Network Security', 'Azure Architecture']
+    skillsExposure: ['Cloud Infrastructure', 'Google Cloud Platform', 'Cloud Run', 'BigQuery', 'Networking']
   },
   {
-    id: 'azure-ai-fundamentals',
-    name: 'Microsoft Certified: Azure AI Fundamentals',
+    id: 'aws-ai-programmer',
+    name: 'AWS AI Programmer Nanodegree',
+    issuer: 'Udacity / AWS',
+    date: '2026',
+    credentialId: 'AWS-AIP-9284710-SECURE',
+    verificationUrl: 'https://www.udacity.com',
+    themeColor: 'amber',
+    glowColor: '#f59e0b',
+    skillsExposure: ['Deep Learning', 'PyTorch', 'Computer Vision', 'Generative AI', 'AWS SageMaker']
+  },
+  {
+    id: 'azure-fundamentals',
+    name: 'Microsoft Certified: Azure Fundamentals (AZ-900)',
     issuer: 'Microsoft',
-    date: 'August 2024',
-    credentialId: 'AZAI-8291048-SECURE',
+    date: '2024',
+    credentialId: 'AZF-9023847-SECURE',
     verificationUrl: 'https://learn.microsoft.com/en-us/users/sivapanyam',
     themeColor: 'violet',
     glowColor: '#8b5cf6',
-    skillsExposure: ['Azure AI Services', 'Machine Learning', 'Computer Vision', 'Generative AI Concepts']
+    skillsExposure: ['Cloud Architecture', 'Azure Services', 'Network Security', 'Identity & Access']
   },
   {
     id: 'google-ai-essentials',
     name: 'Google Certified: AI Essentials',
     issuer: 'Google',
-    date: 'October 2024',
+    date: '2024',
     credentialId: 'G-AIESS-7402941-SECURE',
     verificationUrl: 'https://www.credly.com/users/sivapanyam',
     themeColor: 'emerald',
     glowColor: '#10b981',
-    skillsExposure: ['Generative AI Tools', 'AI Productivity Sprints', 'AI Ethics Heuristics', 'Large Language Models']
+    skillsExposure: ['Generative AI Tools', 'LLM Prompt Strategies', 'AI Ethics', 'Productivity Pipelines']
   },
   {
-    id: 'google-prompting-essentials',
-    name: 'Google Certified: Prompting Essentials',
-    issuer: 'Google',
-    date: 'December 2024',
-    credentialId: 'G-PROM-9281038-SECURE',
-    verificationUrl: 'https://www.credly.com/users/sivapanyam',
-    themeColor: 'amber',
-    glowColor: '#f59e0b',
-    skillsExposure: ['Prompt Engineering', 'Structured Few-Shot Prompts', 'Context Optimization', 'System Role Prompts']
-  },
-  {
-    id: 'oracle-ai-foundations',
-    name: 'Oracle Cloud Infrastructure: AI Foundations',
-    issuer: 'Oracle',
-    date: 'February 2025',
-    credentialId: 'OCI-AIF-2384910-SECURE',
-    verificationUrl: 'https://education.oracle.com/sivapanyam',
+    id: 'ibm-skillsbuild-ai',
+    name: 'Artificial Intelligence Fundamentals',
+    issuer: 'IBM SkillsBuild',
+    date: '2026',
+    credentialId: 'IBM-SB-AI-829104-SECURE',
+    verificationUrl: 'https://skillsbuild.org',
     themeColor: 'rose',
     glowColor: '#f43f5e',
-    skillsExposure: ['OCI Generative AI', 'Deep Learning Core', 'Model Fine-tuning', 'Vector Search Indexes']
+    skillsExposure: ['AI Engineering', 'Supervised Learning', 'NLP & Embeddings', 'AI Reliability']
   }
 ];

@@ -252,11 +252,9 @@ function App() {
                     whileHover={{ scale: 1.04, borderColor: '#ffffff', color: '#ffffff', backgroundColor: 'rgba(255,255,255,0.02)' }}
                     whileTap={{ scale: 0.98 }}
                     transition={transitions.springHover}
-                    href="#resume-placeholder" 
-                    onClick={(e) => {
-                      e.preventDefault();
-                      document.getElementById('about')?.scrollIntoView({ behavior: 'smooth' });
-                    }}
+                    href="/Panyam_Siva_Resume.pdf" 
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="flex items-center gap-1.5 border border-zinc-900 bg-zinc-950/40 px-3 py-1.5 rounded-md transition-colors"
                   >
                     <FileText className="w-3.5 h-3.5" /> Download Resume
@@ -304,14 +302,12 @@ function App() {
                       </p>
                       <div className="pt-4 flex flex-wrap gap-4 font-mono text-xs">
                         <a 
-                          href="#resume.pdf"
-                          onClick={(e) => {
-                            e.preventDefault();
-                            toggleTerminal();
-                          }}
+                          href="/Panyam_Siva_Resume.pdf"
+                          target="_blank"
+                          rel="noopener noreferrer"
                           className="px-4 py-2 bg-zinc-950 border border-zinc-800 hover:border-zinc-500 rounded text-zinc-400 hover:text-white transition-all flex items-center gap-2 cursor-pointer"
                         >
-                          <FileText className="w-3.5 h-3.5" /> View VFS Resume
+                          <FileText className="w-3.5 h-3.5" /> Download Verified Resume (PDF)
                         </a>
                       </div>
                     </div>
