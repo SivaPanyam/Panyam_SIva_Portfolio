@@ -335,7 +335,7 @@ export const Logo: React.FC<LogoProps> = ({
             {/* Right Area: Typographic lockup */}
             <g transform="translate(320, 0)">
               <text x="0" y="145" className="text-lockup-title">
-                Siva Panyam<tspan className="text-lockup-dot">.dev</tspan>
+                PanyamSiva<tspan className="text-lockup-dot">.dev</tspan>
               </text>
               <text x="5" y="195" className="text-lockup-sub">
                 AI Engineer &amp; Full Stack Developer

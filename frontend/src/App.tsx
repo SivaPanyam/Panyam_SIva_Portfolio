@@ -7,7 +7,7 @@ import DockNavbar from './components/DockNavbar';
 import SystemTelemetryInspector from './components/SystemTelemetryInspector';
 import Logo from './components/Logo';
 import BrandShowcase from './components/BrandShowcase';
-import { Sparkles, ArrowDown, ChevronRight, Terminal as TermIcon, FileText, Mail } from 'lucide-react';
+import { ArrowDown, ChevronRight, Terminal as TermIcon, FileText, Mail } from 'lucide-react';
 import { portfolioProjects } from './utils/projectData';
 import type { ProjectData } from './utils/projectData';
 import ProjectCard from './components/ProjectCard';
@@ -184,17 +184,7 @@ function App() {
               
               {/* 1. HOME / HERO SECTION */}
               <section id="home" className="h-screen flex flex-col justify-center items-center text-center relative pointer-events-none">
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.95 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ ...transitions.easeCinematic, delay: 0.2 }}
-                  className="flex items-center gap-2 border border-zinc-800 bg-zinc-950/60 backdrop-blur-md px-4 py-1.5 rounded-full text-xs uppercase tracking-widest text-zinc-400 mb-6 pointer-events-auto cursor-default hover:border-zinc-500 transition-colors"
-                >
-                  <Sparkles className="w-3.5 h-3.5 text-white animate-pulse" />
-                  <span>Neural OS v1.0.4 Online</span>
-                </motion.div>
-
-                <h1 className="sr-only">Siva Panyam - AI Engineer &amp; Full Stack Architect</h1>
+                <h1 className="sr-only">Panyam Siva - AI Engineer &amp; Full Stack Architect</h1>
 
                 <motion.div
                   initial={{ opacity: 0, scale: 0.97, y: 30 }}
@@ -255,19 +245,10 @@ function App() {
                     href="/Panyam_Siva_Resume.pdf" 
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center gap-1.5 border border-zinc-900 bg-zinc-950/40 px-3 py-1.5 rounded-md transition-colors"
+                    className="flex items-center gap-1.5 border border-zinc-900 bg-zinc-950/40 px-4 py-2 rounded-md transition-colors text-zinc-300 hover:text-white"
                   >
                     <FileText className="w-3.5 h-3.5" /> Download Resume
                   </motion.a>
-                  <motion.button 
-                    whileHover={{ scale: 1.04, borderColor: '#ffffff', color: '#ffffff', backgroundColor: 'rgba(255,255,255,0.02)' }}
-                    whileTap={{ scale: 0.98 }}
-                    transition={transitions.springHover}
-                    onClick={toggleTerminal}
-                    className="flex items-center gap-1.5 border border-zinc-900 bg-zinc-950/40 px-3 py-1.5 rounded-md cursor-pointer transition-colors"
-                  >
-                    <TermIcon className="w-3.5 h-3.5" /> Open Terminal
-                  </motion.button>
                 </motion.div>
 
                 {/* Scroll Indicator */}
