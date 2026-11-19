@@ -168,14 +168,34 @@ export const experienceTimeline: ExperienceItem[] = [
     ]
   },
   {
+    id: 'intern',
+    role: 'Innovation & Design Thinking Intern',
+    company: 'FutureTech Labs',
+    location: 'Bangalore, India',
+    period: '2021 – 2022',
+    category: 'internship',
+    themeColor: 'amber',
+    glowColor: '#f59e0b',
+    highlights: [
+      'Conducted rapid prototyping sandboxes evaluating AI accessibility systems and human-centered design principles.',
+      'Facilitated collaborative design sprints, user empathy workshops, and journey mapping exercises to align teams.',
+      'Constructed high-fidelity mockups, interactive wireframes, and responsive dashboard layouts for cloud operators.'
+    ],
+    technicalExposure: ['Design Sprints', 'Wireframing', 'Figma', 'User Empathy Maps', 'Rapid Prototyping'],
+    metrics: [
+      { label: 'Sprints Delivered', value: '12+' },
+      { label: 'User Parity Score', value: '94%' }
+    ]
+  },
+  {
     id: 'agentbassador-lead',
     role: 'Agentbassador – Bengaluru Chapter',
     company: 'AI House (Developer Outreach & Technical Discovery)',
     location: 'Bengaluru, India',
     period: '2026 – Present',
     category: 'workshop',
-    themeColor: 'amber',
-    glowColor: '#f59e0b',
+    themeColor: 'emerald',
+    glowColor: '#10b981',
     highlights: [
       'Lead technical discovery sessions, live architecture walkthroughs, and hands-on agentic AI workshops for developers and engineering teams across Bengaluru.',
       'Synthesize community and builder feedback on multi-agent tooling, integration bottlenecks, and evaluation practices into actionable technical insights.'
